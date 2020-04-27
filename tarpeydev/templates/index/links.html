@@ -1,0 +1,288 @@
+<html>
+	
+    <head>
+        <title>links</title>
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+        <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+        <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+        <meta name="msapplication-TileColor" content="#2d89ef">
+        <meta name="theme-color" content="#ffffff">
+
+
+        <style type="text/css">      
+            @import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+            
+            body {
+                background-color:000000;
+            }
+            
+            .headers {
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                font-size:60px;
+                color:ffffff;
+            }
+
+            .donateheader {
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                font-size:60px;
+                color:66ff99;
+            }
+            
+            .left {
+                float:left;
+                width:50%;
+            }
+            
+            .right {
+                float:right;
+                width:50%;
+            }
+            
+            .apps {
+                background-color:e6005c;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                color:ffffff;
+                font-weight:bold;
+                padding:10px;
+                font-size:60px;
+            }
+            
+            .twitter {
+                background-color:55acee;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                color:ffffff;
+                font-weight:bold;
+                padding:10px;
+                font-size:60px;           
+            }
+            
+            .youtube {
+                background-color:cd201f;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                color:ffffff;
+                font-weight:bold;
+                padding:10px;
+                font-size:60px;           
+            }
+            
+            .twitch {
+                background-color:6441a5;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                color:ffffff;
+                font-weight:bold;
+                padding:10px;
+                font-size:60px;           
+            }
+            
+            .games {
+                background-color:444444;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                color:ffffff;
+                font-weight:bold;
+                padding:10px;
+                font-size:60px;           
+            }
+            
+            .sports {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .channels {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+
+            .donate {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .referrals {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .education {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .tools {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .network {
+                background-color:000000;
+                border-style:solid;
+                border-width:1px;
+                border-color:000000;
+                position:relative;
+                font-family:"Lato",sans-serif;
+                font-weight:bold;
+                padding:10px;
+                font-size:36px;
+            }
+            
+            .clear {
+                clear:both;
+            }
+            
+            p {
+                padding:0px;
+                margin:0px;
+            }
+            
+            a.class1:link {color:ffb3d1;}        
+            a.class1:visited {color:ff80b3;}
+            a.class1:hover {color:ffe5f0;}        
+            a.class1:active {color:ffe5f0;}
+            
+            a.class2:link {color:ffffff;}       
+            a.class2:visited {color:bbbbbb;}
+            a.class2:hover {color:dddddd;}        
+            a.class2:active {color:dddddd;} 
+
+            a.class3:link {color:99ffbb;}       
+            a.class3:visited {color:bbbbbb;}
+            a.class3:hover {color:4dff88;}        
+            a.class3:active {color:4dff88;} 
+            
+            a.classwhite:link {color:ffffff;}       
+            a.classwhite:visited {color:bbbbbb;}
+            a.classwhite:hover {color:dddddd;}        
+            a.classwhite:active {color:dddddd;}
+        </style>
+        
+    </head>    
+
+
+    
+    
+    <body>
+
+        
+        <div class="apps">Recommended apps: <a class="class1" href="{{ url_for('index.apps') }}">Click here!</a></div>    
+
+
+            <div class="left">
+
+                <div class="twitter">
+                    <a class="classwhite" href="http://www.twitter.com/AnnuityDew">Twitter</a><br>    
+                </div>
+                
+                <div class="games">
+                    <a class="classwhite" href="{{ url_for('index.games') }}">Games</a>
+                </div>
+
+                <div class="donate">
+                    <span class="donateheader">Donate</span><br>            
+                        <a class="class3" href="https://www.nrdc.org/">NRDC</a><br>
+                        <a class="class3" href="https://www.eesi.org/">EESI</a><br>
+                        <a class="class3" href="http://www.thetrevorproject.org/">The Trevor Project</a><br>
+                        <a class="class3" href="https://www.plannedparenthood.org/">Planned Parenthood</a><br>
+                        <a class="class3" href="https://www.reproductiverights.org/">Reproductive Rights</a><br>
+                        <a class="class3" href="https://irap.urbanjustice.org/">IRAP</a><br>
+                        <a class="class3" href="http://www.naacpldf.org/">NAACP LDF</a><br>
+                        <a class="class3" href="http://ywcarichmond.org/">YWCA Richmond</a><br>
+                    </p>
+                </div>
+                
+            </div>
+
+            <div class="right">
+
+                <div class="twitch">
+                    <a class="classwhite" href="http://www.twitch.tv/annuitydew">Twitch</a><br>    
+                </div>
+                
+                <div class="youtube">
+                    <a class="classwhite" href="http://www.youtube.com/user/annuitydew">YouTube</a>
+                </div>
+                
+                <div class="referrals">
+                    <span class="headers">Referral Links</span><br>
+                        <a class="class2" href="http://shaved.by/lfiQl">DollarShaveClub</a><br>
+                        <a class="class2" href="http://fbuy.me/hGbty">FilterEasy</a><br>
+                        <a class="class2" href="www.arcadiapower.com/michael9846">Arcadia Power</a><br>
+                        <a class="class2" href="https://streamlabs.com/slobs/d/1526741">Streamlabs OBS</a><br>
+                        <a class="class2" href="https://share.robinhood.com/michaet2837">Robinhood</a><br>
+                        <a class="class2" href="https://www.coinbase.com/join/5a6eab9d8bf65d0545be6e9a">Coinbase</a><br>
+                        <a class="class2" href="https://www.cointracker.io/i/NV7md8i4fbmJ">CoinTracker</a><br>	
+                        <a class="class2" href="https://fundrise.com/r/0o5p5">Fundrise</a><br>	
+                    </p>
+            </div>
+
+        </div>
+
+    </body>
+</html>

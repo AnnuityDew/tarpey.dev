@@ -1,0 +1,53 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+
+<html class="default">	
+
+<head>
+	<title>tarpey.dev</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+
+
+<p>
+	<div class="apps" style="color:ffffff; background-color:000000">Thanks for visiting.</div>
+</p>
+{#
+<p>
+	<div class="apps" style="color:ffffff; background-color:563680"><a href="{{ url_for('haveyouseenx') }}">haveyouseenx</a></div>
+</p>
+
+<p>
+	<div class="apps" style="color:ffffff; background-color:8a2121"><a href="{{ url_for('autobracket') }}">autobracket</a></div>
+</p>
+
+<p>
+    <div class="apps" style="color:ffffff; background-color:ce952e"><a href="{{ url_for('timecapsule') }}">timecapsule</a></div>
+</p>
+#}
+<p>
+    <div class="apps" style="color:ffffff; background-color:7c8e31"><a href="{{ url_for('index.links') }}">links</a></div>
+</p>
+
+<p>
+    <div class="apps" style="color:ffffff; background-color:85b3cc"><a href="{{ url_for('index.colors') }}">colors</a></div>
+</p>
+
+{#
+<p>
+    {% if quote %}
+    "{{ quote.quoteText }}"<br>
+    <i>-{{ quote.quoteOrigin }}</i>
+    {% endif %}
+</p>
+#}
+
+</html>

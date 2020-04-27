@@ -1,0 +1,71 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+.default {
+	font-family:"Lato",sans-serif;
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+.id {
+	font-family:"Lato",sans-serif;
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+.modeloutput {
+	font-family:"Lato",sans-serif;
+	background-color: #000000;
+	color: #66d9ff;
+}
+
+.actualresults {
+	font-family:"Lato",sans-serif;
+	background-color: #000000;
+	color: #ffe066;
+}
+
+.apps {
+	border-style:solid;
+	border-width:1px;
+	border-color:000000;
+	position:relative;
+	font-family:"Lato",sans-serif;
+	font-weight:bold;
+	padding:10px;
+	font-size:60px;
+}
+
+.colorhead {
+	background-color:000000;
+	border-style:solid;
+	border-width:1px;
+	border-color:000000;
+	position:relative;
+	color:ffffff;
+	font-family:"Lato",sans-serif;
+	font-weight:bold;
+	padding:5px;
+}
+
+.colors {
+	border-style:solid;
+	border-width:1px;
+	border-color:000000;
+	position:relative;
+	font-family:"Lato",sans-serif;
+	padding:5px;
+}
+
+b {
+	color: #e634af;
+}
+
+form     { display: table;  width:400px;    }
+.formrow { display: table-row;  }
+label    { display: table-cell; width:50%; }
+select   { display: table-cell; width:40%; }
+
+a:link {color: #66d9ff;}        
+a:visited {color: #ffe066;}
+a:hover {color: #99e6ff;}        
+a:active {color: #99e6ff;}

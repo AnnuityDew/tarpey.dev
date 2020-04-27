@@ -1,0 +1,3 @@
+graft tarpeydev/static
+graft tarpeydev/templates
+global-exclude *.pyc
