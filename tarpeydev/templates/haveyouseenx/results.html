@@ -1,0 +1,80 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+
+<html class="default">	
+
+<head>
+	<title>haveyouseenx</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#ffffff">
+
+</head>
+	<p>
+	{% if search_term == '' %}
+		You didn't search for a game, so here's the full table.
+	{% else %}
+		The game you searched for is called {{ search_term }}. Matches are shown below.
+	{% endif %}
+	</p>
+	<table>
+		<thead>
+			{% for header in df.columns %}
+			<th>{{ header }}</th>
+			{% endfor %}
+		</thead>
+		<tbody>
+			{% for index, row in df.loc[df.gameTitle.str.contains(search_term, case=False)].iterrows() %}
+			<tr>
+				<td class="gameTitle">
+					{{ row.gameTitle }}
+				</td>
+				<td class="subTitle">
+					{{ row.subTitle }}
+				</td>
+				<td class="gameSystem">
+					{{ row.gameSystem }}
+				</td>
+				<td class="nowPlaying">
+					{{ row.nowPlaying }}
+				</td>
+				<td class="gameStatus">
+					{{ row.gameStatus }}
+				</td>
+				<td class="gameHours">
+					{{ row.gameHours }}
+				</td>
+				<td class="gameMinutes">
+					{{ row.gameMinutes }}
+				</td>
+				<td class="addDate">
+					{{ row.addDate }}
+				</td>
+				<td class="startDate">
+					{{ row.startDate }}
+				</td>
+				<td class="beatDate">
+					{{ row.beatDate }}
+				</td>
+				<td class="completeDate">
+					{{ row.completeDate }}
+				</td>
+				<td class="gameNotes">
+					{{ row.gameNotes }}
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+	<form action="{{ url_for('haveyouseenx.search') }}" method="post">
+		<button>Go back!</button>
+	</form>
+
+</html>

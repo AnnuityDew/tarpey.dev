@@ -1,27 +1,50 @@
 # import native Python packages
 import functools
+import random
 
 # import third party packages
 from flask import Blueprint, render_template
+import pandas
 
-bp = Blueprint('index', __name__, url_prefix='')
 
-@bp.route('/')
+index_bp = Blueprint('index', __name__, url_prefix='')
+
+
+@index_bp.route('/')
 def index():
-    return render_template('index/index.html')
+    quotes = read_quotes()
+    quote_id = random.randint(1, len(quotes.index))
+    return render_template(
+        'index/index.html',
+        df=quotes,
+        quote_id=quote_id,
+    )
 
-@bp.route('/colors')
+
+@index_bp.route('/colors')
 def colors():
     return render_template('index/colors.html')
 
-@bp.route('/links')
+
+@index_bp.route('/links')
 def links():
     return render_template('index/links.html')
 
-@bp.route('/apps')
+
+@index_bp.route('/apps')
 def apps():
     return render_template('index/apps.html')
 
-@bp.route('/games')
+
+@index_bp.route('/games')
 def games():
     return render_template('index/games.html')
+
+
+def read_quotes():
+    quotes = pandas.read_csv(
+        'tarpeydev/data/index/index_quotes.csv',
+        index_col='id',
+    ).convert_dtypes()
+
+    return quotes

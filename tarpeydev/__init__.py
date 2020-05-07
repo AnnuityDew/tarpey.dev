@@ -26,8 +26,23 @@ def create_app(test_config=None):
     except OSError:
         pass
     
+    # import apps
     from . import index
-    app.register_blueprint(index.bp)
+    from . import haveyouseenx
+    from . import autobracket
+    from . import timecapsule
+
+    # register apps
+    app.register_blueprint(index.index_bp)
+    app.register_blueprint(haveyouseenx.hysx_bp)
+    app.register_blueprint(autobracket.autobracket_bp)
+    app.register_blueprint(timecapsule.timecapsule_bp)
+    # app.register_blueprint(ddr.ddr_bp)
+    # app.register_blueprint(health.health_bp)
+
+    # import and register errors
+    # from . import errors
+    # app.register_error_handler(400, handle_bad_request)
 
     return app
 

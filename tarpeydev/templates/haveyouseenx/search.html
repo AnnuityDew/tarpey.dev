@@ -3,7 +3,7 @@
 <html class="default">	
 
 <head>
-	<title>tarpey.dev</title>
+	<title>haveyouseenx</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
@@ -16,34 +16,23 @@
 
 </head>
 
-
 <p>
-	<div class="apps" style="color:ffffff; background-color:000000">Thanks for visiting.</div>
+	Type the name of a video game to see if I've played it before.<br>
+	(For now, it needs to be an exact match...or you can leave it blank to show all games.)<br>
+	I haven't logged a playtime for every game yet, but so far there's over {{ (df.gameHours.sum() + (df.gameMinutes.sum() / 60))|int }} hours of gameplay in the database.
+	<form action="{{ url_for('haveyouseenx.results') }}" method="post">
+		<input id="searchbox" name="searchterm" type="text" placeholder="Search for a game">
+		<button>Go!</button>
+	</form>
 </p>
 
 <p>
-	<div class="apps" style="color:ffffff; background-color:563680"><a href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a></div>
+	You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).<br>
+	<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
 </p>
 
 <p>
-	<div class="apps" style="color:ffffff; background-color:8a2121"><a href="{{ url_for('autobracket.generate') }}">autobracket</a></div>
-</p>
-
-<p>
-    <div class="apps" style="color:ffffff; background-color:ce952e"><a href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a></div>
-</p>
-
-<p>
-    <div class="apps" style="color:ffffff; background-color:7c8e31"><a href="{{ url_for('index.links') }}">links</a></div>
-</p>
-
-<p>
-    <div class="apps" style="color:ffffff; background-color:85b3cc"><a href="{{ url_for('index.colors') }}">colors</a></div>
-</p>
-
-<p>
-    "{{ df.loc[quote_id, 'quoteText']|safe }}"<br>
-    <i>-{{ df.loc[quote_id, 'quoteOrigin']|safe }}</i>
+	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
 </p>
 
 </html>

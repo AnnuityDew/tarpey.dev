@@ -128,8 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# data
+# data and static folders
 data
+static
 
 # GCP
 app.yaml
@@ -137,5 +138,5 @@ app.yaml
 # venv
 .venv
 
-# website favicon
-tarpeydev/static/index/favicon/
+# vscode
+settings.json
