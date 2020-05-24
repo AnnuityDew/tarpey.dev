@@ -1,0 +1,69 @@
+game_id,seed1,team1,team1sim,seed2,team2,team2sim,advance_to
+1,West16a,Fairleigh Dickinson,82,West16b,Prairie View A&M,76,21
+2,East16a,North Dakota St.,78,East16b,North Carolina Central,74,29
+3,East11a,Belmont,81,East11b,Temple,70,33
+4,West11a,St. John's,65,West11b,Arizona St.,74,25
+5,South1,Virginia,71,South16,Gardner Webb,56,37
+6,South8,Mississippi,72,South9,Oklahoma,95,37
+7,South5,Wisconsin,54,South12,Oregon,72,38
+8,South4,Kansas St.,64,South13,UC Irvine,70,38
+9,South6,Villanova,61,South11,Saint Mary's,57,39
+10,South3,Purdue,61,South14,Old Dominion,48,39
+11,South7,Cincinnati,72,South10,Iowa,79,40
+12,South2,Tennessee,77,South15,Colgate,70,40
+13,Midwest1,North Carolina,88,Midwest16,Iona,73,41
+14,Midwest8,Utah St.,61,Midwest9,Washington,78,41
+15,Midwest5,Auburn,78,Midwest12,New Mexico St.,77,42
+16,Midwest4,Kansas,87,Midwest13,Northeastern,53,42
+17,Midwest6,Iowa St.,59,Midwest11,Ohio St.,62,43
+18,Midwest3,Houston,84,Midwest14,Georgia St.,55,43
+19,Midwest7,Wofford,84,Midwest10,Seton Hall,68,44
+20,Midwest2,Kentucky,79,Midwest15,Abilene Christian,44,44
+21,West1,Gonzaga,87,West16a,Fairleigh Dickinson,49,49
+22,West8,Syracuse,69,West9,Baylor,78,49
+23,West5,Marquette,64,West12,Murray St.,83,50
+24,West4,Florida St.,76,West13,Vermont,69,50
+25,West6,Buffalo,91,West11b,Arizona St.,74,51
+26,West3,Texas Tech,72,West14,Northern Kentucky,57,51
+27,West7,Nevada,61,West10,Florida,70,52
+28,West2,Michigan,74,West15,Montana,55,52
+29,East1,Duke,85,East16a,North Dakota St.,62,45
+30,East8,VCU,58,East9,UCF,73,45
+31,East5,Mississippi St.,76,East12,Liberty,80,46
+32,East4,Virginia Tech,66,East13,Saint Louis,52,46
+33,East6,Maryland,79,East11a,Belmont,77,47
+34,East3,LSU,79,East14,Yale,74,47
+35,East7,Louisville,76,East10,Minnesota,86,48
+36,East2,Michigan St.,76,East15,Bradley,65,48
+37,South1,Virginia,63,South9,Oklahoma,51,53
+38,South12,Oregon,73,South13,UC Irvine,54,53
+39,South6,Villanova,61,South3,Purdue,87,54
+40,South10,Iowa,77,South2,Tennessee,83,54
+41,Midwest1,North Carolina,81,Midwest9,Washington,59,55
+42,Midwest5,Auburn,89,Midwest4,Kansas,75,55
+43,Midwest11,Ohio St.,59,Midwest3,Houston,74,56
+44,Midwest7,Wofford,56,Midwest2,Kentucky,62,56
+45,East1,Duke,77,East9,UCF,76,57
+46,East12,Liberty,58,East4,Virginia Tech,67,57
+47,East6,Maryland,67,East3,LSU,69,58
+48,East10,Minnesota,50,East2,Michigan St.,70,58
+49,West1,Gonzaga,83,West9,Baylor,71,59
+50,West12,Murray St.,62,West4,Florida St.,90,59
+51,West6,Buffalo,58,West3,Texas Tech,78,60
+52,West10,Florida,49,West2,Michigan,64,60
+53,South1,Virginia,,South12,Oregon,,61
+54,South3,Purdue,,South2,Tennessee,,61
+55,Midwest1,North Carolina,,Midwest5,Auburn,,62
+56,Midwest3,Houston,,Midwest2,Kentucky,,62
+57,East1,Duke,,East4,Virginia Tech,,63
+58,East3,LSU,,East2,Michigan St.,,63
+59,West1,Gonzaga,,West4,Florida St.,,64
+60,West3,Texas Tech,,West2,Michigan,,64
+61,,,,,,,65
+62,,,,,,,65
+63,,,,,,,66
+64,,,,,,,66
+65,,,,,,,67
+66,,,,,,,67
+67,,,,,,,68
+68,,,,,,,69

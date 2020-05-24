@@ -1,0 +1,69 @@
+game_id,seed1,team1,team1sim,seed2,team2,team2sim,advance_to
+1,West16a,Fairleigh Dickinson,,West16b,Prairie View A&M,,21
+2,East16a,North Dakota St.,,East16b,North Carolina Central,,29
+3,East11a,Belmont,,East11b,Temple,,33
+4,West11a,St. John's,,West11b,Arizona St.,,25
+5,South1,Virginia,,South16,Gardner Webb,,37
+6,South8,Mississippi,,South9,Oklahoma,,37
+7,South5,Wisconsin,,South12,Oregon,,38
+8,South4,Kansas St.,,South13,UC Irvine,,38
+9,South6,Villanova,,South11,Saint Mary's,,39
+10,South3,Purdue,,South14,Old Dominion,,39
+11,South7,Cincinnati,,South10,Iowa,,40
+12,South2,Tennessee,,South15,Colgate,,40
+13,Midwest1,North Carolina,,Midwest16,Iona,,41
+14,Midwest8,Utah St.,,Midwest9,Washington,,41
+15,Midwest5,Auburn,,Midwest12,New Mexico St.,,42
+16,Midwest4,Kansas,,Midwest13,Northeastern,,42
+17,Midwest6,Iowa St.,,Midwest11,Ohio St.,,43
+18,Midwest3,Houston,,Midwest14,Georgia St.,,43
+19,Midwest7,Wofford,,Midwest10,Seton Hall,,44
+20,Midwest2,Kentucky,,Midwest15,Abilene Christian,,44
+21,West1,Gonzaga,,,,,49
+22,West8,Syracuse,,West9,Baylor,,49
+23,West5,Marquette,,West12,Murray St.,,50
+24,West4,Florida St.,,West13,Vermont,,50
+25,West6,Buffalo,,,,,51
+26,West3,Texas Tech,,West14,Northern Kentucky,,51
+27,West7,Nevada,,West10,Florida,,52
+28,West2,Michigan,,West15,Montana,,52
+29,East1,Duke,,,,,45
+30,East8,VCU,,East9,UCF,,45
+31,East5,Mississippi St.,,East12,Liberty,,46
+32,East4,Virginia Tech,,East13,Saint Louis,,46
+33,East6,Maryland,,,,,47
+34,East3,LSU,,East14,Yale,,47
+35,East7,Louisville,,East10,Minnesota,,48
+36,East2,Michigan St.,,East15,Bradley,,48
+37,,,,,,,53
+38,,,,,,,53
+39,,,,,,,54
+40,,,,,,,54
+41,,,,,,,55
+42,,,,,,,55
+43,,,,,,,56
+44,,,,,,,56
+45,,,,,,,57
+46,,,,,,,57
+47,,,,,,,58
+48,,,,,,,58
+49,,,,,,,59
+50,,,,,,,59
+51,,,,,,,60
+52,,,,,,,60
+53,,,,,,,61
+54,,,,,,,61
+55,,,,,,,62
+56,,,,,,,62
+57,,,,,,,63
+58,,,,,,,63
+59,,,,,,,64
+60,,,,,,,64
+61,,,,,,,65
+62,,,,,,,65
+63,,,,,,,66
+64,,,,,,,66
+65,,,,,,,67
+66,,,,,,,67
+67,,,,,,,68
+68,,,,,,,69
