@@ -139,3 +139,6 @@ app.yaml
 
 # vscode
 settings.json
+
+# mac
+.DS_Store

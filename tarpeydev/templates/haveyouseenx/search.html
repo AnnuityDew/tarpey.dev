@@ -18,7 +18,7 @@
 
 <p>
 	Type the name of a video game to see if I've played it before.<br>
-	(For now, it needs to be an exact match...or you can leave it blank to show all games.)<br>
+	(Or you can leave it blank to show all games.)<br>
 	I haven't logged a playtime for every game yet, but so far there's over {{ (df.gameHours.sum() + (df.gameMinutes.sum() / 60))|int }} hours of gameplay in the database.
 	<form action="{{ url_for('haveyouseenx.results') }}" method="post">
 		<input id="searchbox" name="searchterm" type="text" placeholder="Search for a game">
@@ -29,6 +29,10 @@
 <p>
 	You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).<br>
 	<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
+</p>
+
+<p>
+	{{ pie|safe }}
 </p>
 
 <p>
