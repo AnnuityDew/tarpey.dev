@@ -5,10 +5,12 @@ import base64
 
 # import third party packages
 from flask import Blueprint, render_template, request
-import pandas
 from matplotlib import cm
 from matplotlib.colors import Normalize
 from matplotlib.figure import Figure
+import numpy
+import pandas
+import seaborn
 
 
 hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')
@@ -19,17 +21,17 @@ hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')
 def search():
     # read backlog and visualizations
     backlog = read_backlog()
-    overall_pie = visualizations()
+    feature_chart = stacked_by_system()
 
     # generate image from figure and save to buffer
     buffer = io.BytesIO()
-    overall_pie.savefig(buffer, format="png")
-    pie_data = base64.b64encode(buffer.getbuffer()).decode("ascii")
+    feature_chart.savefig(buffer, format="png")
+    feature_data = base64.b64encode(buffer.getbuffer()).decode("ascii")
 
     return render_template(
         'haveyouseenx/search.html',
         df=backlog,
-        pie=f"<img src='data:image/png;base64,{pie_data}'/>",
+        feature=f"<img src='data:image/png;base64,{feature_data}'/>",
     )
 
 
@@ -53,7 +55,7 @@ def read_backlog():
     return backlog
 
 
-def visualizations():
+def create_overall_pie():
     # count by gameStatus
     overall_pie_df = pandas.pivot_table(
         read_backlog(),
@@ -87,4 +89,97 @@ def visualizations():
     axes.set_title("Games by Completion Status")
 
     # send the figure back to Flask to display
+    return figure
+
+
+def stacked_by_system():
+    # read backlog and create a count column
+    backlog = read_backlog()
+    backlog['count'] = 1
+
+    # pivot table by gameSystem and gameStatus.
+    # fill missing values with zeroes
+
+    by_system_df = pandas.pivot_table(
+        backlog,
+        values='count',
+        index='gameSystem',
+        columns='gameStatus',
+        aggfunc='count',
+        fill_value=0,
+    )
+    
+    # sort by the total of each row
+    by_system_df = by_system_df.assign(
+        sums=by_system_df.sum(axis=1)
+    ).sort_values(
+        by='sums', ascending=True
+    ).drop(
+        columns='sums'
+    )
+
+    # N = number of systems. for spacing out the bars
+    N = len(by_system_df.index)
+    # use numpy arange for x locations. evenly spaced out bars
+    spacing = numpy.arange(N)
+
+    # set up the figure and its axes
+    figure = Figure(
+        figsize=(8, 8),
+    )
+    axes = figure.subplots()
+
+    # list of statuses (order they will be shown in from left to right)
+    status_list = [
+        'Wish List',
+        'Not Started',
+        'Started',
+        'Beaten',
+        'Completed',
+        'Mastered',
+        'Infinite',
+    ]
+
+    # how many colors do we need for pie chart?
+    bar_color_count = len(status_list)
+
+    # generate a [0,1] range evenly spaced
+    bar_range = range(0, bar_color_count)
+    color_list = []
+    for number in bar_range:
+        color_list.append((number + 1) / bar_color_count)
+    # generate the color array
+    color_array = cm.Spectral(color_list)
+    # counter for coming loop
+    color_counter = 0
+
+    # need to create a default series of zeroes for left_position.
+    # this will allow us to make a stacked bar chart.
+    left_position = pandas.DataFrame(
+        {'position': 0},
+        index=by_system_df.index
+    )
+
+    # loop over status list to create the chart
+    for status in status_list:
+        # use the bar function to define each status and where it starts (at the top
+        # of the previous bar).
+        axes.barh(
+            y=spacing,
+            width=by_system_df[status],
+            tick_label=by_system_df.index,
+            left=left_position['position'],
+            color=color_array[color_counter],
+        )
+        # add the previous width to position to get the new left position for the next category
+        left_position = left_position.add(
+            by_system_df[[status]].rename(columns={status: 'position',})
+        )
+        # up the color counter
+        color_counter = color_counter + 1
+
+    # title, legend
+    axes.set_title("Games by Completion Status")
+    axes.legend(status_list, loc='lower right')
+
     return figure
