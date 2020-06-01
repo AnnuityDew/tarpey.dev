@@ -28,6 +28,7 @@ def home():
 @ml_bp.route('/alltime', methods=['GET', 'POST'])
 def alltime():
     all_time_wins = read_season_stats()
+    all_time_rankings = all_time_ranking()
 
     # generate image from figure and save to buffer
     buffer = io.BytesIO()
@@ -37,16 +38,20 @@ def alltime():
         facecolor='black',
     )
     all_time_win_data = base64.b64encode(buffer.getbuffer()).decode("ascii")
+
+    # generate image from figure and save to buffer
+    buffer = io.BytesIO()
+    all_time_rankings.savefig(
+        buffer,
+        format="png",
+        facecolor='black',
+    )
+    all_time_rank_data = base64.b64encode(buffer.getbuffer()).decode("ascii")
+    
     return render_template(
         'mildredleague/alltime.html',
         wins=f"<img src='data:image/png;base64,{all_time_win_data}'/>",
-    )
-
-
-@ml_bp.route('/2013', methods=['GET', 'POST'])
-def season_2013():
-    return render_template(
-        'mildredleague/2013.html',
+        ranks=f"<img src='data:image/png;base64,{all_time_rank_data}'/>",
     )
     
 
@@ -199,6 +204,87 @@ def read_season_stats():
     figure.tight_layout()
 
     return figure
+
+
+def all_time_ranking():
+    # file path construction
+    all_time_path = os.path.join(
+        os.getcwd(),
+        'tarpeydev',
+        'data',
+        'mildredleague',
+        'mlalltime.csv'
+    )
+    # read season file
+    ranking_df = pandas.read_csv(
+        all_time_path,
+    )
+
+    # ranking by year for all teams
+    annual_ranking_df = pandas.pivot(
+        ranking_df,
+        index='full_name',
+        columns='year',
+        values='playoff_rank'
+    )
+
+    # temporary variable to rank relevance of a team.
+    # higher numbers are less relevant.
+    # 15 for teams that didn't play in a given year
+    # (worst rank for a team that existed would be 14)
+    annual_ranking_df_temp = annual_ranking_df.fillna(15)
+    annual_ranking_df_temp['relevance'] = annual_ranking_df_temp.sum(axis=1)
+    annual_ranking_df['relevance'] = annual_ranking_df_temp['relevance']
+    annual_ranking_df.sort_values(by='relevance', inplace=True)
+    annual_ranking_df.drop(columns='relevance', inplace=True)
+
+    # set up the figure and its axes
+    figure = Figure(
+        figsize=(8, 8),
+    )
+    ax = figure.subplots(
+        nrows=1,
+        ncols=1,
+    )
+
+    # draw heatmap with existing axis object
+    # colormap reversed
+    seaborn.heatmap(
+        data=annual_ranking_df,
+        cmap='Blues',
+        annot=True,
+        cbar=False,
+        ax=ax,
+        square=False,
+    )
+
+    # fix rotation of tick labels
+    ax.tick_params(axis='x', colors='white', rotation=0, bottom=False)
+    ax.tick_params(axis='y', colors='white', rotation=0, left=False)
+
+    # figure and chart background colors
+    figure.set_facecolor('black')
+    ax.set_facecolor('black')
+
+    # title and title color
+    ax.set_title("Mildred League Placements by Season")
+    ax.title.set_color('white')
+
+    # axis colors
+    ax.spines['bottom'].set_color('white')
+    ax.spines['left'].set_color('white')
+
+    # optimize chart spacing
+    figure.tight_layout()
+
+    return figure
+
+
+@ml_bp.route('/2013', methods=['GET', 'POST'])
+def season_2013():
+    return render_template(
+        'mildredleague/2013.html',
+    )
 
 
 @ml_bp.route('/2014', methods=['GET', 'POST'])
