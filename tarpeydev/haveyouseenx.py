@@ -5,7 +5,7 @@ import base64
 
 # import third party packages
 from flask import Blueprint, render_template, request
-from matplotlib import cm
+from matplotlib import cm, rcParams
 from matplotlib.colors import Normalize
 from matplotlib.figure import Figure
 import numpy
@@ -25,7 +25,11 @@ def search():
 
     # generate image from figure and save to buffer
     buffer = io.BytesIO()
-    feature_chart.savefig(buffer, format="png")
+    feature_chart.savefig(
+        buffer,
+        format="png",
+        facecolor='black',
+    )
     feature_data = base64.b64encode(buffer.getbuffer()).decode("ascii")
 
     return render_template(
@@ -127,7 +131,10 @@ def stacked_by_system():
     figure = Figure(
         figsize=(8, 8),
     )
-    axes = figure.subplots()
+    ax = figure.subplots(
+        nrows=1,
+        ncols=1,
+    )
 
     # list of statuses (order they will be shown in from left to right)
     status_list = [
@@ -164,7 +171,7 @@ def stacked_by_system():
     for status in status_list:
         # use the bar function to define each status and where it starts (at the top
         # of the previous bar).
-        axes.barh(
+        ax.barh(
             y=spacing,
             width=by_system_df[status],
             tick_label=by_system_df.index,
@@ -178,8 +185,25 @@ def stacked_by_system():
         # up the color counter
         color_counter = color_counter + 1
 
-    # title, legend
-    axes.set_title("Games by Completion Status")
-    axes.legend(status_list, loc='lower right')
+    # figure and chart background colors
+    figure.set_facecolor('black')
+    ax.set_facecolor('black')
+
+    # title and title color
+    ax.set_title("Games by Completion Status")
+    ax.title.set_color('white')
+
+    # axis colors
+    ax.spines['bottom'].set_color('white')
+    ax.spines['left'].set_color('white')
+
+    # tick label colors
+    ax.tick_params(axis='both', colors='white')
+
+    # add a legend
+    ax.legend(status_list, loc='lower right')
+
+    # optimize chart spacing
+    figure.tight_layout()
 
     return figure

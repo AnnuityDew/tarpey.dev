@@ -5,6 +5,7 @@ import random
 # import third party packages
 from flask import Blueprint, render_template
 import pandas
+import seaborn
 
 
 index_bp = Blueprint('index', __name__, url_prefix='')
@@ -12,13 +13,32 @@ index_bp = Blueprint('index', __name__, url_prefix='')
 
 @index_bp.route('/')
 def index():
+    # read quote file and pick a random one to show
     quotes = read_quotes()
     quote_id = random.randint(1, len(quotes.index))
+
+    # generate color palette using Seaborn for the main site buttons
+    app_colors = main_color_palette()
+
     return render_template(
         'index/index.html',
         df=quotes,
         quote_id=quote_id,
+        colors=app_colors,
     )
+
+
+def main_color_palette():
+    # obtain circular palette of hex colors for the main page.
+    # h = starting hue
+    # l = lightness
+    # s = saturation
+    hex_color_list = seaborn.hls_palette(7, h=.75, l=.3, s=.7).as_hex()
+    # hex_color_list = seaborn.color_palette("cubehelix", 7).as_hex()
+
+    # add the rest of the html style formatting string to each
+    hex_color_list = ["color:ffffff; background-color:" + color for color in hex_color_list]
+    return hex_color_list
 
 
 @index_bp.route('/colors')

@@ -29,16 +29,18 @@ def create_app(test_config=None):
     # import apps
     from . import index
     from . import haveyouseenx
+    from . import mildredleague
+    from . import ddr
     from . import autobracket
     from . import timecapsule
 
     # register apps
     app.register_blueprint(index.index_bp)
     app.register_blueprint(haveyouseenx.hysx_bp)
+    app.register_blueprint(mildredleague.ml_bp)
     app.register_blueprint(autobracket.autobracket_bp)
     app.register_blueprint(timecapsule.timecapsule_bp)
-    # app.register_blueprint(ddr.ddr_bp)
-    # app.register_blueprint(health.health_bp)
+    app.register_blueprint(ddr.ddr_bp)
 
     # import and register errors
     # from . import errors
