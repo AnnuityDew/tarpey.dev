@@ -179,7 +179,7 @@ def read_season_stats():
     ax.set_facecolor('black')
 
     # title and title color
-    ax.set_title("All-time Win Totals")
+    ax.set_title("Mildred League Regular Season Win Totals")
     ax.title.set_color('white')
 
     # axis colors
