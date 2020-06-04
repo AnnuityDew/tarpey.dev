@@ -2,6 +2,7 @@
 import base64
 import functools
 import io
+import json
 import os
 
 # import third party packages
@@ -11,6 +12,8 @@ from matplotlib.colors import Normalize
 from matplotlib.figure import Figure
 import numpy
 import pandas
+import plotly
+import plotly.express as px
 import seaborn
 
 
@@ -27,7 +30,8 @@ def home():
 
 @ml_bp.route('/alltime', methods=['GET', 'POST'])
 def alltime():
-    all_time_wins = read_season_stats()
+    # grab charts
+    all_time_wins = all_time_records()
     all_time_rankings = all_time_ranking()
 
     # generate image from figure and save to buffer
@@ -55,7 +59,7 @@ def alltime():
     )
     
 
-def read_season_stats():
+def all_time_records():
     # read each season's summary of games
     season_files = [
         'mlgames2013.csv',
@@ -179,7 +183,7 @@ def read_season_stats():
     ax.set_facecolor('black')
 
     # title and title color
-    ax.set_title("Mildred League Regular Season Win Totals")
+    ax.set_title("All-time Win Totals")
     ax.title.set_color('white')
 
     # axis colors
@@ -282,51 +286,154 @@ def all_time_ranking():
 
 @ml_bp.route('/2013', methods=['GET', 'POST'])
 def season_2013():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2013')
+
     return render_template(
         'mildredleague/2013.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2014', methods=['GET', 'POST'])
 def season_2014():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2014')
+
     return render_template(
         'mildredleague/2014.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2015', methods=['GET', 'POST'])
 def season_2015():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2015')
+
     return render_template(
         'mildredleague/2015.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2016', methods=['GET', 'POST'])
 def season_2016():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2016')
+
     return render_template(
         'mildredleague/2016.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2017', methods=['GET', 'POST'])
 def season_2017():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2017')
+
     return render_template(
         'mildredleague/2017.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2018', methods=['GET', 'POST'])
 def season_2018():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2018')
+
     return render_template(
         'mildredleague/2018.html',
+        boxplot=boxplot_json,
     )
 
 
 @ml_bp.route('/2019', methods=['GET', 'POST'])
 def season_2019():
+    # pull boxplot score data for the season
+    boxplot_json = season_boxplot('2019')
+
     return render_template(
         'mildredleague/2019.html',
+        boxplot=boxplot_json,
     )
+
+
+def season_boxplot(year):
+    # read the selected season as a dataframe
+    season_path = os.path.join(
+        os.getcwd(),
+        'tarpeydev',
+        'data',
+        'mildredleague',
+        'mlgames' + year + '.csv',
+    )
+    # read season file
+    season_df = pandas.read_csv(
+        season_path,
+    )
+    # normalized score columns for two-week playoff games
+    season_df['a_score_norm'] = (
+        season_df['a_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    season_df['h_score_norm'] = (
+        season_df['h_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    # we just want unique scores. so let's stack away and home
+    score_df = season_df[['a_name', 'a_score_norm']].rename(
+        columns={'a_name': 'name', 'a_score_norm': 'score'},
+    ).append(
+        season_df[['h_name', 'h_score_norm']].rename(
+            columns={'h_name': 'name', 'h_score_norm': 'score'},
+        ),
+        ignore_index=True,
+    )
+    # sort the dataframe by each team's mean score for the year
+    sort_df = score_df.groupby(by='name').mean().sort_values(by='score', ascending=False)
+    sort_df['rank'] = sort_df.rank(axis='index').rename(columns={'score': 'rank'})
+    sort_df.drop(columns='score', inplace=True)
+    score_df = score_df.merge(
+        sort_df, on='name', how='left'
+    ).sort_values(
+        by='rank', ascending=False,
+    )
+
+    # plotly boxplot!
+    figure = px.box(
+        score_df,
+        x="name",
+        y="score",
+        color="name",
+        color_discrete_sequence=px.colors.cyclical.Phase,
+        points="all",
+        title=year + " Score Distribution",
+        height=500,
+        width=800,
+    )
+
+    # turn off names at the bottom
+    figure.update_xaxes(showticklabels=False)
+
+    # update margins and colors
+    figure.update_layout(
+        autosize=True,
+        xaxis_title=None,
+        margin=dict(l=70, r=50, t=60, b=30),
+    )
+    figure.layout.paper_bgcolor = 'rgba(0,0,0,0)'
+    figure.layout.plot_bgcolor = 'rgba(255,255,255,0.85)'
+    figure.layout.font = dict(color='#FFFFFF')
+
+    # convert to JSON for the web
+    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return figure_json
 
 
 @ml_bp.route('/rules', methods=['GET', 'POST'])

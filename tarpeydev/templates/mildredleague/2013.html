@@ -1,5 +1,8 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
 
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
 <html class="default">	
 
 <head>
@@ -30,6 +33,15 @@
 
 <p>
     <b>Stats</b>
+</p>
+
+<p>
+    <div class="chart" id="boxplot">
+        <script>
+            var graphs = {{boxplot | safe}};
+            Plotly.plot('boxplot',graphs,{});
+        </script>
+    </div>
 </p>
 
 <p>
