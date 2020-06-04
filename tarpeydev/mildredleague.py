@@ -429,6 +429,7 @@ def season_boxplot(year):
     figure.layout.paper_bgcolor = 'rgba(0,0,0,0)'
     figure.layout.plot_bgcolor = 'rgba(255,255,255,0.85)'
     figure.layout.font = dict(color='#FFFFFF')
+    figure.layout.hoverlabel.font = dict(color='#FFFFFF')
 
     # convert to JSON for the web
     figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
