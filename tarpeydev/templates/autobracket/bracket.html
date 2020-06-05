@@ -12,11 +12,13 @@
     <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
+	<meta name="theme-color" content="#ffffff">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-Here's the model output. Scroll down to the second table for actual results.
+<body>
+Here's the model output.
 	<table>
 	  	<tr>
 			<th></th>
@@ -30,7 +32,7 @@ Here's the model output. Scroll down to the second table for actual results.
 			<td class="id">
 				{{ index }}
 			</td>
-			<td class="modeloutput">
+			<td class="model_output">
 				{% if index == 68 %}
 					{{ row.team1 }} is the simulated champion!
 				{% elif row.team1sim > row.team2sim %}
@@ -61,4 +63,5 @@ Here's the model output. Scroll down to the second table for actual results.
 		<button>Go back!</button>
 	</form>
 
+</body>
 </html>

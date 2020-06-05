@@ -12,70 +12,77 @@
     <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
+	<meta name="theme-color" content="#ffffff">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-<p>
-	This is an automatic bracket generator for March Madness. <b>It's over now (congrats to UVA), but you can re-run the model in the state it was in before the Sweet 16 began.</b>
-	Improvements will be made before March Madness 2020 begins!
-</p>
+<body>
+	<p>
+		This is an automatic bracket generator for March Madness. <b>It's over now (congrats to UVA), but you can re-run the model in the state it was in before the Sweet 16 began.</b>
+		Improvements will be made before March Madness 2020 begins!
+	</p>
 
-<p>
-	It relies heavily on the advanced college basketball analysis done at <a href="https://kenpom.com">Kenpom</a>.
-	(It's basically just a made-up formula that puts some of his numbers together in a manner that has been mildly successful for me in the past.)
-</p>
+	<p>
+		It relies heavily on the advanced college basketball analysis done at <a href="https://kenpom.com">Kenpom</a>.
+		(It's basically just a made-up formula that puts some of his numbers together in a manner that has been mildly successful for me in the past.)
+	</p>
 
-<p>
-	You can choose the Classic or Modern simulation. Classic only uses data from the 68 teams in the bracket to simulate this year's tournament. Modern will utilize data from all 353 teams listed on <a href="https://kenpom.com">Kenpom</a>.
-</p>
+	<p>
+		You can choose the Classic or Modern simulation. Classic only uses data from the 68 teams in the bracket to simulate this year's tournament. Modern will utilize data from all 353 teams listed on <a href="https://kenpom.com">Kenpom</a>.
+	</p>
 
-<p>
-	You can add Chaos to the model if you feel like you're not getting enough upsets. 0 is default, and 10 is maximum chaos (basically 50/50).
-</p>
+	<p>
+		You can add Chaos to the model if you feel like you're not getting enough upsets. 0 is default, and 10 is maximum chaos (basically 50/50).
+	</p>
 
-<p>
-	The model is updated with RO32 results. Do a Partial (Yes) model to start the model at the RO16, or a Full (No) model to re-run all 67 games.
-</p>
-	<form action="{{ url_for('autobracket.bracket') }}" method="post">
-		<div class="formrow">
-		<label for='modelbox'>Model type: </label><select id='modelbox' name='model_choice'>
-			<option value='classic'>Classic</option>
-			<option value='modern'>Modern</option>
-		</select></div>
+	<p>
+		The model is updated with RO32 results. Do a Partial (Yes) model to start the model at the RO16, or a Full (No) model to re-run all 67 games.
+	</p>
 
-		<div class="formrow">
-		<label for='chaosbox'>Added chaos: </label><select id='chaosbox' name='chaos_choice'>
-			<option value='0'>0</option>
-			<option value='1'>1</option>
-			<option value='2'>2</option>
-			<option value='3'>3</option>
-			<option value='4'>4</option>
-			<option value='5'>5</option>
-			<option value='6'>6</option>
-			<option value='7'>7</option>
-			<option value='8'>8</option>
-			<option value='9'>9</option>
-			<option value='10'>10</option>
-		</select></div>
+		<div class="autobracket_form">
+			<form action="{{ url_for('autobracket.bracket') }}" method="post">
+				
+				<label class="autobracket_label" for='modelbox'>Model type: </label><select id='modelbox' name='model_choice'>
+					<option value='classic'>Classic</option>
+					<option value='modern'>Modern</option>
+				</select><br>
 
-		<div class="formrow">
-		<label for='currentbox'>Use updated results: </label><select id='currentbox' name='model_current'>
-			<option value='partial'>Yes</option>
-			<option value='full'>No</option>
-		</select></div>
+				<label class="autobracket_label" for='chaosbox'>Added chaos: </label><select id='chaosbox' name='chaos_choice'>
+					<option value='0'>0</option>
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+					<option value='5'>5</option>
+					<option value='6'>6</option>
+					<option value='7'>7</option>
+					<option value='8'>8</option>
+					<option value='9'>9</option>
+					<option value='10'>10</option>
+				</select><br>
 
-		<button>Go!</button>
-	</form>
-</p>
+				<label class="autobracket_label" for='currentbox'>Use updated results: </label><select id='currentbox' name='model_current'>
+					<option value='partial'>Yes</option>
+					<option value='full'>No</option>
+				</select><br>
 
-<p>
-	You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).<br>
-	<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
-</p>
+				<button>Go!</button>
+			</form>
+		</div>
+	</p>
 
-<p>
-	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+	<p>
+		You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
+	</p>
+
+	<p>
+		<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
+	</p>
+
+	<p>
+		<a href="{{ url_for('index.index') }}">Back to the homepage</a>
+	</p>
+</body>
 
 </html>

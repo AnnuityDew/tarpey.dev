@@ -12,31 +12,40 @@
     <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
+	<meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-<p>
-	Type the name of a video game to see if I've played it before.<br>
-	(Or you can leave it blank to show all games.)<br>
-	I haven't logged a playtime for every game yet, but so far there's over {{ (df.gameHours.sum() + (df.gameMinutes.sum() / 60))|int }} hours of gameplay in the database.
+<body>
+	<p>
+		Type the name of a video game to see if I've played it before. (Or you can leave it blank to show all games.)
+	</p>
+
 	<form action="{{ url_for('haveyouseenx.results') }}" method="post">
 		<input id="searchbox" name="searchterm" type="text" placeholder="Search for a game">
 		<button>Go!</button>
 	</form>
-</p>
 
-<p>
-	You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).<br>
-	<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
-</p>
+	<p>
+		I haven't logged a playtime for every game yet, but so far there's over {{ (df.gameHours.sum() + (df.gameMinutes.sum() / 60))|int }} hours of gameplay in the database.
+	</p>
 
-<p>
-	{{ feature|safe }}
-</p>
+	<p>
+		{{ feature|safe }}
+	</p>
 
-<p>
-	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+	<p>
+		You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
+	</p>
+
+	<p>
+		<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
+	</p>
+
+	<p>
+		<a href="{{ url_for('index.index') }}">Back to the homepage</a>
+	</p>
+</body>
 
 </html>

@@ -13,47 +13,50 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-<p>
+<body>
+
     <b>Current Ruleset</b>
-    <ul>
-        <li>Prize pool: 3rd place refund, 2nd place 2x refund, 1st place gets pot</li>
-        <li>Roster: QB / RB / 2WR / TE / 2FLX / 1K / 1D / 5B</li>
-        <li>Divisions: Champions, AFC East, Referees</li>
-        <li>Playoffs: Three division winners (#1, #2, #3) and three wild cards (#4, #5, #6) make playoffs. Playoffs reseed after each round.</li>
-        <li>Consolation bracket: Swiss-style tournament. Winner earns choice of draft slot next year.</li>
-        <li>Scheduling: play divisional opponents twice. Schedule fills with non-division opponents.</li>
-    </ul>
-</p>
+    <table class="ml_rules">
+        <th>Rule</th><th>Description</th>
+        <tr><td>Prize Pool</td><td>3rd place refund, 2nd place 2x refund, 1st place gets pot</td></tr>
+        <tr><td>Roster</td><td>QB / RB / 2WR / TE / 2FLX / 1K / 1D / 5B</td></tr>
+        <tr><td>Divisions</td><td>Champions, AFC East, Referees</td></tr>
+        <tr><td>Playoffs</td><td>Three division winners (#1, #2, #3) and three wild cards (#4, #5, #6) make playoffs. Playoffs reseed after each round.</td></tr>
+        <tr><td>Consolation Bracket</td><td>Swiss-style tournament. Winner earns choice of draft slot next year.</td></tr>
+        <tr><td>Scheduling</td><td>Play divisional opponents twice. Schedule fills with non-division opponents.</td></tr>
+    </table>
 
-<p>
-    <b>Playoff Tiebreakers</b><br>
-    A) If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:<br>
-    <ol>
-        <li>Head-to-head record</li>
-        <li>Division record</li>
-        <li>Points for</li>
-        <li>Points against</li>
-        <li>Coin toss (a real one, not random number generated)</li>
+    <b>Playoff Tiebreakers</b>
+    <ol class="letter_list">
+        <li>If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:</li>
+        <ol>
+            <li>Head-to-head record</li>
+            <li>Division record</li>
+            <li>Points for</li>
+            <li>Points against</li>
+            <li>Coin toss (a real one, not random number generated)</li>
+        </ol>
+        <li>If two teams in different divisions end up tied, tiebreakers will happen in this order:</li>
+        <ol>
+            <li>Head-to-head record</li>
+            <li>Points for</li>
+            <li>Points against</li>
+            <li>Coin toss (a real one, not random number generated)</li>
+        </ol>
+        <li>If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.</li>
     </ol>
-    B) If two teams in different divisions end up tied, tiebreakers will happen in this order:
-    <ol>
-        <li>Head-to-head record</li>
-        <li>Points for</li>
-        <li>Points against</li>
-        <li>Coin toss (a real one, not random number generated)</li>
-    </ol>
-    C) If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.<br>
-</p>
 
-<p>
-	<a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
-</p>
+    <p>
+        <a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
+    </p>
 
-<p>
-	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+    <p>
+        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+    </p>
 
+</body>
 </html>

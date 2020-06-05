@@ -13,35 +13,38 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-<p>
-    This is the time capsule. 
-</p>
+<body>
+    <p>
+        This is the time capsule. 
+    </p>
 
-<p>
-    I bought tarpey.dev with the primary goal of improving my programming skills by building out some small apps...but I haven't lost sight of the fact that my website used to be an important portal for me to express what I was feeling (especially during an emotionally turbulent high school and college career). I think it makes sense for me to give these pages I built during my academic career a place of their own.
-</p>
+    <p>
+        I bought tarpey.dev with the primary goal of improving my programming skills by building out some small apps...but I haven't lost sight of the fact that my website used to be an important portal for me to express what I was feeling (especially during an emotionally turbulent high school and college career). I think it makes sense for me to give these pages I built during my academic career a place of their own.
+    </p>
 
-<p>
-    Just about everything contained within is untouched since the last iteration of michaeltarpey.com (probably since 2013 or so). The high school pages are even older than that. I scrubbed each page for inactive email addresses and old scripts before uploading.
-</p>
+    <p>
+        Just about everything contained within is untouched since the last iteration of michaeltarpey.com (probably since 2013 or so). The high school pages are even older than that. I scrubbed each page for inactive email addresses and old scripts before uploading.
+    </p>
 
-<p>
-    <b>Some links won't work, and the profile information is obviously pretty dated.</b> If you're looking for my up-to-date resume, you can visit <a href="https://www.linkedin.com/in/mptarpey/">LinkedIn</a>.
-</p>
+    <p>
+        <b class="bold_warning">Some links won't work, and the profile information is obviously pretty dated.</b> If you're looking for my up-to-date resume, you can visit <a href="https://www.linkedin.com/in/mptarpey/">LinkedIn</a>.
+    </p>
 
-<p>
-    There are three hidden pages that are only accessible by typing in the correct URL. (From what I can tell, this is intended behavior from past me. I was still uploading HTML templates for these pages, but there are no links to them within the site.)
-</p>
+    <p>
+        There are three hidden pages that are only accessible by typing in the correct URL. (From what I can tell, this is intended behavior from past me. I was still uploading HTML templates for these pages, but there are no links to them within the site.)
+    </p>
 
-<p>
-	With all that said...<a href="{{ url_for('timecapsule.index') }}">click here to enter!</a>
-</p>
+    <p>
+        With all that said...<a href="{{ url_for('timecapsule.index') }}">click here to enter!</a>
+    </p>
 
-<p>
-    <a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+    <p>
+        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+    </p>
+</body>
 
 </html>

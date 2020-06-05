@@ -13,41 +13,26 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 
-<p>
-	<div class="apps" style="color:ffffff; background-color:000000">Thanks for visiting.</div>
-</p>
+<div class="apps" style="color:ffffff; background-color:000000">Thanks for visiting.</div>
 
-<p>
-	<div class="apps" style="{{ colors[0]|safe }}"><a href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a></div>
-</p>
+<div class="apps" style="{{ colors[0]|safe }}"><a href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a></div>
 
-<p>
-	<div class="apps" style="{{ colors[1]|safe }}"><a href="{{ url_for('mildredleague.home') }}">mildredleague</a></div>
-</p>
+<div class="apps" style="{{ colors[1]|safe }}"><a href="{{ url_for('mildredleague.home') }}">mildredleague</a></div>
 
-<p>
-	<div class="apps" style="{{ colors[2]|safe }}"><a href="{{ url_for('ddr.home') }}">DDR</a></div>
-</p>
+<div class="apps" style="{{ colors[2]|safe }}"><a href="{{ url_for('ddr.home') }}">DDR</a></div>
 
-<p>
-	<div class="apps" style="{{ colors[3]|safe }}"><a href="{{ url_for('autobracket.generate') }}">autobracket</a></div>
-</p>
+<div class="apps" style="{{ colors[3]|safe }}"><a href="{{ url_for('autobracket.generate') }}">autobracket</a></div>
 
-<p>
-    <div class="apps" style="{{ colors[4]|safe }}"><a href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a></div>
-</p>
+<div class="apps" style="{{ colors[4]|safe }}"><a href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a></div>
 
-<p>
-    <div class="apps" style="{{ colors[5]|safe }}"><a href="{{ url_for('index.links') }}">links</a></div>
-</p>
+<div class="apps" style="{{ colors[5]|safe }}"><a href="{{ url_for('index.links') }}">links</a></div>
 
-<p>
-    <div class="apps" style="{{ colors[6]|safe }}"><a href="{{ url_for('index.colors') }}">colors</a></div>
-</p>
+<div class="apps" style="{{ colors[6]|safe }}"><a href="{{ url_for('index.colors') }}">colors</a></div>
 
 <p>
     "{{ df.loc[quote_id, 'quoteText']|safe }}"<br>

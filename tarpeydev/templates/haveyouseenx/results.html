@@ -12,9 +12,12 @@
     <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
+	<meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
+
+<body>
 	<p>
 	{% if search_term == '' %}
 		You didn't search for a game, so here's the full table.
@@ -22,15 +25,15 @@
 		The game you searched for is called {{ search_term }}. Matches are shown below.
 	{% endif %}
 	</p>
-	<table>
+	<div style="overflow-x:auto;"><table>
 		<thead>
 			{% for header in df.columns %}
-			<th>{{ header }}</th>
+			<th class="hysx_header">{{ header }}</th>
 			{% endfor %}
 		</thead>
 		<tbody>
 			{% for index, row in df.loc[df.gameTitle.str.contains(search_term, case=False)].iterrows() %}
-			<tr>
+			<tr class="hysx_row">
 				<td class="gameTitle">
 					{{ row.gameTitle }}
 				</td>
@@ -70,11 +73,11 @@
 			</tr>
 			{% endfor %}
 		</tbody>
-	</table>
+	</table></div>
 
 
 	<form action="{{ url_for('haveyouseenx.search') }}" method="post">
 		<button>Go back!</button>
 	</form>
-
+</body>
 </html>

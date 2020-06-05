@@ -1,17 +1,141 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:700,400);
 
-.default {
-	font-family:"Lato",sans-serif;
+/* most of the site*/
+body {
+	font-family: "Lato",sans-serif;
 	background-color: #000000;
 	color: #FFFFFF;
+	font-size: 150%;
 }
 
-.id {
+p {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+a:link {color: #66d9ff;}        
+a:visited {color: #ffe066;}
+a:hover {color: #99e6ff;}        
+a:active {color: #99e6ff;}
+
+.bold_warning {
+	color: #ffa0e1;
+}
+
+img {
+	width: auto ;
+	max-width: 100% ;
+	height: auto ;
+}
+
+/* frontpage */
+/* clamp is min, pref, max. equivalent to min(max(x,y),z). */
+.apps {
+	border-style:solid;
+	border-width:1px;
+	border-color:000000;
 	font-family:"Lato",sans-serif;
-	background-color: #000000;
-	color: #FFFFFF;
+	font-weight:bold;
+	margin-top:15px;
+	margin-bottom:15px;
+	padding:10px;
+	font-size: clamp(5vmin, 60px, 5vmax);
 }
 
+/* form elements, like in haveyouseenx and autobracket */
+form {
+	display: inline;
+	margin-block-end: 0em;
+}
+
+input {
+	font-size: 100%;
+	width: 50%;
+	border-radius: 0px;
+}
+
+button {
+	font-size: 100%;
+	background-color: #FFFFFF;
+	transition-duration: 0s;
+}
+
+select {
+	font-size: 100%;
+}
+
+button:hover {background-color: #99e6ff;}
+
+/* table elements, like in haveyouseenx */
+table {
+	border-collapse: collapse;
+	width: 100%;
+	font-size: 80%;
+	text-align: center;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+th {
+	background-color: #FFFFFF;
+	color: #000000;
+	padding: 8px;
+}
+
+td {
+	padding: 8px;
+}
+
+/* list elements, like in mildredleague */
+ul, ol {
+	margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+}
+
+.letter_list {
+	list-style-type: upper-latin;
+}
+
+
+/* specific elements of /haveyouseenx/results */
+.gameTitle, .gameNotes {
+	text-align: left;
+}
+/* trick so the first and last th elements have same alignment as above */
+.hysx_header:first-child {text-align: left;}
+.hysx_header:last-child {text-align: left;}
+/* striped table and hovering */
+.hysx_row:nth-child(even) {background-color: #212121;}
+.hysx_row:hover {background-color: #353535;}
+/* end hysx */
+
+/* specific elements of /mildredleague/rules */
+.ml_rules {
+	font-size: 100%;
+	text-align: left;
+}
+/* specific elements of /mildredleague season pages */
+.chart {
+	width: auto;
+	max-width: 100%;
+	height: auto;
+}
+
+/* specific elements of /autobracket/generate */
+.autobracket_form {
+	width: 50%;
+	background-color: #212121;
+	border-style: solid;
+	border-color: #FFFFFF;
+	border-collapse: collapse;
+	border-width: 3px;
+	padding: 10px;
+}
+.autobracket_label {
+	float: left;
+	width: 35%;
+}
+/* specific elements of /autobracket/bracket*/
 .modeloutput {
 	font-family:"Lato",sans-serif;
 	background-color: #000000;
@@ -24,17 +148,7 @@
 	color: #ffe066;
 }
 
-.apps {
-	border-style:solid;
-	border-width:1px;
-	border-color:000000;
-	position:relative;
-	font-family:"Lato",sans-serif;
-	font-weight:bold;
-	padding:10px;
-	font-size:60px;
-}
-
+/* specific elements of /colors */
 .colorhead {
 	background-color:000000;
 	border-style:solid;
@@ -55,17 +169,3 @@
 	font-family:"Lato",sans-serif;
 	padding:5px;
 }
-
-b {
-	color: #ffa0e1;
-}
-
-form     { display: table;  width:400px;    }
-.formrow { display: table-row;  }
-label    { display: table-cell; width:50%; }
-select   { display: table-cell; width:40%; }
-
-a:link {color: #66d9ff;}        
-a:visited {color: #ffe066;}
-a:hover {color: #99e6ff;}        
-a:active {color: #99e6ff;}

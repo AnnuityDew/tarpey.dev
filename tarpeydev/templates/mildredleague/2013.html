@@ -16,6 +16,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
@@ -35,14 +36,12 @@
     <b>Stats</b>
 </p>
 
-<p>
-    <div class="chart" id="boxplot">
-        <script>
-            var graphs = {{boxplot | safe}};
-            Plotly.plot('boxplot',graphs,{});
-        </script>
-    </div>
-</p>
+<div class="chart" id="boxplot">
+    <script>
+        var graphs = {{boxplot | safe}};
+        Plotly.plot('boxplot',graphs,{});
+    </script>
+</div>
 
 <p>
 	<a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>

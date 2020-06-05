@@ -13,23 +13,26 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
-<p>
-	{{ ranks|safe }}
-</p>
+<body>
+    <p>
+        {{ ranks|safe }}
+    </p>
 
-<p>
-	{{ wins|safe }}
-</p>
+    <p>
+        {{ wins|safe }}
+    </p>
 
-<p>
-	<a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
-</p>
+    <p>
+        <a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
+    </p>
 
-<p>
-	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+    <p>
+        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+    </p>
+</body>
 
 </html>
