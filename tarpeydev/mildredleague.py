@@ -79,7 +79,6 @@ def all_time_records():
         # file path construction
         season_path = os.path.join(
             os.getcwd(),
-            'tarpeydev',
             'data',
             'mildredleague',
             season_file
@@ -214,7 +213,6 @@ def all_time_ranking():
     # file path construction
     all_time_path = os.path.join(
         os.getcwd(),
-        'tarpeydev',
         'data',
         'mildredleague',
         'mlalltime.csv'
@@ -365,7 +363,6 @@ def season_boxplot(year):
     # read the selected season as a dataframe
     season_path = os.path.join(
         os.getcwd(),
-        'tarpeydev',
         'data',
         'mildredleague',
         'mlgames' + year + '.csv',

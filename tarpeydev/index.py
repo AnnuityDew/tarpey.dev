@@ -63,7 +63,7 @@ def games():
 
 def read_quotes():
     quotes = pandas.read_csv(
-        'tarpeydev/data/index/index_quotes.csv',
+        'data/index/index_quotes.csv',
         index_col='id',
     ).convert_dtypes()
 

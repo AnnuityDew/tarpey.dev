@@ -52,7 +52,7 @@ def results():
 
 def read_backlog():
     backlog = pandas.read_csv(
-        'tarpeydev/data/haveyouseenx/haveyouseenx_annuitydew.csv',
+        'data/haveyouseenx/haveyouseenx_annuitydew.csv',
         index_col='id',
     ).convert_dtypes()
     

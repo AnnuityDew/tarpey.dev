@@ -64,23 +64,23 @@ def bracket():
 def run_tournament(model_choice, chaos_choice, model_current):
 	# pull a clean matchup table for the next model run
 	bracket_19 = pandas.read_csv(
-        'tarpeydev/data/autobracket/matchup_table_2019.csv',
+        'data/autobracket/matchup_table_2019.csv',
 		index_col='game_id',
 	)
 	# 
 	# also pull the actual results, for comparison purposes
 	actual_19 = pandas.read_csv(
-        'tarpeydev/data/autobracket/autobracket_actual_19.csv',
+        'data/autobracket/autobracket_actual_19.csv',
 		index_col='game_id',
 	)
 
 	# full Kenpom table reads for the classic and modern methods
 	kenpom_19 = pandas.read_csv(
-		'tarpeydev/data/autobracket/team_index_2019.csv',
+		'data/autobracket/team_index_2019.csv',
 		index_col='seed',
 	)
 	kenpom_19_full = pandas.read_csv(
-		'tarpeydev/data/autobracket/team_index_2019_full.csv',
+		'data/autobracket/team_index_2019_full.csv',
 		index_col='team_id',
 	)
 
@@ -103,7 +103,7 @@ def run_tournament(model_choice, chaos_choice, model_current):
 	# update x if user only wants to run the games that haven't happened yet
 	if (model_current == 'partial'):
 		bracket_19 = pandas.read_csv(
-			'tarpeydev/data/autobracket/autobracket_actual_19.csv',
+			'data/autobracket/autobracket_actual_19.csv',
 			index_col='game_id'
 		)
 		x = x + 4 + 32 + 16 #+ 8 + 4 + 2 + 1
@@ -156,7 +156,7 @@ def run_tournament(model_choice, chaos_choice, model_current):
 
 	#output modeled bracket to database
 	bracket_19.to_csv(
-		'tarpeydev/data/autobracket/autobracket_bracket_19.csv',
+		'data/autobracket/autobracket_bracket_19.csv',
 		index=True,
 	)
 
@@ -177,7 +177,7 @@ def run_tournament(model_choice, chaos_choice, model_current):
 	
 	#output champion to champion table in database
 	champion_19.to_csv(
-		'tarpeydev/data/autobracket/autobracket_champions_19.csv',
+		'data/autobracket/autobracket_champions_19.csv',
 		index=False,
 		mode='a',
 		header=False,
