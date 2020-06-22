@@ -154,11 +154,8 @@ def run_tournament(model_choice, chaos_choice, model_current):
 
 		x = x + 1
 
-	#output modeled bracket to database
-	bracket_19.to_csv(
-		'data/autobracket/autobracket_bracket_19.csv',
-		index=True,
-	)
+	# output modeled bracket to database.
+	# step removed
 
 	if(str(bracket_19.loc[x-1, 'team1']) == str(w_team)):
 		winner = 'team1'
@@ -175,11 +172,7 @@ def run_tournament(model_choice, chaos_choice, model_current):
 		}
 	)
 	
-	#output champion to champion table in database
-	champion_19.to_csv(
-		'data/autobracket/autobracket_champions_19.csv',
-		index=False,
-		mode='a',
-		header=False,
-	)
+	# output champion to champion table in database
+	# step removed
+
 	return(bracket_19, actual_19)

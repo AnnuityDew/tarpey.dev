@@ -284,82 +284,96 @@ def all_time_ranking():
 
 @ml_bp.route('/2013', methods=['GET', 'POST'])
 def season_2013():
-    # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2013')
+    # pull boxplot score data for the season. True=against, False=for
+    boxplot_json_for = season_boxplot('2013', False)
+    boxplot_json_against = season_boxplot('2013', True)
 
     return render_template(
         'mildredleague/2013.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2014', methods=['GET', 'POST'])
 def season_2014():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2014')
+    boxplot_json_for = season_boxplot('2014', False)
+    boxplot_json_against = season_boxplot('2014', True)
 
     return render_template(
         'mildredleague/2014.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2015', methods=['GET', 'POST'])
 def season_2015():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2015')
+    boxplot_json_for = season_boxplot('2015', False)
+    boxplot_json_against = season_boxplot('2015', True)
 
     return render_template(
         'mildredleague/2015.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2016', methods=['GET', 'POST'])
 def season_2016():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2016')
+    boxplot_json_for = season_boxplot('2016', False)
+    boxplot_json_against = season_boxplot('2016', True)
 
     return render_template(
         'mildredleague/2016.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2017', methods=['GET', 'POST'])
 def season_2017():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2017')
+    boxplot_json_for = season_boxplot('2017', False)
+    boxplot_json_against = season_boxplot('2017', True)
 
     return render_template(
         'mildredleague/2017.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2018', methods=['GET', 'POST'])
 def season_2018():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2018')
+    boxplot_json_for = season_boxplot('2018', False)
+    boxplot_json_against = season_boxplot('2018', True)
 
     return render_template(
         'mildredleague/2018.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
 @ml_bp.route('/2019', methods=['GET', 'POST'])
 def season_2019():
     # pull boxplot score data for the season
-    boxplot_json = season_boxplot('2019')
+    boxplot_json_for = season_boxplot('2019', False)
+    boxplot_json_against = season_boxplot('2019', True)
 
     return render_template(
         'mildredleague/2019.html',
-        boxplot=boxplot_json,
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
     )
 
 
-def season_boxplot(year):
+def season_boxplot(year, against=True):
     # read the selected season as a dataframe
     season_path = os.path.join(
         os.getcwd(),
@@ -382,24 +396,59 @@ def season_boxplot(year):
             season_df['week_e'] - season_df['week_s'] + 1
         )
     )
-    # we just want unique scores. so let's stack away and home
-    score_df = season_df[['a_name', 'a_score_norm']].rename(
-        columns={'a_name': 'name', 'a_score_norm': 'score'},
-    ).append(
-        season_df[['h_name', 'h_score_norm']].rename(
-            columns={'h_name': 'name', 'h_score_norm': 'score'},
-        ),
-        ignore_index=True,
+    # we just want unique scores. so let's stack away and home.
+    # this code runs to analyze Points For.
+    if against is False:
+        score_df = season_df[['a_name', 'a_score_norm']].rename(
+            columns={'a_name': 'name', 'a_score_norm': 'score'},
+        ).append(
+            season_df[['h_name', 'h_score_norm']].rename(
+                columns={'h_name': 'name', 'h_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+        title_label='(Points For)'
+    # this code runs to analyze Points Against.
+    if against is True:
+        score_df = season_df[['a_name', 'h_score_norm']].rename(
+            columns={'a_name': 'name', 'h_score_norm': 'score'},
+        ).append(
+            season_df[['h_name', 'a_score_norm']].rename(
+                columns={'h_name': 'name', 'a_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+        title_label='(Points Against)'
+    # let's sort by playoff rank instead
+    all_time_path = os.path.join(
+        os.getcwd(),
+        'data',
+        'mildredleague',
+        'mlalltime.csv'
     )
-    # sort the dataframe by each team's mean score for the year
-    sort_df = score_df.groupby(by='name').mean().sort_values(by='score', ascending=False)
-    sort_df['rank'] = sort_df.rank(axis='index').rename(columns={'score': 'rank'})
-    sort_df.drop(columns='score', inplace=True)
+    # read season file, but we only need full_name, year, and playoff_rank
+    ranking_df = pandas.read_csv(
+        all_time_path,
+    )[['full_name', 'year', 'playoff_rank']]
+    # merge this (filtered by year) into score_df so we can sort values
     score_df = score_df.merge(
-        sort_df, on='name', how='left'
+        ranking_df.loc[ranking_df.year == int(year), ['full_name', 'playoff_rank']],
+        left_on=['name'],
+        right_on=['full_name'],
+        how='left',
     ).sort_values(
-        by='rank', ascending=False,
+        by='playoff_rank', ascending=True,
     )
+
+    # sort the dataframe by each team's mean score for the year
+    # sort_df = score_df.groupby(by='name').mean().sort_values(by='score', ascending=False)
+    # sort_df['rank'] = sort_df.rank(axis='index').rename(columns={'score': 'rank'})
+    # sort_df.drop(columns='score', inplace=True)
+    # score_df = score_df.merge(
+    #     sort_df, on='name', how='left'
+    # ).sort_values(
+    #     by='rank', ascending=False,
+    # )
 
     # plotly boxplot!
     figure = px.box(
@@ -409,7 +458,7 @@ def season_boxplot(year):
         color="name",
         color_discrete_sequence=px.colors.cyclical.Phase,
         points="all",
-        title=year + " Score Distribution",
+        title=year + " Score Distribution " + title_label,
         height=500,
         width=800,
     )

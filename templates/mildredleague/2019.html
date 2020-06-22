@@ -24,11 +24,17 @@
     <b>Stats</b>
 </p>
 
-
-<div class="chart" id="boxplot">
+<div class="chart" id="boxplot_for">
     <script>
-        var graphs = {{boxplot | safe}};
-        Plotly.plot('boxplot',graphs,{});
+        var graphs = {{boxplot_for | safe}};
+        Plotly.plot('boxplot_for',graphs,{});
+    </script>
+</div>
+
+<div class="chart" id="boxplot_against">
+    <script>
+        var graphs = {{boxplot_against | safe}};
+        Plotly.plot('boxplot_against',graphs,{});
     </script>
 </div>
 
