@@ -63,9 +63,9 @@ def create_overall_pie():
     # count by gameStatus
     overall_pie_df = pandas.pivot_table(
         read_backlog(),
-        index='gameStatus',
+        index='game_status',
         aggfunc='count',
-    )[['gameTitle']]
+    )[['game_title']]
 
     # how many colors do we need for pie chart?
     pie_color_count = len(overall_pie_df.index)
@@ -107,8 +107,8 @@ def stacked_by_system():
     by_system_df = pandas.pivot_table(
         backlog,
         values='count',
-        index='gameSystem',
-        columns='gameStatus',
+        index='genre',
+        columns='game_status',
         aggfunc='count',
         fill_value=0,
     )

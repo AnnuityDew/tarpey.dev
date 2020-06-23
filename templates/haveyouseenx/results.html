@@ -34,41 +34,47 @@
 		<tbody>
 			{% for index, row in df.loc[df.gameTitle.str.contains(search_term, case=False)].iterrows() %}
 			<tr class="hysx_row">
-				<td class="gameTitle">
-					{{ row.gameTitle }}
+				<td class="game_title">
+					{{ row.game_title }}
 				</td>
-				<td class="subTitle">
-					{{ row.subTitle }}
+				<td class="sub_title">
+					{{ row.sub_title }}
 				</td>
-				<td class="gameSystem">
-					{{ row.gameSystem }}
+				<td class="game_system">
+					{{ row.game_system }}
 				</td>
-				<td class="nowPlaying">
-					{{ row.nowPlaying }}
+				<td class="genre">
+					{{ row.genre }}
 				</td>
-				<td class="gameStatus">
-					{{ row.gameStatus }}
+				<td class="now_playing">
+					{{ row.now_playing }}
 				</td>
-				<td class="gameHours">
-					{{ row.gameHours }}
+				<td class="game_status">
+					{{ row.game_status }}
 				</td>
-				<td class="gameMinutes">
-					{{ row.gameMinutes }}
+				<td class="game_hours">
+					{{ row.game_hours }}
 				</td>
-				<td class="addDate">
-					{{ row.addDate }}
+				<td class="game_minutes">
+					{{ row.game_minutes }}
 				</td>
-				<td class="startDate">
-					{{ row.startDate }}
+				<td class="playtime_calc">
+					{{ row.playtime_calc }}
 				</td>
-				<td class="beatDate">
-					{{ row.beatDate }}
+				<td class="add_date">
+					{{ row.add_date }}
 				</td>
-				<td class="completeDate">
-					{{ row.completeDate }}
+				<td class="start_date">
+					{{ row.start_date }}
 				</td>
-				<td class="gameNotes">
-					{{ row.gameNotes }}
+				<td class="beat_date">
+					{{ row.beat_date }}
+				</td>
+				<td class="complete_date">
+					{{ row.complete_date }}
+				</td>
+				<td class="game_notes">
+					{{ row.game_notes }}
 				</td>
 			</tr>
 			{% endfor %}
