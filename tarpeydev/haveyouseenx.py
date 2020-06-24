@@ -41,7 +41,7 @@ def search():
 
 @hysx_bp.route('/results', methods=['GET', 'POST'])
 def results():
-    search_term = request.form['searchterm']
+    search_term = request.form['search_term']
     backlog = read_backlog()
     return render_template(
         'haveyouseenx/results.html',
@@ -54,6 +54,7 @@ def read_backlog():
     backlog = pandas.read_csv(
         'data/haveyouseenx/haveyouseenx_annuitydew.csv',
         index_col='id',
+        encoding='latin1'
     ).convert_dtypes()
     
     return backlog

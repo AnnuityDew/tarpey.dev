@@ -32,7 +32,7 @@
 			{% endfor %}
 		</thead>
 		<tbody>
-			{% for index, row in df.loc[df.gameTitle.str.contains(search_term, case=False)].iterrows() %}
+			{% for index, row in df.loc[df.game_title.str.contains(search_term, case=False)].iterrows() %}
 			<tr class="hysx_row">
 				<td class="game_title">
 					{{ row.game_title }}

@@ -98,8 +98,12 @@ ul, ol {
 
 
 /* specific elements of /haveyouseenx/results */
-.gameTitle, .gameNotes {
+.game_title {
 	text-align: left;
+}
+.game_notes {
+	text-align: left;
+	font-size: 75%;
 }
 /* trick so the first and last th elements have same alignment as above */
 .hysx_header:first-child {text-align: left;}
