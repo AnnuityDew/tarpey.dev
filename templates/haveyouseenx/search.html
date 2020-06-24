@@ -1,5 +1,8 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
 
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
 <html class="default">	
 
 <head>
@@ -31,9 +34,12 @@
 		I haven't logged a playtime for every game yet, but so far there's over {{ (df.game_hours.sum() + (df.game_minutes.sum() / 60))|int }} hours of gameplay in the database.
 	</p>
 
-	<p>
-		{{ feature|safe }}
-	</p>
+	<div class="chart" id="treemap">
+		<script>
+			var graphs = {{treemap | safe}};
+			Plotly.plot('treemap',graphs,{});
+		</script>
+	</div>
 
 	<p>
 		You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
