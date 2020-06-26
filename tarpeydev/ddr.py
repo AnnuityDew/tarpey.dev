@@ -23,6 +23,7 @@ def which_save_file(lookup):
         os.getcwd(),
         'data',
         'ddr',
+        '20200624',
     )
     
     save_file_dictionary = {
@@ -43,12 +44,19 @@ def which_save_file(lookup):
 
 def read_max2_us_save():
     with open(which_save_file('max2_us'), 'rb') as max2_us:
-        hex_list = ["{:02x}".format(ord(c)) for c in fp.read()]
-        test = max2_us.read()
+        encoded_bytes = max2_us.read()
+
+    # list comprehension!!! build a list of each set of four bytes
+    encoded_bytes_four = [encoded_bytes[i:i+4] for i in range(0, len(encoded_bytes), 4)]
+
+    # another list comprehension. little endian conversion to int of each chunk
+    chunk_list = [int.from_bytes(chunk, byteorder='little') for chunk in encoded_bytes_four]
+
+    # bytes_decoded = test.decode('utf-8', errors="ignore")
+
+    return None
+
 
 
 def read_max_us_save():
-    save_file_path = os.path.join(
-        os.getcwd(),
-        'data'
-    )
+    return None
