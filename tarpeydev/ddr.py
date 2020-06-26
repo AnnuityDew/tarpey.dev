@@ -442,15 +442,15 @@ def max2_us_byte_builder(encoded_bytes):
     )
 
     # output CSV
-    max2_us_df.to_csv(
-        os.path.join(
-            os.getcwd(),
-            'data',
-            'ddr',
-            'constructed',
-            'max2_us_df.csv',
-        )
-    )
+    # max2_us_df.to_csv(
+    #     os.path.join(
+    #         os.getcwd(),
+    #         'data',
+    #         'ddr',
+    #         'constructed',
+    #         'max2_us_df.csv',
+    #     )
+    # )
 
     return max2_us_df
 
