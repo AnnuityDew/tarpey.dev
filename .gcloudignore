@@ -19,3 +19,9 @@ __pycache__/
 /setup.cfg
 # venv
 .venv
+
+# GOOGLE_APPLICATION_CREDENTIALS
+tarpeydev-9f9435dd49d8.json
+
+# constructed DDR data
+data/ddr/constructed

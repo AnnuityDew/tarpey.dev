@@ -17,20 +17,32 @@
 
 </head>
 
-<p>
-    Coming soon!
-</p>
+<body>
+    <b>Select a style! (These are all PS2 games.)</b><br>
+    <ul>
+        <li><a href="{{ url_for('ddr.game_info', game='max_jp') }}">DDRMAX JP</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='ex_jp') }}">Extreme JP</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='max_us') }}">DDRMAX US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='max2_us') }}">DDRMAX2 US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='ex_us') }}">Extreme US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='ex2_us') }}">Extreme 2 US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='sn_us') }}">SuperNova US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
+        <li><a href="{{ url_for('ddr.game_info', game='x_us') }}">X US</a></li>
+    </ul>
 
-<p>
-    You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
-</p>
+    <p>
+        You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
+    </p>
 
-<p>
-    <a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
-</p>
+    <p>
+        <a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
+    </p>
 
-<p>
-	<a href="{{ url_for('index.index') }}">Back to the homepage</a>
-</p>
+    <p>
+        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+    </p>
+</body>
 
 </html>
