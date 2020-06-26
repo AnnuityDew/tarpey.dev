@@ -7,6 +7,9 @@ import os
 
 # import third party packages
 from flask import Blueprint, render_template, request
+from matplotlib import cm, rcParams
+from matplotlib.colors import Normalize
+from matplotlib.figure import Figure
 import numpy
 import pandas
 import plotly

@@ -113,6 +113,10 @@ ul, ol {
 .hysx_row:hover {background-color: #353535;}
 /* end hysx */
 
+/* specific elements of /ddr/game */
+.ddr_row:nth-child(even) {background-color: #212121;}
+.ddr_row:hover {background-color: #353535;}
+
 /* specific elements of /mildredleague/rules */
 .ml_rules {
 	font-size: 100%;
