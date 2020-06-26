@@ -142,3 +142,6 @@ settings.json
 
 # mac
 .DS_Store
+
+# GOOGLE_APPLICATION_CREDENTIALS
+tarpeydev-9f9435dd49d8.json
