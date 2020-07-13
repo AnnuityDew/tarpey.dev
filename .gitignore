@@ -128,9 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# static folder
-tarpeydev/static
-
 # GCP
 app.yaml
 
