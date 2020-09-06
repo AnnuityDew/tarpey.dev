@@ -1,0 +1,128 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<html class="default">	
+
+<head>
+	<title>mildredleague {{ season }}</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+
+    <p>
+        <b>Notes</b><br>
+        <ul>
+            {% for note in notes %}
+            <li>{{ note }}</li>
+            {% endfor %}
+        </ul>
+    </p>
+
+    <p>
+        <b>Stats</b>
+    </p>
+
+    <div class="boxplots" id="boxplot_for">
+        <script>
+            var graphs = {{boxplot_for | safe}};
+            var layout = {};
+            var config = {responsive: true};
+            Plotly.react('boxplot_for', graphs, layout, config);
+        </script>
+    </div>
+
+    <div class="boxplots" id="boxplot_against">
+        <script>
+            var graphs = {{boxplot_against | safe}};
+            var layout = {};
+            var config = {responsive: true};
+            Plotly.react('boxplot_against', graphs, layout, config);
+
+            window.onresize = function() {
+                Plotly.relayout('boxplot_for', {
+                    'xaxis.autorange': true,
+                    'yaxis.autorange': true
+                });
+                Plotly.relayout('boxplot_against', {
+                    'xaxis.autorange': true,
+                    'yaxis.autorange': true
+                });
+            };
+        </script>
+    </div>
+
+    <p>
+        <b>Full Standings</b>
+        <ul>
+            <li>Includes playoff games.</li>
+            <li>Scores for playoff games lasting two weeks have been normalized (divided by 2).</li>
+        </ul>
+        <div style="overflow-x:auto;"><table>
+            <thead>
+                {% for header in table.columns %}
+                <th class="season_header">{{ header }}</th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for index, row in table.iterrows() %}
+                <tr class="season_row">
+                    <td class="nick_name">
+                        {{ row.nick_name }}
+                    </td>
+                    <td class="win_total">
+                        {{ row.win_total }}
+                    </td>
+                    <td class="loss_total">
+                        {{ row.loss_total }}
+                    </td>
+                    <td class="tie_total">
+                        {{ row.tie_total }}
+                    </td>
+                    <td class="games_played">
+                        {{ row.games_played }}
+                    </td>
+                    <td class="win_pct">
+                        {{ '{:03.3f}'.format(row.win_pct) }}
+                    </td>
+                    <td class="points_for">
+                        {{ '{:06.2f}'.format(row.points_for) }}
+                    </td>
+                    <td class="points_against">
+                        {{ '{:06.2f}'.format(row.points_against) }}
+                    </td>
+                    <td class="avg_margin">
+                        {{ '{:04.2f}'.format(row.avg_margin) }}
+                    </td>
+                    <td class="playoff_rank">
+                        {{ row.playoff_rank }}
+                    </td>
+                    <td class="active">
+                        {{ row.active }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table></div>
+    </p>
+
+    <p>
+        <a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
+    </p>
+
+    <p>
+        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+    </p>
+
+
+</html>
