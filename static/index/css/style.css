@@ -96,6 +96,11 @@ ul, ol {
 	list-style-type: upper-latin;
 }
 
+/* specific elements of /haveyouseenx/search */
+.hysx_treemap {
+	width: 100%;
+	height: 60%;
+}
 
 /* specific elements of /haveyouseenx/results */
 .game_title {
@@ -123,11 +128,16 @@ ul, ol {
 	text-align: left;
 }
 /* specific elements of /mildredleague season pages */
-.chart {
-	width: auto;
-	max-width: 100%;
-	height: auto;
+.boxplots {
+	width: 100%;
 }
+/* specific elements of /mildredleague/alltime */
+.plots {
+	height: 90%;
+}
+
+.season_row:nth-child(even) {background-color: #212121;}
+.season_row:hover {background-color: #353535;}
 
 /* specific elements of /autobracket/generate */
 .autobracket_form {
