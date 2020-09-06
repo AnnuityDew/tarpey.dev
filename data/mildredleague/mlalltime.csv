@@ -1,91 +1,91 @@
-﻿team_name,full_name,nick_name,year,playoff_rank
-Happier Hour Baja Freezes,Michael Tarpey,Mike,2013,1
-Cecil's Cargo Shorts,Christian Costa,Christian,2013,2
-Team Reddy,Neel Reddy,Neel,2013,3
-Rise Up?,Brandon Dilbeck,Brando,2013,4
-Team Stonerock Bradford,D. Stonerock Bradford,Debbie,2013,5
-HTTR RGSkins,Danny Rinehart,Danny,2013,6
-Mildred's Redskins,Mildred Kinley,Mildred,2013,7
-Can't Get It Up,Hardy Chen,Hardy,2013,8
-Eagles Will Fly,Tommy Pfifferling,Tommy,2013,9
-Team Sexbang,Bryant Sexbang,Bryant,2013,10
-Rise Up?,Brandon Dilbeck,Brando,2014,1
-EdelMAN HE'S FINE!,Matt Kindy,Kindy,2014,2
-Injured Like A Montee Ball,Jeff Sendzik,Sendzik,2014,3
-Revis Island Manning Mashers,Samik Das,Samik,2014,4
-team sneup,Stephanie Neupert,Stephanie,2014,5
-Happier Hour Baja Freezes,Michael Tarpey,Mike,2014,6
-Rock Lobsters,Matthew Debski,Debski,2014,7
-Mildred's Redskins,Mildred Kinley,Mildred,2014,8
-beckley poopers,Benjamin Everette,Ben,2014,9
-Winners Get Wings,Arthur Neupert,Arthur,2014,10
-Eagles Will Fly,tommy pfifferling,Tommy,2014,11
-VA Beach Warriors,DJ Conti,Conti,2014,12
-WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,2015,1
-Brady's Balls Brigade,Samik Das,Samik,2015,2
-VA Beach Warriors,DJ Conti,Conti,2015,3
-Kush Gordon,frank arguello,Frank,2015,4
-Rise Up?,Brandon Dilbeck,Brando,2015,5
-RowdyRuff Boys,Jeff Sendzik,Sendzik,2015,6
-Mildred's Redskins,Mildred Kinley,Mildred,2015,7
-beckley poopers,Benjamin Everette,Ben,2015,8
-I Dont Know What I'm doing,Matthew Debski,Debski,2015,9
-Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2015,10
-Team Catch the Dream,Michael Allen,mballen,2015,11
-Happier Hour Baja Freezes,Michael Tarpey,Mike,2015,12
-Rainelle Rangers,patrick bell,Patrick,2015,13
-Eagles Will Fly,tommy pfifferling,Tommy,2015,14
-Kush Gordon,frank arguello,Frank,2016,1
-VA Beach Warriors,DJ Conti,Conti,2016,2
-Rise Up?,Brandon Dilbeck,Brando,2016,3
-Brady's Balls Brigade,Samik Das,Samik,2016,4
-Greg Hardy Breakfast,Michael Allen,mballen,2016,5
-beckley poopers,Benjamin Everette,Ben,2016,6
-TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,2016,7
-Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2016,8
-Send Sicks,Jeff Sendzik,Sendzik,2016,9
-Eagles Will Fly,tommy pfifferling,Tommy,2016,10
-Mildred's Redskins,Mildred Kinley,Mildred,2016,11
-Happier Hour Baja Freezes,Michael Tarpey,Mike,2016,12
-TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,2017,1
-Fear Boners,Charles Wilson,Charles,2017,2
-Sa lt,Jeff Sendzik,Sendzik,2017,3
-Rise Up?,Brandon Dilbeck,Brando,2017,4
-Greg Hardy Breakfast,Michael Allen,mballen,2017,5
-VA Beach Warriors,DJ Conti,Conti,2017,6
-Roll Safe,Michael Tarpey,Mike,2017,7
-Brady's Balls Brigade,Samik Das,Samik,2017,8
-Timothy Teblows,Jake Casado,Jake,2017,9
-beckley poopers,Benjamin Everette,Ben,2017,10
-Kush Gordon,frank arguello,Frank,2017,11
-Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2017,12
-The Horsegasms,tommy pfifferling,Tommy,2017,13
-Mildred's Redskins,Mildred Kinley,Mildred,2017,14
-Roll Safe,Michael Tarpey,Mike,2018,1
-VA Beach Warriors,DJ Conti,Conti,2018,2
-Brady's Balls Brigade,Samik Das,Samik,2018,4
-Sa lt,Jeff Sendzik,Sendzik,2018,3
-Fear Boners,Charles Wilson,Charles,2018,6
-Greg Hardy Breakfast,Michael Allen,mballen,2018,5
-DR. SQUANCH,frank arguello,Frank,2018,7
-MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,2018,9
-Rise Up?,Brandon Dilbeck,Brando,2018,8
-Dalvin Cook's Hamstrings,Jake Casado,Jake,2018,11
-Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2018,10
-Mildred's Redskins,Mildred Kinley,Mildred,2018,13
-The Horsegasms,tommy pfifferling,Tommy,2018,12
-beckley poopers,Benjamin Everette,Ben,2018,14
-Sa lt,Jeff Sendzik,Sendzik,2019,1
-Kush Gordon,frank arguello,Frank,2019,2
-VA Beach Warriors,DJ Conti,Conti,2019,3
-Roll Safe,Michael Tarpey,Mike,2019,4
-Mildred's Redskins,Mildred Kinley,Mildred,2019,5
-Dalvin Cook's Shoulder,Jake Casado,Jake,2019,6
-Rise Up?,Brandon Dilbeck,Brando,2019,7
-MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,2019,8
-SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,2019,9
-Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2019,10
-The Horsegasms,tommy pfifferling,Tommy,2019,11
-Greg Hardy Breakfast,Michael Allen,mballen,2019,12
-Fear Boners,Charles Wilson,Charles,2019,13
-Brady's Balls Brigade,Samik Das,Samik,2019,14
+﻿team_name,full_name,nick_name,year,playoff_rank,active
+Happier Hour Baja Freezes,Michael Tarpey,Tarpey,2013,1,1
+Cecil's Cargo Shorts,Christian Costa,Christian,2013,2,0
+Team Reddy,Neel Reddy,Neel,2013,3,0
+Rise Up?,Brandon Dilbeck,Brando,2013,4,1
+Team Stonerock Bradford,D. Stonerock Bradford,Debbie,2013,5,0
+HTTR RGSkins,Danny Rinehart,Danny,2013,6,0
+Mildred's Redskins,Mildred Kinley,Mildred,2013,7,1
+Can't Get It Up,Hardy Chen,Hardy,2013,8,0
+Eagles Will Fly,Tommy Pfifferling,Tommy,2013,9,1
+Team Sexbang,Bryant Sexbang,Bryant,2013,10,0
+Rise Up?,Brandon Dilbeck,Brando,2014,1,1
+EdelMAN HE'S FINE!,Matt Kindy,Kindy,2014,2,1
+Injured Like A Montee Ball,Jeff Sendzik,Sendzik,2014,3,1
+Revis Island Manning Mashers,Samik Das,Samik,2014,4,1
+team sneup,Stephanie Neupert,Stephanie,2014,5,0
+Happier Hour Baja Freezes,Michael Tarpey,Tarpey,2014,6,1
+Rock Lobsters,Matthew Debski,Debski,2014,7,0
+Mildred's Redskins,Mildred Kinley,Mildred,2014,8,1
+beckley poopers,Benjamin Everette,Ben,2014,9,0
+Winners Get Wings,Arthur Neupert,Arthur,2014,10,0
+Eagles Will Fly,tommy pfifferling,Tommy,2014,11,1
+VA Beach Warriors,DJ Conti,Conti,2014,12,1
+WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,2015,1,1
+Brady's Balls Brigade,Samik Das,Samik,2015,2,1
+VA Beach Warriors,DJ Conti,Conti,2015,3,1
+Kush Gordon,frank arguello,Frank,2015,4,1
+Rise Up?,Brandon Dilbeck,Brando,2015,5,1
+RowdyRuff Boys,Jeff Sendzik,Sendzik,2015,6,1
+Mildred's Redskins,Mildred Kinley,Mildred,2015,7,1
+beckley poopers,Benjamin Everette,Ben,2015,8,0
+I Dont Know What I'm doing,Matthew Debski,Debski,2015,9,0
+Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2015,10,1
+Team Catch the Dream,Michael Allen,mballen,2015,11,1
+Happier Hour Baja Freezes,Michael Tarpey,Tarpey,2015,12,1
+Rainelle Rangers,patrick bell,Patrick,2015,13,0
+Eagles Will Fly,tommy pfifferling,Tommy,2015,14,1
+Kush Gordon,frank arguello,Frank,2016,1,1
+VA Beach Warriors,DJ Conti,Conti,2016,2,1
+Rise Up?,Brandon Dilbeck,Brando,2016,3,1
+Brady's Balls Brigade,Samik Das,Samik,2016,4,1
+Greg Hardy Breakfast,Michael Allen,mballen,2016,5,1
+beckley poopers,Benjamin Everette,Ben,2016,6,0
+TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,2016,7,1
+Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2016,8,1
+Send Sicks,Jeff Sendzik,Sendzik,2016,9,1
+Eagles Will Fly,tommy pfifferling,Tommy,2016,10,1
+Mildred's Redskins,Mildred Kinley,Mildred,2016,11,1
+Happier Hour Baja Freezes,Michael Tarpey,Tarpey,2016,12,1
+TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,2017,1,1
+Fear Boners,Charles Wilson,Charles,2017,2,1
+Sa lt,Jeff Sendzik,Sendzik,2017,3,1
+Rise Up?,Brandon Dilbeck,Brando,2017,4,1
+Greg Hardy Breakfast,Michael Allen,mballen,2017,5,1
+VA Beach Warriors,DJ Conti,Conti,2017,6,1
+Roll Safe,Michael Tarpey,Tarpey,2017,7,1
+Brady's Balls Brigade,Samik Das,Samik,2017,8,1
+Timothy Teblows,Jake Casado,Jake,2017,9,1
+beckley poopers,Benjamin Everette,Ben,2017,10,0
+Kush Gordon,frank arguello,Frank,2017,11,1
+Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2017,12,1
+The Horsegasms,tommy pfifferling,Tommy,2017,13,1
+Mildred's Redskins,Mildred Kinley,Mildred,2017,14,1
+Roll Safe,Michael Tarpey,Tarpey,2018,1,1
+VA Beach Warriors,DJ Conti,Conti,2018,2,1
+Brady's Balls Brigade,Samik Das,Samik,2018,4,1
+Sa lt,Jeff Sendzik,Sendzik,2018,3,1
+Fear Boners,Charles Wilson,Charles,2018,6,1
+Greg Hardy Breakfast,Michael Allen,mballen,2018,5,1
+DR. SQUANCH,frank arguello,Frank,2018,7,1
+MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,2018,9,1
+Rise Up?,Brandon Dilbeck,Brando,2018,8,1
+Dalvin Cook's Hamstrings,Jake Casado,Jake,2018,11,1
+Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2018,10,1
+Mildred's Redskins,Mildred Kinley,Mildred,2018,13,1
+The Horsegasms,tommy pfifferling,Tommy,2018,12,1
+beckley poopers,Benjamin Everette,Ben,2018,14,0
+Sa lt,Jeff Sendzik,Sendzik,2019,1,1
+Kush Gordon,frank arguello,Frank,2019,2,1
+VA Beach Warriors,DJ Conti,Conti,2019,3,1
+Roll Safe,Michael Tarpey,Tarpey,2019,4,1
+Mildred's Redskins,Mildred Kinley,Mildred,2019,5,1
+Dalvin Cook's Shoulder,Jake Casado,Jake,2019,6,1
+Rise Up?,Brandon Dilbeck,Brando,2019,7,1
+MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,2019,8,1
+SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,2019,9,1
+Brady's Balls: Truly Inflated,Matt Kindy,Kindy,2019,10,1
+The Horsegasms,tommy pfifferling,Tommy,2019,11,1
+Greg Hardy Breakfast,Michael Allen,mballen,2019,12,1
+Fear Boners,Charles Wilson,Charles,2019,13,1
+Brady's Balls Brigade,Samik Das,Samik,2019,14,1
