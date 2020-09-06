@@ -1,7 +1,6 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
 <html class="default">	
 
@@ -30,14 +29,29 @@
 		<button>Go!</button>
 	</form>
 
+    <p>
+		<b>Stats</b>
+		<ul>
+			<li>{{ (df.game_status.count())|int }} total entries</li>
+			<li>{{ ((df.loc[((df.game_status == 'Completed')), 'game_status'].count()) + df.loc[((df.game_status == 'Mastered')), 'game_status'].count())|int }} completed</li>
+			<li>{{ (df.loc[(df.game_status == 'Beaten'), 'game_status'].count())|int }} beaten</li>
+			<li>{{ (df.loc[(df.game_status == 'Started'), 'game_status'].count())|int }} unfinished</li>
+			<li>{{ (df.loc[(df.game_status == 'Not Started'), 'game_status'].count())|int }} not started</li>
+			<li>{{ (df.loc[(df.game_status == 'Infinite'), 'game_status'].count())|int }} with no end</li>
+			<li>{{ (df.loc[(df.game_status == 'Wish List'), 'game_status'].count())|int }} on the wish list</li>
+		</ul>
+    </p>
+
 	<p>
 		I haven't logged a playtime for every game yet, but so far there's over {{ (df.game_hours.sum() + (df.game_minutes.sum() / 60))|int }} hours of gameplay in the database.
 	</p>
 
-	<div class="chart" id="treemap">
+	<div class="hysx_treemap" id="treemap">
 		<script>
 			var graphs = {{treemap | safe}};
-			Plotly.plot('treemap',graphs,{});
+			var layout = {};
+			var config = {responsive: true};
+			Plotly.react('treemap', graphs, layout, config);
 		</script>
 	</div>
 
