@@ -1,5 +1,7 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
 
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 <html class="default">	
 
 <head>
@@ -19,12 +21,50 @@
 
 <body>
     <p>
-        {{ ranks|safe }}
+        Scroll down for some visuals that tell the all-time story of Mildred League...
     </p>
 
-    <p>
-        {{ wins|safe }}
-    </p>
+    <div class="plots" id="matchup_heatmap">
+        <script>
+            var graphs = {{matchups | safe}};
+            var layout = {};
+            var config = {responsive: true};
+            Plotly.react('matchup_heatmap', graphs, layout, config);
+        </script>
+    </div>
+
+    <div class="plots" id="ranking_heatmap">
+        <script>
+            var graphs = {{ranks | safe}};
+            var layout = {};
+            var config = {responsive: true};
+            Plotly.react('ranking_heatmap', graphs, layout, config);
+        </script>
+    </div>
+
+    <div class="plots" id="win_bars">
+        <script>
+            var graphs = {{wins | safe}};
+            var layout = {};
+            var config = {responsive: true};
+            Plotly.react('win_bars', graphs, layout, config);
+
+            window.onresize = function() {
+                Plotly.relayout('matchup_heatmap', {
+                    'xaxis.autorange': true,
+                    'yaxis.autorange': true
+                });
+                Plotly.relayout('ranking_heatmap', {
+                    'xaxis.autorange': true,
+                    'yaxis.autorange': true
+                });
+                Plotly.relayout('win_bars', {
+                    'xaxis.autorange': true,
+                    'yaxis.autorange': true
+                });
+            };
+        </script>
+    </div>
 
     <p>
         <a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
