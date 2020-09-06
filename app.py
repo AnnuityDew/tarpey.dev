@@ -1,11 +1,3 @@
-# App Engine by default looks for a main.py file at the root of the app
-# directory with a WSGI-compatible object called app.
-# This file imports the WSGI-compatible object of your app,
-# from tarpeydev so it is discoverable by
-# App Engine without additional configuration.
-# Alternatively, you can add a custom entrypoint field in your app.yaml:
-# entrypoint: gunicorn -b :$PORT mysite.wsgi
-
 # import native Python packages
 import os
 
@@ -60,5 +52,6 @@ def create_app(test_config=None):
 
 app = create_app()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    server_port = os.environ.get('PORT', '8080')
+    app.run(debug=False, port=server_port, host='0.0.0.0')
