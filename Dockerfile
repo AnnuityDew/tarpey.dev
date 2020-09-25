@@ -13,8 +13,6 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
-# Run app.py when the container launches
-ENTRYPOINT ["python", "-m", "ptvsd", "--port", "3000", "--host", "0.0.0.0", "app.py"]
-
 # environment variables
 # none
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
