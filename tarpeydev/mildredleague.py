@@ -552,31 +552,6 @@ def matchup_heatmap_fig():
         template=tarpeydev_default(),
         margin=dict(l=120, r=60, t=150, autoexpand=True),
         # custom xaxis and yaxis titles
-        annotations=[
-            dict(
-                x=0.5,
-                y=1.13,
-                showarrow=False,
-                text="Opponent",
-                xref="paper",
-                yref="paper",
-                font=dict(
-                    size=20,
-                ),
-            ),
-            dict(
-                x=-0.075,
-                y=0.5,
-                showarrow=False,
-                text="Winner",
-                textangle=-90,
-                xref="paper",
-                yref="paper",
-                font=dict(
-                    size=20,
-                ),
-            )
-        ],
     )
     figure.update_xaxes(showgrid=False, showline=False, side='top', ticks='')
     figure.update_yaxes(showgrid=False, showline=False, ticks='')
