@@ -1,67 +1,67 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-
-<html class="default">	
-
+<!DOCTYPE html>
+<html>
 <head>
-	<title>autobracket</title>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#2d89ef">
-	<meta name="theme-color" content="#ffffff">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>autobracket</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='autobracket/css/style.css') }}">
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+  <meta name="msapplication-TileColor" content="#2d89ef">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 <body>
 Here's the model output.
-	<table>
-	  	<tr>
-			<th></th>
-			<th>Model Output</th>
-			<th>Actual Results</th>
-		</tr>
+  <table>
+      <tr>
+      <th></th>
+      <th>Model Output</th>
+      <th>Actual Results</th>
+    </tr>
 
-		<tbody>
-		{% for index, row in simulated_df.iterrows() %}	
-		<tr>
-			<td class="id">
-				{{ index }}
-			</td>
-			<td class="model_output">
-				{% if index == 68 %}
-					{{ row.team1 }} is the simulated champion!
-				{% elif row.team1sim > row.team2sim %}
-					{{ row.team1 }} defeats {{ row.team2 }}
-				{% else %}
-					{{ row.team2 }} defeats {{ row.team1 }}
-				{% endif %}
-			</td>
-			<td class="actualresults">
-			{% for index_actual, row in actual_df.iterrows() %}
-				{% if index_actual == index %}
-					{% if row.team1sim > row.team2sim %}
-						{{ row.team1 }} defeats {{ row.team2 }}, {{ row.team1sim|int }}-{{ row.team2sim|int }}
-					{% elif row.team2sim > row.team1sim %}
-						{{ row.team2 }} defeats {{ row.team1 }}, {{ row.team2sim|int }}-{{ row.team1sim|int }}
-					{% else %}
-						This game hasn't happened yet.
-					{% endif %}
-				{% endif %}
-			{% endfor %}
-			</td>
-		</tr>
-		{% endfor %}		
-		</tbody>
-	</table>
+    <tbody>
+    {% for index, row in simulated_df.iterrows() %}  
+    <tr>
+      <td class="id">
+        {{ index }}
+      </td>
+      <td class="model_output">
+        {% if index == 68 %}
+          {{ row.team1 }} is the simulated champion!
+        {% elif row.team1sim > row.team2sim %}
+          {{ row.team1 }} defeats {{ row.team2 }}
+        {% else %}
+          {{ row.team2 }} defeats {{ row.team1 }}
+        {% endif %}
+      </td>
+      <td class="actualresults">
+      {% for index_actual, row in actual_df.iterrows() %}
+        {% if index_actual == index %}
+          {% if row.team1sim > row.team2sim %}
+            {{ row.team1 }} defeats {{ row.team2 }}, {{ row.team1sim|int }}-{{ row.team2sim|int }}
+          {% elif row.team2sim > row.team1sim %}
+            {{ row.team2 }} defeats {{ row.team1 }}, {{ row.team2sim|int }}-{{ row.team1sim|int }}
+          {% else %}
+            This game hasn't happened yet.
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      </td>
+    </tr>
+    {% endfor %}    
+    </tbody>
+  </table>
 
-	<form action="{{ url_for('autobracket.generate') }}" method="post">
-		<button>Go back!</button>
-	</form>
+  <form action="{{ url_for('autobracket.generate') }}" method="post">
+    <button>Go back!</button>
+  </form>
 
 </body>
 </html>

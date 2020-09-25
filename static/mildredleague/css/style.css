@@ -1,0 +1,17 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+/* specific elements of /mildredleague/rules */
+.ml_rules {
+  font-size: 100%;
+  text-align: left;
+}
+/* specific elements of /mildredleague season pages */
+.boxplots {
+  width: 100%;
+}
+.season_row:nth-child(even) {background-color: #212121;}
+.season_row:hover {background-color: #353535;}
+/* specific elements of /mildredleague/alltime */
+.plots {
+  height: 90%;
+}

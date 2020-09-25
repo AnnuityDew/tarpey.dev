@@ -1,0 +1,179 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+body {
+  background-color:#000000;
+}
+
+img {
+  width:100%;
+  height:auto;
+}
+
+.halfpic {
+  width:50%;
+  height:auto;
+}
+
+.quarterpic {
+  width:25%;
+  height:auto;
+}
+
+.brand {
+  width:100%;
+  max-width:776px;
+  height:auto;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.exophase {
+  width:100%;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.headers {
+  font-family:"Lato",sans-serif;
+  font-weight:bold;
+  font-size:60px;
+}
+
+.left {
+  float:left;
+  width:50%;
+}
+
+.right {
+  float:right;
+  width:50%;
+}
+
+.back {
+  background-color:#e6005c;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;
+}
+
+.annuitydew {
+  background-color:#000000;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#000000;
+  font-weight:bold;
+  font-size:24px;       
+}
+
+.home {
+  background-color:#000066;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;
+}
+
+.ibp {
+  background-color:#ffffff;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#000000;
+  font-weight:bold;
+  padding:10px;
+  font-size:24px;       
+}
+
+.ps4 {
+  background-color:#003791;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;       
+}
+
+.steam {
+  background-color:#444444;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;       
+}
+
+.xbox {
+  background-color:#107C10;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;       
+}
+
+.backlog {
+  background-color:#4f154e;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;       
+}
+
+.clear {
+  clear:both;
+}
+
+p {
+  padding:0px;
+  margin:0px;
+}
+
+a.class1:link {color:#ffb3d1;}    
+a.class1:visited {color:#ff80b3;}
+a.class1:hover {color:#ffe5f0;}    
+a.class1:active {color:#ffe5f0;}
+
+a.class2:link {color:#007f80;}     
+a.class2:visited {color:#000000;}
+a.class2:hover {color:#00cccc;}    
+a.class2:active {color:#00cccc;} 
+
+a.classwhite:link {color:#ffffff;}     
+a.classwhite:visited {color:#bbbbbb;}
+a.classwhite:hover {color:#dddddd;}    
+a.classwhite:active {color:#dddddd;}

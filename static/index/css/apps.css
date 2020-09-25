@@ -1,0 +1,83 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+body {
+  background-color:#000000;
+}
+
+.headers {
+  font-family:"Lato",sans-serif;
+  font-weight:bold;
+  font-size:60px;
+  color:#ffffff;
+}
+
+.left {
+  float:left;
+  width:50%;
+}
+
+.right {
+  float:right;
+  width:50%;
+}
+
+.home {
+  background-color:#000066;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  color:#ffffff;
+  font-weight:bold;
+  padding:10px;
+  font-size:60px;
+}
+
+.appsleft {
+  background-color:#000000;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  font-weight:bold;
+  padding:10px;
+  font-size:36px;
+}
+
+.appsright {
+  background-color:#000000;
+  border-style:solid;
+  border-width:1px;
+  border-color:#000000;
+  position:relative;
+  font-family:"Lato",sans-serif;
+  font-weight:bold;
+  padding:10px;
+  font-size:36px;
+}
+
+.clear {
+  clear:both;
+}
+
+p {
+  padding:0px;
+  margin:0px;
+}
+
+a.class1:link {color:#ffb3d1;}    
+a.class1:visited {color:#ff80b3;}
+a.class1:hover {color:#ffe5f0;}    
+a.class1:active {color:#ffe5f0;}
+
+a.class2:link {color:#007f80;}     
+a.class2:visited {color:#000000;}
+a.class2:hover {color:#00cccc;}    
+a.class2:active {color:#00cccc;} 
+
+a.classwhite:link {color:#ffffff;}     
+a.classwhite:visited {color:#bbbbbb;}
+a.classwhite:hover {color:#dddddd;}    
+a.classwhite:active {color:#dddddd;}

@@ -1,51 +1,51 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-
-<html class="default">	
-
+<!DOCTYPE html>
+<html>
 <head>
-	<title>mildredleague</title>
+<title>mildredleague</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/style.css') }}">
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+  <meta name="msapplication-TileColor" content="#2d89ef">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>
 
 <body>
-    <p>
-        I played fantasy football prior to 2013, but 2013 was a special year because it was the year my grandma decided to jump in and play.
-        (She's always loved football - been a Washington Redskins fan for her entire life.) And so, Mildred League was born.
-    </p>
+  <p>
+    I played fantasy football prior to 2013, but 2013 was a special year because it was the year my grandma decided to jump in and play.
+    (She's always loved football - been a Washington Redskins fan for her entire life.) And so, Mildred League was born.
+  </p>
 
-    <p>
-        The league is a collection of my friends from all walks of life, and they all love that she's a part of the league...
-        so eventually I decided to just rename the league after her. I'm sure there are other grandmas out there that play fantasy football, but not in my life!
-    </p>
+  <p>
+    The league is a collection of my friends from all walks of life, and they all love that she's a part of the league...
+    so eventually I decided to just rename the league after her. I'm sure there are other grandmas out there that play fantasy football, but not in my life!
+  </p>
 
-    <b>League Info</b>
-        <ul>
-            <li><a href="{{ url_for('mildredleague.alltime') }}">All-time Stats</a></li>
-            <li><a href="{{ url_for('mildredleague.rules') }}">Rules</a></li>
-        </ul>
+  <b>League Info</b>
+    <ul>
+      <li><a href="{{ url_for('mildredleague.alltime') }}">All-time Stats</a></li>
+      <li><a href="{{ url_for('mildredleague.rules') }}">Rules</a></li>
+    </ul>
 
-    <p>
-        <b>Season Info</b>
-        <ul>
-            <li><a href="{{ url_for('mildredleague.season', year=2013) }}">2013 (champ: Tarpey)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2014) }}">2014 (champ: Brando)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2015) }}">2015 (champ: Fonti)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2016) }}">2016 (champ: Frank)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2017) }}">2017 (champ: Fonti)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2018) }}">2018 (champ: Tarpey)</a></li>
-            <li><a href="{{ url_for('mildredleague.season', year=2019) }}">2019 (champ: Sendzik)</a></li>
-        </ul>
-    </p>
+  <p>
+    <b>Season Info</b>
+    <ul>
+      <li><a href="{{ url_for('mildredleague.season', year=2013) }}">2013 (champ: Tarpey)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2014) }}">2014 (champ: Brando)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2015) }}">2015 (champ: Fonti)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2016) }}">2016 (champ: Frank)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2017) }}">2017 (champ: Fonti)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2018) }}">2018 (champ: Tarpey)</a></li>
+      <li><a href="{{ url_for('mildredleague.season', year=2019) }}">2019 (champ: Sendzik)</a></li>
+    </ul>
+  </p>
 
 	<p>
 		You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
@@ -55,9 +55,9 @@
 		<a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
 	</p>
 
-    <p>
-        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
-    </p>
+  <p>
+    <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+  </p>
 
 </body>
 

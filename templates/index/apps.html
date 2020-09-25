@@ -1,162 +1,77 @@
+<!DOCTYPE html>
 <html>
-	
-    <head>
-        <title>apps</title>	
-        
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-        <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-        <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-        <meta name="msapplication-TileColor" content="#2d89ef">
-        <meta name="theme-color" content="#ffffff">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+  <head>
+    <title>apps</title>  
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/apps.css') }}">
 
-        <style type="text/css">      
-            @import url(https://fonts.googleapis.com/css?family=Lato:700,400);
-            
-            body {
-                background-color:000000;
-            }
-            
-            .headers {
-                font-family:"Lato",sans-serif;
-                font-weight:bold;
-                font-size:60px;
-                color:ffffff;
-            }
-            
-            .left {
-                float:left;
-                width:50%;
-            }
-            
-            .right {
-                float:right;
-                width:50%;
-            }
-            
-            .home {
-                background-color:000066;
-                border-style:solid;
-                border-width:1px;
-                border-color:000000;
-                position:relative;
-                font-family:"Lato",sans-serif;
-                color:ffffff;
-                font-weight:bold;
-                padding:10px;
-                font-size:60px;
-            }
-            
-            .appsleft {
-                background-color:000000;
-                border-style:solid;
-                border-width:1px;
-                border-color:000000;
-                position:relative;
-                font-family:"Lato",sans-serif;
-                font-weight:bold;
-                padding:10px;
-                font-size:36px;
-            }
-            
-            .appsright {
-                background-color:000000;
-                border-style:solid;
-                border-width:1px;
-                border-color:000000;
-                position:relative;
-                font-family:"Lato",sans-serif;
-                font-weight:bold;
-                padding:10px;
-                font-size:36px;
-            }
-            
-            .clear {
-                clear:both;
-            }
-            
-            p {
-                padding:0px;
-                margin:0px;
-            }
-            
-            a.class1:link {color:ffb3d1;}        
-            a.class1:visited {color:ff80b3;}
-            a.class1:hover {color:ffe5f0;}        
-            a.class1:active {color:ffe5f0;}
-            
-            a.class2:link {color:007f80;}       
-            a.class2:visited {color:000000;}
-            a.class2:hover {color:00cccc;}        
-            a.class2:active {color:00cccc;} 
-            
-            a.classwhite:link {color:ffffff;}       
-            a.classwhite:visited {color:bbbbbb;}
-            a.classwhite:hover {color:dddddd;}        
-            a.classwhite:active {color:dddddd;}
-        </style>
-    
-    </head>    
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  
+  </head>  
+
+
+  
+    
+  <body>
 
     
+    <div class="home">Main page: <a class="classwhite" href="{{ url_for('index.index') }}">Click here!</a></div>  
+
+
+    <div class="left">
+      
+      <div class="appsleft">
         
-    <body>
-
-        
-        <div class="home">Main page: <a class="classwhite" href="{{ url_for('index.index') }}">Click here!</a></div>    
-
-
-        <div class="left">
-            
-            <div class="appsleft">
-                
-                <span class="headers">Apps</span><br>
-                    <a class="classwhite" href="https://agilebits.com/onepassword">1Password</a><br>
-                    <a class="classwhite" href="https://www.4kdownload.com/download">4K YouTube to MP3</a><br>
-                    <a class="classwhite" href="http://www.7-zip.org/">7-Zip</a><br>
-                    <a class="classwhite" href="http://get.adobe.com/reader/">Adobe Reader</a><br>
-                    <a class="classwhite" href="http://audacity.sourceforge.net/">Audacity</a><br>
-                    <a class="classwhite" href="https://www.backblaze.com/">Backblaze</a><br>
-                    <a class="classwhite" href="http://us.battle.net/en/">battle.net</a><br>
-                    <a class="classwhite" href="http://brackets.io/">Brackets</a><br>
-                    <a class="classwhite" href="https://discordapp.com/download">Discord</a><br>
-                    <a class="classwhite" href="http://www.gimp.org/">GIMP</a><br>
-                    <a class="classwhite" href="https://www.google.com/chrome">Google Chrome</a><br>
-                    <a class="classwhite" href="http://www.imgburn.com/">ImgBurn</a><br>
-                    <a class="classwhite" href="http://www.irfanview.com/">IrfanView</a><br>
-                </p>
-            </div>
+        <span class="headers">Apps</span><br>
+          <a class="classwhite" href="https://agilebits.com/onepassword">1Password</a><br>
+          <a class="classwhite" href="https://www.4kdownload.com/download">4K YouTube to MP3</a><br>
+          <a class="classwhite" href="http://www.7-zip.org/">7-Zip</a><br>
+          <a class="classwhite" href="http://get.adobe.com/reader/">Adobe Reader</a><br>
+          <a class="classwhite" href="http://audacity.sourceforge.net/">Audacity</a><br>
+          <a class="classwhite" href="https://www.backblaze.com/">Backblaze</a><br>
+          <a class="classwhite" href="http://us.battle.net/en/">battle.net</a><br>
+          <a class="classwhite" href="http://brackets.io/">Brackets</a><br>
+          <a class="classwhite" href="https://discordapp.com/download">Discord</a><br>
+          <a class="classwhite" href="http://www.gimp.org/">GIMP</a><br>
+          <a class="classwhite" href="https://www.google.com/chrome">Google Chrome</a><br>
+          <a class="classwhite" href="http://www.imgburn.com/">ImgBurn</a><br>
+          <a class="classwhite" href="http://www.irfanview.com/">IrfanView</a><br>
+        </p>
+      </div>
 
 
 
-        </div>
+    </div>
 
-            
-        <div class="right">
+      
+    <div class="right">
 
-            <div class="appsright"> 
-                    <a class="classwhite" href="http://lame1.buanzo.com.ar/#lamewindl">LAME for Audacity</a><br>
-                    <a class="classwhite" href="http://livesplit.org/">LiveSplit</a><br>
-                    <a class="classwhite" href="http://makemkv.com/">MakeMKV</a><br>
-                    <a class="classwhite" href="http://www.mp3tag.de/en/download.html">Mp3tag</a><br>
-                    <a class="classwhite" href="http://getmusicbee.com/download.html">MusicBee</a><br>
-                    <a class="classwhite" href="https://obsproject.com/">Open Broadcaster Software</a><br>
-                    <a class="classwhite" href="http://www.razerzone.com/downloads">Razer Synapse</a><br>
-                    <a class="classwhite" href="http://www.piriform.com/recuva">Recuva</a><br>
-                    <a class="classwhite" href="http://www.revouninstaller.com/revo_uninstaller_free_download.html">Revo Uninstaller</a><br>
-                    <a class="classwhite" href="http://www.piriform.com/speccy">Speccy</a><br>
-                    <a class="classwhite" href="http://store.steampowered.com/">Steam</a><br>
-                    <a class="classwhite" href="http://www.videolan.org/vlc/index.html">VLC</a><br>
-                    <a class="classwhite" href="http://windirstat.info/download.html">WinDirStat</a><br>
-                </p>
-            </div>
+      <div class="appsright"> 
+          <a class="classwhite" href="http://lame1.buanzo.com.ar/#lamewindl">LAME for Audacity</a><br>
+          <a class="classwhite" href="http://livesplit.org/">LiveSplit</a><br>
+          <a class="classwhite" href="http://makemkv.com/">MakeMKV</a><br>
+          <a class="classwhite" href="http://www.mp3tag.de/en/download.html">Mp3tag</a><br>
+          <a class="classwhite" href="http://getmusicbee.com/download.html">MusicBee</a><br>
+          <a class="classwhite" href="https://obsproject.com/">Open Broadcaster Software</a><br>
+          <a class="classwhite" href="http://www.razerzone.com/downloads">Razer Synapse</a><br>
+          <a class="classwhite" href="http://www.piriform.com/recuva">Recuva</a><br>
+          <a class="classwhite" href="http://www.revouninstaller.com/revo_uninstaller_free_download.html">Revo Uninstaller</a><br>
+          <a class="classwhite" href="http://www.piriform.com/speccy">Speccy</a><br>
+          <a class="classwhite" href="http://store.steampowered.com/">Steam</a><br>
+          <a class="classwhite" href="http://www.videolan.org/vlc/index.html">VLC</a><br>
+          <a class="classwhite" href="http://windirstat.info/download.html">WinDirStat</a><br>
+        </p>
+      </div>
 
-        </div>
+    </div>
 
-    </body>
+  </body>
 </html>

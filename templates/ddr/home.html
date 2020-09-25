@@ -1,48 +1,47 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-
-<html class="default">	
-
+<!DOCTYPE html>
+<html>
 <head>
-	<title>ddr</title>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <title>ddr</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='ddr/css/style.css') }}">
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
+  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
+  <meta name="msapplication-TileColor" content="#2d89ef">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-    <b>Select a style! (These are all PS2 games.)</b><br>
-    <ul>
-        <li><a href="{{ url_for('ddr.game_info', game='max_jp') }}">DDRMAX JP</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='ex_jp') }}">Extreme JP</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='max_us') }}">DDRMAX US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='max2_us') }}">DDRMAX2 US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='ex_us') }}">Extreme US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='ex2_us') }}">Extreme 2 US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='sn_us') }}">SuperNova US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
-        <li><a href="{{ url_for('ddr.game_info', game='x_us') }}">X US</a></li>
-    </ul>
+  <b>Select a style! (These are all PS2 games.)</b><br>
+  <ul>
+    <li><a href="{{ url_for('ddr.game_info', game='max_jp') }}">DDRMAX JP</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='ex_jp') }}">Extreme JP</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='max_us') }}">DDRMAX US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='max2_us') }}">DDRMAX2 US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='ex_us') }}">Extreme US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='ex2_us') }}">Extreme 2 US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='sn_us') }}">SuperNova US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
+    <li><a href="{{ url_for('ddr.game_info', game='x_us') }}">X US</a></li>
+  </ul>
 
-    <p>
-        You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
-    </p>
+  <p>
+    You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
+  </p>
 
-    <p>
-        <a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
-    </p>
+  <p>
+    <a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
+  </p>
 
-    <p>
-        <a href="{{ url_for('index.index') }}">Back to the homepage</a>
-    </p>
+  <p>
+    <a href="{{ url_for('index.index') }}">Back to the homepage</a>
+  </p>
 </body>
 
 </html>

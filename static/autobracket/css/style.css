@@ -1,0 +1,28 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+/* specific elements of /autobracket/generate */
+.autobracket_form {
+  width: 100%;
+  background-color: #212121;
+  border-style: solid;
+  border-color: #FFFFFF;
+  border-collapse: collapse;
+  border-width: 3px;
+  padding: 10px;
+}
+.autobracket_label {
+  float: left;
+  width: 35%;
+}
+/* specific elements of /autobracket/bracket*/
+.modeloutput {
+  font-family:"Lato",sans-serif;
+  background-color: #000000;
+  color: #66d9ff;
+}
+
+.actualresults {
+  font-family:"Lato",sans-serif;
+  background-color: #000000;
+  color: #ffe066;
+}
