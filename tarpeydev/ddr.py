@@ -27,6 +27,7 @@ def game_info(game):
     return render_template(
         'ddr/game.html',
         df=game_df,
+        game=game,
     )
 
 

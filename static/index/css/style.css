@@ -1,11 +1,27 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:700,400);
 
 /* most of the site*/
+* {
+  box-sizing: content-box;
+}
+
 body {
   font-family: "Lato",sans-serif;
   background-color: #000000;
   color: #FFFFFF;
-  font-size: 150%;
+  font-size: 24px;
+  margin: 0px;
+}
+
+.indexbg {
+  background-image: url('/static/index/images/19960703_image_0045.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center top;
+}
+
+main {
+  margin: 8px;
 }
 
 p {
@@ -30,16 +46,76 @@ img {
 
 /* frontpage */
 /* clamp is min, pref, max. equivalent to min(max(x,y),z). */
-.apps {
-  border-style:solid;
-  border-width:1px;
-  border-color:#000000;
-  font-family:"Lato",sans-serif;
-  font-weight:bold;
-  margin-top:15px;
-  margin-bottom:15px;
-  padding:10px;
-  font-size: clamp(5vmin, 60px, 5vmax);
+hr {
+  margin: 5px;
+}
+header {
+  position: relative;
+  font-weight: bold;
+  font-size: 75%;
+  background-color: #444444;
+  padding: 8px;
+}
+nav a {
+  color: #FFFFFF;
+  text-decoration: none;
+  margin: 3px;
+  padding: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #FFFFFF;
+  font-family: "Lato",sans-serif;
+  display: inline-block;
+}
+nav a:link, nav a:visited, nav a:hover {
+  color: #FFFFFF;
+}
+nav a:hover {
+  color: #000000;
+  background: #FFFFFF;
+}
+nav .index {
+  background-color:#000000;
+}
+.center { text-align: center; }
+.haveyouseenx { background-color:#4C1782; }
+.mildredleague { background-color:#82175C; }
+.ddr { background-color:#822E17; }
+.autobracket { background-color:#7A8217; }
+.timecapsule { background-color:#1F8217; }
+.links { background-color:#17826B; }
+.colors { background-color:#173D82; }
+.email { background-color:#444444; }
+.github { background-color:#000000; }
+.discord { background-color:#7289da; }
+.twitch { background-color:#6441a5; }
+.instagram { background-color:#C13584 }
+.specs { background-color:#eda920 }
+.twitter { background-color:#55acee; }
+.youtube { background-color:#cd201f; }
+.tumblr { background-color:#33445d }
+.steam { background-color:#1b2838 }
+footer {
+  position: relative;
+  font-weight: bold;
+  font-size: 75%;
+  padding: 8px;
+  text-align: center;
+}
+.footer_link {
+  padding: 4px;
+}
+#twitter {
+  width: 56px;
+  height: 56px;
+}
+#twitch {
+  width: 48px;
+  height: 56px;
+}
+#youtube {
+  width: 79px;
+  height: 56px;
 }
 
 /* form elements, like in haveyouseenx and autobracket */
@@ -98,6 +174,6 @@ ul, ol {
   margin-block-end: 0.5em;
 }
 
-.letter_list {
+.lettered_list {
   list-style-type: upper-latin;
 }

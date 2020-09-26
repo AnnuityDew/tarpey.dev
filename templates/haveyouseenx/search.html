@@ -3,7 +3,7 @@
 <head>
   <title>haveyouseenx</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haveyouseenx/css/style.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haveyouseenx/css/haveyouseenx.css') }}">
   
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
@@ -18,52 +18,71 @@
 </head>
 
 <body>
-  <p>
-    Type the name of a video game to see if I've played it before. (Or you can leave it blank to show all games.)
-  </p>
-
-  <form action="{{ url_for('haveyouseenx.results') }}" method="post">
-    <input id="searchbox" name="search_term" type="text" placeholder="Search for a game">
-    <button>Go!</button>
-  </form>
-
+  <header>
+    <nav>
+      Jump to:
+      <a class="index" href="{{ url_for('index.index') }}">index</a>
+      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+      <a class="links" href="{{ url_for('index.links') }}">links</a>
+      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+    </nav>
+  </header>
+  <main>
+    <h1>haveyouseenx</h1>
     <p>
-    <b>Stats</b>
-    <ul>
-      <li>{{ (df.game_status.count())|int }} total entries</li>
-      <li>{{ ((df.loc[((df.game_status == 'Completed')), 'game_status'].count()) + df.loc[((df.game_status == 'Mastered')), 'game_status'].count())|int }} completed</li>
-      <li>{{ (df.loc[(df.game_status == 'Beaten'), 'game_status'].count())|int }} beaten</li>
-      <li>{{ (df.loc[(df.game_status == 'Started'), 'game_status'].count())|int }} unfinished</li>
-      <li>{{ (df.loc[(df.game_status == 'Not Started'), 'game_status'].count())|int }} not started</li>
-      <li>{{ (df.loc[(df.game_status == 'Infinite'), 'game_status'].count())|int }} with no end</li>
-      <li>{{ (df.loc[(df.game_status == 'Wish List'), 'game_status'].count())|int }} on the wish list</li>
-    </ul>
+      Type the name of a video game to see if I've played it before. (Or you can leave it blank to show all games.)
     </p>
 
-  <p>
-    I haven't logged a playtime for every game yet, but so far there's over {{ (df.game_hours.sum() + (df.game_minutes.sum() / 60))|int }} hours of gameplay in the database.
-  </p>
+    <form action="{{ url_for('haveyouseenx.results') }}" method="post">
+      <input id="searchbox" name="search_term" type="text" placeholder="Search for a game">
+      <button>Go!</button>
+    </form>
 
-  <div class="hysx_treemap" id="treemap">
-    <script>
-      var graphs = {{treemap | safe}};
-      var layout = {};
-      var config = {responsive: true};
-      Plotly.react('treemap', graphs, layout, config);
-    </script>
-  </div>
+      <p>
+      <b>Stats</b>
+      <ul>
+        <li>{{ (df.game_status.count())|int }} total entries</li>
+        <li>{{ ((df.loc[((df.game_status == 'Completed')), 'game_status'].count()) + df.loc[((df.game_status == 'Mastered')), 'game_status'].count())|int }} completed</li>
+        <li>{{ (df.loc[(df.game_status == 'Beaten'), 'game_status'].count())|int }} beaten</li>
+        <li>{{ (df.loc[(df.game_status == 'Started'), 'game_status'].count())|int }} unfinished</li>
+        <li>{{ (df.loc[(df.game_status == 'Not Started'), 'game_status'].count())|int }} not started</li>
+        <li>{{ (df.loc[(df.game_status == 'Infinite'), 'game_status'].count())|int }} with no end</li>
+        <li>{{ (df.loc[(df.game_status == 'Wish List'), 'game_status'].count())|int }} on the wish list</li>
+      </ul>
+      </p>
 
-  <p>
-    You can check out the code for this app <a href="https://github.com/AnnuityDew/tarpey.dev">here</a> (it will get better!).
-  </p>
+    <p>
+      I haven't logged a playtime for every game yet, but so far there's over {{ (df.game_hours.sum() + (df.game_minutes.sum() / 60))|int }} hours of gameplay in the database.
+    </p>
 
-  <p>
-    <a href="https://twitch.tv/annuitydew">I'm on Twitch</a> (and a ton of other websites) as AnnuityDew.<br>
-  </p>
-
-  <p>
-    <a href="{{ url_for('index.index') }}">Back to the homepage</a>
-  </p>
+    <div class="hysx_treemap" id="treemap">
+      <script>
+        var graphs = {{treemap | safe}};
+        var layout = {};
+        var config = {responsive: true};
+        Plotly.react('treemap', graphs, layout, config);
+      </script>
+    </div>
+  </main>
+  <footer>
+    <hr>
+    <nav>
+      <a class="email" href="mailto:mike@tarpey.dev">email</a>
+      <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+      <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+      <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+      <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+      <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+      <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+      <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+      <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+      <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+    </nav>
+  </footer>
 </body>
 
 </html>

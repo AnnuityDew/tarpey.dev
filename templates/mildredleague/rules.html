@@ -3,7 +3,7 @@
 <head>
 <title>mildredleague rules</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
   <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
   <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
@@ -17,8 +17,21 @@
 </head>
 
 <body>
-
-  <b>Current Ruleset</b>
+  <header>
+    <nav>
+      Jump to:
+      <a class="index" href="{{ url_for('index.index') }}">index</a>
+      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+      <a class="links" href="{{ url_for('index.links') }}">links</a>
+      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+    </nav>
+  </header>
+  <main>
+  <h1>mildredleague rules</h1>
   <table class="ml_rules">
     <th>Rule</th><th>Description</th>
     <tr><td>Prize Pool</td><td>3rd place refund, 2nd place 2x refund, 1st place gets pot</td></tr>
@@ -30,7 +43,7 @@
   </table>
 
   <b>Playoff Tiebreakers</b>
-  <ol class="letter_list">
+  <ol class="lettered_list">
     <li>If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:</li>
     <ol>
       <li>Head-to-head record</li>
@@ -48,14 +61,21 @@
     </ol>
     <li>If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.</li>
   </ol>
-
-  <p>
-    <a href="{{ url_for('mildredleague.home') }}">Back to Mildred League</a>
-  </p>
-
-  <p>
-    <a href="{{ url_for('index.index') }}">Back to the homepage</a>
-  </p>
-
+</main>
+<footer>
+  <hr>
+  <nav>
+    <a class="email" href="mailto:mike@tarpey.dev">email</a>
+    <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+    <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+    <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+    <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+    <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+    <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+    <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+    <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+    <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+  </nav>
+</footer>
 </body>
 </html>

@@ -15,26 +15,53 @@
 
 </head>
 
+<body>
+  <header>
+    <nav>
+      Jump to:
+      <a class="index" href="{{ url_for('index.index') }}">index</a>
+      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+      <a class="links" href="{{ url_for('index.links') }}">links</a>
+      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+    </nav>
+  </header>
+  <main>
+    <h1 class="center">Thanks for visiting.</h1>
 
-<div class="apps" style="color:ffffff; background-color:000000">Thanks for visiting.</div>
-
-<div class="apps" style="{{ colors[0]|safe }}"><a href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a></div>
-
-<div class="apps" style="{{ colors[1]|safe }}"><a href="{{ url_for('mildredleague.home') }}">mildredleague</a></div>
-
-<div class="apps" style="{{ colors[2]|safe }}"><a href="{{ url_for('ddr.home') }}">DDR</a></div>
-
-<div class="apps" style="{{ colors[3]|safe }}"><a href="{{ url_for('autobracket.generate') }}">autobracket</a></div>
-
-<div class="apps" style="{{ colors[4]|safe }}"><a href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a></div>
-
-<div class="apps" style="{{ colors[5]|safe }}"><a href="{{ url_for('index.links') }}">links</a></div>
-
-<div class="apps" style="{{ colors[6]|safe }}"><a href="{{ url_for('index.colors') }}">colors</a></div>
-
-<p>
-  "{{ df.loc[quote_id, 'quoteText']|safe }}"<br>
-  <i>-{{ df.loc[quote_id, 'quoteOrigin']|safe }}</i>
-</p>
-
+    <p class="center">
+      "{{ df.loc[quote_id, 'quoteText']|safe }}"<br>
+      <i>-{{ df.loc[quote_id, 'quoteOrigin']|safe }}</i>
+    </p>
+    </main>
+    <footer>
+      <hr>
+      <nav>
+        <a class="email" href="mailto:mike@tarpey.dev">email</a>
+        <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+        <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+        <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+        <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+        <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+        <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+        <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+        <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+        <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+      </nav>
+        <!--- image version 
+        <a href="http://www.twitch.tv/annuitydew">
+          <img class="footer_link" id="twitch" src="{{ url_for('static', filename='index/images/TwitchGlitchPurple.png') }}">
+        </a>
+        <a href="http://www.twitter.com/AnnuityDew">
+          <img class="footer_link" id="twitter" src="{{ url_for('static', filename='index/images/Twitter_Logo_WhiteOnBlue.png') }}">
+        </a>
+        <a href="http://www.youtube.com/user/annuitydew">
+          <img class="footer_link" id="youtube" src="{{ url_for('static', filename='index/images/yt_icon_rgb.png') }}">
+        </a>
+        -->
+    </footer>
+  </body>
 </html>

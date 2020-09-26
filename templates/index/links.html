@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>links</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/links.css') }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
@@ -13,70 +14,97 @@
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    
-    
   </head>  
 
 
   
   
   <body>
-
-    
-    <div class="apps">Recommended apps: <a class="class1" href="{{ url_for('index.apps') }}">Click here!</a></div>  
-
-
-      <div class="left">
-
-        <div class="twitter">
-          <a class="classwhite" href="http://www.twitter.com/AnnuityDew">Twitter</a><br>  
-        </div>
-        
-        <div class="games">
-          <a class="classwhite" href="{{ url_for('index.games') }}">Games</a>
-        </div>
-
-        <div class="donate">
-          <span class="donateheader">Donate</span><br>      
-            <a class="class3" href="https://www.nrdc.org/">NRDC</a><br>
-            <a class="class3" href="https://www.eesi.org/">EESI</a><br>
-            <a class="class3" href="http://www.thetrevorproject.org/">The Trevor Project</a><br>
-            <a class="class3" href="https://www.plannedparenthood.org/">Planned Parenthood</a><br>
-            <a class="class3" href="https://www.reproductiverights.org/">Reproductive Rights</a><br>
-            <a class="class3" href="https://irap.urbanjustice.org/">IRAP</a><br>
-            <a class="class3" href="http://www.naacpldf.org/">NAACP LDF</a><br>
-            <a class="class3" href="http://ywcarichmond.org/">YWCA Richmond</a><br>
-          </p>
-        </div>
-        
-      </div>
-
-      <div class="right">
-
-        <div class="twitch">
-          <a class="classwhite" href="http://www.twitch.tv/annuitydew">Twitch</a><br>  
-        </div>
-        
-        <div class="youtube">
-          <a class="classwhite" href="http://www.youtube.com/user/annuitydew">YouTube</a>
-        </div>
-        
-        <div class="referrals">
-          <span class="headers">Referral Links</span><br>
-            <a class="class2" href="http://shaved.by/lfiQl">DollarShaveClub</a><br>
-            <a class="class2" href="http://fbuy.me/hGbty">FilterEasy</a><br>
-            <a class="class2" href="www.arcadiapower.com/michael9846">Arcadia Power</a><br>
-            <a class="class2" href="https://streamlabs.com/slobs/d/1526741">Streamlabs OBS</a><br>
-            <a class="class2" href="https://share.robinhood.com/michaet2837">Robinhood</a><br>
-            <a class="class2" href="https://www.coinbase.com/join/5a6eab9d8bf65d0545be6e9a">Coinbase</a><br>
-            <a class="class2" href="https://www.cointracker.io/i/NV7md8i4fbmJ">CoinTracker</a><br>  
-            <a class="class2" href="https://fundrise.com/r/0o5p5">Fundrise</a><br>  
-          </p>
-      </div>
-
-    </div>
-
+    <header>
+      <nav>
+        Jump to:
+        <a class="index" href="{{ url_for('index.index') }}">index</a>
+        <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+        <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+        <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+        <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+        <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+        <a class="links" href="{{ url_for('index.links') }}">links</a>
+        <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+      </nav>
+    </header>
+    <main>
+    <h1>links</h1>
+    <h3>donations</h3>
+      <nav>
+        <a class="donate" href="https://www.nrdc.org/">NRDC</a>
+        <a class="donate" href="https://www.eesi.org/">EESI</a>
+        <a class="donate" href="http://www.thetrevorproject.org/">The Trevor Project</a>
+        <a class="donate" href="https://www.plannedparenthood.org/">Planned Parenthood</a>
+        <a class="donate" href="https://www.reproductiverights.org/">Reproductive Rights</a>
+        <a class="donate" href="https://irap.urbanjustice.org/">IRAP</a>
+        <a class="donate" href="http://www.naacpldf.org/">NAACP LDF</a>
+        <a class="donate" href="http://ywcarichmond.org/">YWCA Richmond</a>
+      </nav>
+    <h3>referrals</h3>
+    <nav>
+      <a class="refer" href="http://shaved.by/lfiQl">DollarShaveClub</a>
+      <a class="refer" href="http://fbuy.me/hGbty">FilterEasy</a>
+      <a class="refer" href="www.arcadiapower.com/michael9846">Arcadia Power</a>
+      <a class="refer" href="https://streamlabs.com/slobs/d/1526741">Streamlabs OBS</a>
+      <a class="refer" href="https://share.robinhood.com/michaet2837">Robinhood</a>
+      <a class="refer" href="https://www.coinbase.com/join/5a6eab9d8bf65d0545be6e9a">Coinbase</a>
+      <a class="refer" href="https://www.cointracker.io/i/NV7md8i4fbmJ">CoinTracker</a>  
+      <a class="refer" href="https://fundrise.com/r/0o5p5">Fundrise</a>
+    </nav>
+    <h3>apps</h3>
+    <nav>
+      <a class="apps" href="https://agilebits.com/onepassword">1Password</a>
+      <a class="apps" href="https://www.4kdownload.com/download">4K YouTube to MP3</a>
+      <a class="apps" href="http://www.7-zip.org/">7-Zip</a>
+      <a class="apps" href="http://get.adobe.com/reader/">Adobe Reader</a>
+      <a class="apps" href="http://audacity.sourceforge.net/">Audacity</a>
+      <a class="apps" href="https://www.backblaze.com/">Backblaze</a>
+      <a class="apps" href="http://us.battle.net/en/">battle.net</a>
+      <a class="apps" href="http://brackets.io/">Brackets</a>
+      <a class="apps" href="https://discordapp.com/download">Discord</a>
+      <a class="apps" href="http://www.gimp.org/">GIMP</a>
+      <a class="apps" href="https://www.google.com/chrome">Google Chrome</a>
+      <a class="apps" href="http://www.imgburn.com/">ImgBurn</a>
+      <a class="apps" href="http://www.irfanview.com/">IrfanView</a>
+      <a class="apps" href="http://lame1.buanzo.com.ar/#lamewindl">LAME for Audacity</a>
+      <a class="apps" href="http://livesplit.org/">LiveSplit</a>
+      <a class="apps" href="http://makemkv.com/">MakeMKV</a>
+      <a class="apps" href="http://www.mp3tag.de/en/download.html">Mp3tag</a>
+      <a class="apps" href="http://getmusicbee.com/download.html">MusicBee</a>
+      <a class="apps" href="https://obsproject.com/">Open Broadcaster Software</a>
+      <a class="apps" href="http://www.razerzone.com/downloads">Razer Synapse</a>
+      <a class="apps" href="http://www.piriform.com/recuva">Recuva</a>
+      <a class="apps" href="http://www.revouninstaller.com/revo_uninstaller_free_download.html">Revo Uninstaller</a>
+      <a class="apps" href="http://www.piriform.com/speccy">Speccy</a>
+      <a class="apps" href="http://store.steampowered.com/">Steam</a>
+      <a class="apps" href="http://www.videolan.org/vlc/index.html">VLC</a>
+      <a class="apps" href="http://windirstat.info/download.html">WinDirStat</a>
+    </nav> 
+    <h3>other</h3>
+    <nav>
+      <a class="games" href="{{ url_for('index.games') }}">games</a>
+    </nav>   
+    </main>
+    <footer>
+      <hr>
+      <nav>
+        <a class="email" href="mailto:mike@tarpey.dev">email</a>
+        <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+        <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+        <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+        <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+        <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+        <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+        <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+        <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+        <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+      </nav>
+    </footer>
   </body>
 </html>

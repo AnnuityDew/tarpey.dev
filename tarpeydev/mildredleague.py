@@ -58,6 +58,7 @@ def season(year):
         boxplot_against=boxplot_json_against,
         notes=notes,
         table=table,
+        season=year,
     )
 
 

@@ -17,74 +17,106 @@
 
 </head>
 
-<p>
-  I use colors to stay organized in all aspects of life...
-</p>
+<body>
+  <header>
+    <nav>
+      Jump to:
+      <a class="index" href="{{ url_for('index.index') }}">index</a>
+      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+      <a class="links" href="{{ url_for('index.links') }}">links</a>
+      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+    </nav>
+  </header>
+  <main>
+    <h1>colors</h1>
+  <p>
+    I use colors to stay organized in all aspects of life...
+  </p>
 
-<p>  
-  At work? Colored cells.<br>
-  Studying? Gel pens.<br>
-  Around the house? Cable labels.<br>
-  T-shirts? Ordered by color.
-</p>
+  <p>  
+    At work? Colored cells.<br>
+    Studying? Gel pens.<br>
+    Around the house? Cable labels.<br>
+    T-shirts? Ordered by color.
+  </p>
 
-<p>
-  Here are some of my favorite color sets.
-</p>
+  <p>
+    Here are some of my favorite color sets.
+  </p>
 
-<p>
-  <div class="colorhead">Atlanta Braves</div>
-  <div class="colors" style="color:#ffffff; background-color:#13274f">Navy Blue [13274f]</div>
-  <div class="colors" style="color:#ffffff; background-color:#ce1141">Scarlet Red [ce1141]</div>
-  <div class="colors" style="color:#000000; background-color:#eaaa00">Gold [eaaa00]</div>
-</p>
+  <p>
+    <div class="colorhead">Atlanta Braves</div>
+    <div class="palettes" style="color:#ffffff; background-color:#13274f">Navy Blue [13274f]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#ce1141">Scarlet Red [ce1141]</div>
+    <div class="palettes" style="color:#000000; background-color:#eaaa00">Gold [eaaa00]</div>
+  </p>
 
-<p>
-  <div class="colorhead">Cloud9</div>
-  <div class="colors" style="color:#ffffff; background-color:#00aeef">C9 Blue [00aeef]</div>
-</p>
+  <p>
+    <div class="colorhead">Cloud9</div>
+    <div class="palettes" style="color:#ffffff; background-color:#00aeef">C9 Blue [00aeef]</div>
+  </p>
 
-<p>
-  <div class="colorhead">DDR</div>
-  <div class="colors" style="color:#ffffff; background-color:#00acff">Beginner [00acff]</div>
-  <div class="colors" style="color:#000000; background-color:#ffac00">Light [ffac00]</div>
-  <div class="colors" style="color:#ffffff; background-color:#e634af">Standard [e634af]</div>
-  <div class="colors" style="color:#000000; background-color:#69fd00">Heavy [69fd00]</div>
-  <div class="colors" style="color:#ffffff; background-color:#7d6fe7">Challenge [7d6fe7]</div>
-</p>
+  <p>
+    <div class="colorhead">DDR</div>
+    <div class="palettes" style="color:#ffffff; background-color:#00acff">Beginner [00acff]</div>
+    <div class="palettes" style="color:#000000; background-color:#ffac00">Light [ffac00]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#e634af">Standard [e634af]</div>
+    <div class="palettes" style="color:#000000; background-color:#69fd00">Heavy [69fd00]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#7d6fe7">Challenge [7d6fe7]</div>
+  </p>
 
-<p>
-  <div class="colorhead">Denver Broncos</div>
-  <div class="colors" style="color:#000000; background-color:#fb4f14">Orange [fb4f14]</div>
-  <div class="colors" style="color:#ffffff; background-color:#002244">Navy Blue [002244]</div>
-</p>
+  <p>
+    <div class="colorhead">Denver Broncos</div>
+    <div class="palettes" style="color:#000000; background-color:#fb4f14">Orange [fb4f14]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#002244">Navy Blue [002244]</div>
+  </p>
 
-<p>
-  <div class="colorhead">London Spitfire</div>
-  <div class="colors" style="color:#000000; background-color:#59cae8">Light Blue [59cae8]</div>
-  <div class="colors" style="color:#ffffff; background-color:#1b2b3a">Dark Blue [1b2b3a]</div>
-  <div class="colors" style="color:#000000; background-color:#ff8201">Orange [ff8201]</div>
-</p>
+  <p>
+    <div class="colorhead">London Spitfire</div>
+    <div class="palettes" style="color:#000000; background-color:#59cae8">Light Blue [59cae8]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#1b2b3a">Dark Blue [1b2b3a]</div>
+    <div class="palettes" style="color:#000000; background-color:#ff8201">Orange [ff8201]</div>
+  </p>
 
-<p>
-  <div class="colorhead">UConn (primary)</div>
-  <div class="colors" style="color:#ffffff; background-color:#000e2f">Navy Blue [000e2f]</div>
-  <div class="colors" style="color:#000000; background-color:#ffffff">White [ffffff]</div>
-  <div class="colors" style="color:#ffffff; background-color:#7c878e">Grey [7c878e]</div>
-</p>
+  <p>
+    <div class="colorhead">UConn (primary)</div>
+    <div class="palettes" style="color:#ffffff; background-color:#000e2f">Navy Blue [000e2f]</div>
+    <div class="palettes" style="color:#000000; background-color:#ffffff">White [ffffff]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#7c878e">Grey [7c878e]</div>
+  </p>
 
-<p>
-  <div class="colorhead">UConn (complementary)</div>
-  <div class="colors" style="color:#ffffff; background-color:#8a2121">Dark Red [8a2121]</div>
-  <div class="colors" style="color:#ffffff; background-color:#563680">Purple [563680]</div>
-  <div class="colors" style="color:#ffffff; background-color:#ce952e">Orange Gold [ce952e]</div>
-  <div class="colors" style="color:#ffffff; background-color:#7c8e31">Green [7c8e31]</div>
-  <div class="colors" style="color:#000000; background-color:#85b3cc">Teal Blue [85b3cc]</div>
-  <div class="colors" style="color:#ffffff; background-color:#9a8e57">Gold [9a8e57]</div>
-</p>
+  <p>
+    <div class="colorhead">UConn (complementary)</div>
+    <div class="palettes" style="color:#ffffff; background-color:#8a2121">Dark Red [8a2121]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#563680">Purple [563680]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#ce952e">Orange Gold [ce952e]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#7c8e31">Green [7c8e31]</div>
+    <div class="palettes" style="color:#000000; background-color:#85b3cc">Teal Blue [85b3cc]</div>
+    <div class="palettes" style="color:#ffffff; background-color:#9a8e57">Gold [9a8e57]</div>
+  </p>
 
-<p>
-  <a href="{{ url_for('index.index') }}">Back to the home page</a>
-</p>
-
+  <p>
+    <a href="{{ url_for('index.index') }}">Back to the home page</a>
+  </p>
+  </main>
+  <footer>
+    <hr>
+    <nav>
+      <a class="email" href="mailto:mike@tarpey.dev">email</a>
+      <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+      <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+      <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+      <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+      <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+      <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+      <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+      <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+      <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+    </nav>
+  </footer>
+</body>
 </html>

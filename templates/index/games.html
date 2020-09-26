@@ -1,7 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <title>games</title>  
+    <title>games</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">   
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/games.css') }}"> 
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
@@ -19,59 +20,39 @@
   </head>  
   
   <body> 
-
-    <div class="left">
-
-      <div class="annuitydew">
-        <img src="{{ url_for('static', filename='index/favicon/annuitydew.jpg') }}" class="brand">
-      </div>
-      
-      <div class="ibp">
-        <center>
-        <img src='http://content.ibuypower.com/Images/Components/5708/A31-b-main.png' class="halfpic"></img><br>
-        <a href='http://www.ibuypower.com' target='_blank'><img class="quarterpic" src='http://content.ibuypower.com/Images/Store/eLogo.gif'/></a>
-        </center>
-        <!---   
-          <ul>
-          <li>Thermaltake Chaser A31 Gaming Case - Blue</li>
-          <li>Intel® Core™ i5-4690 Processor (4x 3.50GHz/6MB L3 Cache)</li>
-          <li>Processor Cooling: Asetek 510LC Liquid CPU Cooling System [SOCKET-1150]</li>
-          <li>Memory: 16 GB [8 GB x2] DDR3-2133 G.SKILL Ripjaws X</li>
-          <li> Video Card: NVIDIA GeForce GTX 750 - 2GB</li>
-          <li> Motherboard: ASUS Z97-K - 2x PCIe x16, 4x USB 3.0, 2x USB 2.0</li>
-          <li>Primary Hard Drive: 256 GB Apotop S3C Series SSD - Read: 490MB/s, Write: 275MB/s</li>
-          <li>Monitor: <a href="http://www.amazon.com/BenQ-Gaming-Monitor-RL2455HM-24-Inch/dp/B007HSKSMI">BenQ RL2455HM</a></li>
-          <li>Keyboard: <a href="http://www.razerzone.com/gaming-keyboards-keypads/razer-blackwidow-chroma">Razer BlackWidow Chroma</a></li>
-          </ul>
-        -->
-      </div>
-      
-      <div class="backlog">
-        <a href="http://backloggery.com/DHusky"><img src="http://backloggery.com/dhusky/sig.gif"></a>
-      </div>
-      
-      <div class="home">Main page: <a class="classwhite" href="{{ url_for('index.index') }}">Click here!</a></div>  
-      
-    </div>
-
-    <div class="right">
-
-      
-        <div class="ps4">
-          <a href="http://profiles.exophase.com/AnnuityDew/"><img src="http://card.exophase.com/1/800539.png" class="exophase"></a>  
-        </div>
-
-        <div class="steam">
-          <a href="http://profiles.exophase.com/AnnuityDew/"><img src="http://card.exophase.com/1/800542.png" class="exophase"></a>
-        </div>
-
-        <div class="xbox">
-          <a href="http://profiles.exophase.com/AnnuityDew/"><img src="http://card.exophase.com/1/800541.png" class="exophase"></a>
-        </div>
-      
-        
-
-    </div>
-
+    <header>
+      <nav>
+        Jump to:
+        <a class="index" href="{{ url_for('index.index') }}">index</a>
+        <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
+        <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
+        <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
+        <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
+        <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
+        <a class="links" href="{{ url_for('index.links') }}">links</a>
+        <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
+      </nav>
+    </header>
+    <main>
+      <img src="{{ url_for('static', filename='index/favicon/annuitydew.jpg') }}" class="brand">
+      <a href="http://profiles.exophase.com/AnnuityDew/"><img src="https://card.exophase.com/1/1253287.png" class="exophase"></a>
+      <a href="http://profiles.exophase.com/AnnuityDew/"><img src="https://card.exophase.com/1/1253288.png" class="exophase"></a>  
+      <a href="http://profiles.exophase.com/AnnuityDew/"><img src="https://card.exophase.com/1/1253286.png" class="exophase"></a>
+    </main>
+    <footer>
+      <hr>
+      <nav>
+        <a class="email" href="mailto:mike@tarpey.dev">email</a>
+        <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
+        <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
+        <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
+        <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
+        <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
+        <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
+        <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
+        <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
+        <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
+      </nav>
+    </footer>
   </body>
 </html>
