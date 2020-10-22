@@ -13,11 +13,25 @@ body {
   margin: 0px;
 }
 
-.indexbg {
+#banner {
+  position: relative;
+  height: 30rem;
   background-image: url('/static/index/images/19960703_image_0045.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center top;
+  background-position: right center;
+}
+.intro {
+  padding-top: 10rem;
+  text-align: center;
+  font-size: 8rem;
+  margin: 0;
+}
+@media only screen and (max-width: 720px) {
+  .intro {
+    padding-top: 20rem;
+    font-size: 4rem;
+  }
 }
 
 main {
@@ -77,6 +91,7 @@ nav a:hover {
 nav .index {
   background-color:#000000;
 }
+
 .center { text-align: center; }
 .haveyouseenx { background-color:#4C1782; }
 .mildredleague { background-color:#82175C; }
