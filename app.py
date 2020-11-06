@@ -8,7 +8,7 @@ from flask import Flask
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(
-        __name__ 
+        __name__
     )
     app.config.from_mapping(
         SECRET_KEY=os.environ['SECRET_KEY'],
@@ -27,7 +27,7 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-    
+
     # import apps
     from tarpeydev import index
     from tarpeydev import haveyouseenx
@@ -50,10 +50,11 @@ def create_app(test_config=None):
 
     return app
 
+
 app = create_app()
 
 if __name__ == '__main__':
-    if os.environ['FLASK_ENV']=='development':
+    if os.environ['FLASK_ENV'] == 'development':
         app.run(debug=True)
     # this else should never trigger if the Dockerfile is working =]
     else:
