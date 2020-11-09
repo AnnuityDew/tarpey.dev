@@ -1,105 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{{ game }}</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='ddr/css/ddr.css') }}">
+{% extends 'base.html' %}
   
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-  <meta name="msapplication-TileColor" content="#2d89ef">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}
+{{ game }}
+{% endblock %}
 
-</head>
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='ddr/css/ddr.css') }}">
+{% endblock %}
 
-<body>
-  <header>
-    <nav>
-      Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
-      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-      <a class="links" href="{{ url_for('index.links') }}">links</a>
-      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-    </nav>
-  </header>
-  <main>
-  <h1>{{ game }}</h1>
-    <p>
-    Here's my raw memory card data for this game. I'm still working on mapping each file. As I get further along in mapping, the stats you see below will update accordingly.
-    </p>
+{% block header %}
+{{ game }}
+{% endblock %}
 
-    <p>
-        <b>Stats</b>
-    </p>
+{% block content %}
+  <p>
+  Here's my raw memory card data for this game. I'm still working on mapping each file. As I get further along in mapping, the stats you see below will update accordingly.
+  </p>
 
-    <ul>
-        <li><b>Song play count: </b>{{ df.loc[df.type == 'Play Count', 'value'].sum()|int }}</li>
-    </ul>
+  <p>
+      <b>Stats</b>
+  </p>
 
-    <div style="overflow-x:auto;"><table>
-    <thead>
-      {% for header in df.columns %}
-      <th class="ddr_header">{{ header }}</th>
-      {% endfor %}
-    </thead>
-    <tbody>
-      {% for index, row in df.loc[df.type != 'Unknown'].iterrows() %}
-      <tr class="ddr_row">
-        <td class="starting_byte">
-          {{ row.starting_byte }}
-        </td>
-        <td class="byte_length">
-          {{ row.byte_length }}
-        </td>
-        <td class="type">
-          {{ row.type }}
-        </td>
-        <td class="song">
-          {{ row.song }}
-        </td>
-        <td class="style">
-          {{ row.style }}
-        </td>
-        <td class="difficulty">
-          {{ row.difficulty }}
-        </td>
-        <td class="value">
-          {{ row.value }}
-        </td>
-        <td class="hex_string">
-          {{ row.hex_string }}
-        </td>
-        <td class="raw_bytes">
-          {{ row.raw_bytes }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
+  <ul>
+      <li><b>Song play count: </b>{{ df.loc[df.type == 'Play Count', 'value'].sum()|int }}</li>
+  </ul>
+
+  <div style="overflow-x:auto;"><table>
+  <thead>
+    {% for header in df.columns %}
+    <th class="ddr_header">{{ header }}</th>
+    {% endfor %}
+  </thead>
+  <tbody>
+    {% for index, row in df.loc[df.type != 'Unknown'].iterrows() %}
+    <tr class="ddr_row">
+      <td class="starting_byte">
+        {{ row.starting_byte }}
+      </td>
+      <td class="byte_length">
+        {{ row.byte_length }}
+      </td>
+      <td class="type">
+        {{ row.type }}
+      </td>
+      <td class="song">
+        {{ row.song }}
+      </td>
+      <td class="style">
+        {{ row.style }}
+      </td>
+      <td class="difficulty">
+        {{ row.difficulty }}
+      </td>
+      <td class="value">
+        {{ row.value }}
+      </td>
+      <td class="hex_string">
+        {{ row.hex_string }}
+      </td>
+      <td class="raw_bytes">
+        {{ row.raw_bytes }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
   </table></div>
-</main>
-<footer>
-  <hr>
-  <nav>
-    <a class="email" href="mailto:mike@tarpey.dev">email</a>
-    <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-    <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-    <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-    <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-    <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-    <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-    <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-    <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-    <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-  </nav>
-</footer>
-</body>
-</html>
+{% endblock %}

@@ -1,38 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>haveyouseenx</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haveyouseenx/css/haveyouseenx.css') }}">
+{% extends 'base.html' %}
   
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#2d89ef">
-  <meta name="theme-color" content="#ffffff">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}haveyouseenx{% endblock %}
 
-</head>
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haveyouseenx/css/haveyouseenx.css') }}">
+{% endblock %}
 
-<body>
-  <header>
-    <nav>
-      Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
-      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-      <a class="links" href="{{ url_for('index.links') }}">links</a>
-      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-    </nav>
-  </header>
-  <main>
-  <h1>haveyouseenx search results</h1>
+{% block header %}haveyouseenx search results{% endblock %}
+{% block content %}
   <p>
   {% if search_term == '' %}
     You didn't search for a game, so here's the full table.
@@ -41,80 +16,63 @@
   {% endif %}
   </p>
   <div style="overflow-x:auto;"><table>
+  {% if results %}
     <thead>
-      {% for header in df.columns %}
-      <th class="hysx_header">{{ header }}</th>
+      {% for field, value in results[0].items() %}
+      <th class="hysx_header">{{ field }}</th>
       {% endfor %}
     </thead>
     <tbody>
-      {% for index, row in df.loc[df.game_title.str.contains(search_term, case=False)].iterrows() %}
+      {% for result in results %}
       <tr class="hysx_row">
+        <td class="_id">
+          {{ result.get('_id') }}
+        </td>
         <td class="game_title">
-          {{ row.game_title }}
+          {{ result.get('game_title') }}
         </td>
         <td class="sub_title">
-          {{ row.sub_title }}
+          {{ result.get('sub_title') }}
         </td>
         <td class="game_system">
-          {{ row.game_system }}
+          {{ result.get('game_system') }}
         </td>
         <td class="genre">
-          {{ row.genre }}
+          {{ result.get('genre') }}
         </td>
         <td class="now_playing">
-          {{ row.now_playing }}
+          {{ result.get('now_playing') }}
         </td>
         <td class="game_status">
-          {{ row.game_status }}
+          {{ result.get('game_status') }}
         </td>
         <td class="game_hours">
-          {{ row.game_hours }}
+          {{ result.get('game_hours') }}
         </td>
         <td class="game_minutes">
-          {{ row.game_minutes }}
+          {{ result.get('game_minutes') }}
         </td>
         <td class="playtime_calc">
-          {{ row.playtime_calc }}
+          {{ result.get('playtime_calc') }}
         </td>
         <td class="add_date">
-          {{ row.add_date }}
+          {{ result.get('add_date') }}
         </td>
         <td class="start_date">
-          {{ row.start_date }}
+          {{ result.get('start_date') }}
         </td>
         <td class="beat_date">
-          {{ row.beat_date }}
+          {{ result.get('beat_date') }}
         </td>
         <td class="complete_date">
-          {{ row.complete_date }}
+          {{ result.get('complete_date') }}
         </td>
         <td class="game_notes">
-          {{ row.game_notes }}
+          {{ result.get('game_notes') }}
         </td>
       </tr>
       {% endfor %}
     </tbody>
+  {% endif %}
   </table></div>
-
-
-  <form action="{{ url_for('haveyouseenx.search') }}" method="post">
-    <button>Go back!</button>
-  </form>
-</main>
-<footer>
-  <hr>
-  <nav>
-    <a class="email" href="mailto:mike@tarpey.dev">email</a>
-    <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-    <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-    <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-    <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-    <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-    <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-    <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-    <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-    <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-  </nav>
-</footer>
-</body>
-</html>
+{% endblock %}

@@ -1,81 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>mildredleague rules</title>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+{% extends 'base.html' %}
+  
+{% block title %}mildredleague rules{% endblock %}
+
+{% block style %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-  <meta name="msapplication-TileColor" content="#2d89ef">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
 
-</head>
+{% block header %}
+mildredleague rules
+{% endblock %}
 
-<body>
-  <header>
-    <nav>
-      Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
-      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-      <a class="links" href="{{ url_for('index.links') }}">links</a>
-      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-    </nav>
-  </header>
-  <main>
-  <h1>mildredleague rules</h1>
-  <table class="ml_rules">
-    <th>Rule</th><th>Description</th>
-    <tr><td>Prize Pool</td><td>3rd place refund, 2nd place 2x refund, 1st place gets pot</td></tr>
-    <tr><td>Roster</td><td>QB / RB / 2WR / TE / 2FLX / 1K / 1D / 5B</td></tr>
-    <tr><td>Divisions</td><td>Champions, AFC East, Referees</td></tr>
-    <tr><td>Playoffs</td><td>Three division winners (#1, #2, #3) and three wild cards (#4, #5, #6) make playoffs. Playoffs reseed after each round.</td></tr>
-    <tr><td>Consolation Bracket</td><td>Swiss-style tournament. Winner earns choice of draft slot next year.</td></tr>
-    <tr><td>Scheduling</td><td>Play divisional opponents twice. Schedule fills with non-division opponents.</td></tr>
-  </table>
+{% block content %}
+<table class="ml_rules">
+  <th>Rule</th><th>Description</th>
+  <tr><td>Prize Pool</td><td>3rd place refund, 2nd place 2x refund, 1st place gets pot</td></tr>
+  <tr><td>Roster</td><td>QB / RB / 2WR / TE / 2FLX / 1K / 1D / 5B</td></tr>
+  <tr><td>Divisions</td><td>Champions, AFC East, Referees</td></tr>
+  <tr><td>Playoffs</td><td>Three division winners (#1, #2, #3) and three wild cards (#4, #5, #6) make playoffs. Playoffs reseed after each round.</td></tr>
+  <tr><td>Consolation Bracket</td><td>Swiss-style tournament. Winner earns choice of draft slot next year.</td></tr>
+  <tr><td>Scheduling</td><td>Play divisional opponents twice. Schedule fills with non-division opponents.</td></tr>
+</table>
 
-  <b>Playoff Tiebreakers</b>
-  <ol class="lettered_list">
-    <li>If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:</li>
-    <ol>
-      <li>Head-to-head record</li>
-      <li>Division record</li>
-      <li>Points for</li>
-      <li>Points against</li>
-      <li>Coin toss (a real one, not random number generated)</li>
-    </ol>
-    <li>If two teams in different divisions end up tied, tiebreakers will happen in this order:</li>
-    <ol>
-      <li>Head-to-head record</li>
-      <li>Points for</li>
-      <li>Points against</li>
-      <li>Coin toss (a real one, not random number generated)</li>
-    </ol>
-    <li>If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.</li>
+<b>Playoff Tiebreakers</b>
+<ol class="lettered_list">
+  <li>If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:</li>
+  <ol>
+    <li>Head-to-head record</li>
+    <li>Division record</li>
+    <li>Points for</li>
+    <li>Points against</li>
+    <li>Coin toss (a real one, not random number generated)</li>
   </ol>
-</main>
-<footer>
-  <hr>
-  <nav>
-    <a class="email" href="mailto:mike@tarpey.dev">email</a>
-    <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-    <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-    <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-    <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-    <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-    <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-    <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-    <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-    <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-  </nav>
-</footer>
-</body>
-</html>
+  <li>If two teams in different divisions end up tied, tiebreakers will happen in this order:</li>
+  <ol>
+    <li>Head-to-head record</li>
+    <li>Points for</li>
+    <li>Points against</li>
+    <li>Coin toss (a real one, not random number generated)</li>
+  </ol>
+  <li>If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.</li>
+</ol>
+{% endblock %}

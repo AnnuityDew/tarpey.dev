@@ -1,38 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>autobracket</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='autobracket/css/autobracket.css') }}">
+{% extends 'base.html' %}
 
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-  <meta name="msapplication-TileColor" content="#2d89ef">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}autobracket{% endblock %}
 
-</head>
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='autobracket/css/autobracket.css') }}">
+{% endblock %}
 
-<body>
-  <header>
-    <nav>
-      Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
-      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-      <a class="links" href="{{ url_for('index.links') }}">links</a>
-      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-    </nav>
-  </header>
-  <main>
-  <h1>autobracket</h1>
+{% block header %}autobracket{% endblock %}
+
+{% block content %}
   <p>
     This is an automatic bracket generator for March Madness 2019. <b>It's over now (congrats to UVA), but you can re-run the model in the state it was in before the Sweet 16 began.</b>
     Improvements will be made before March Madness 2021 begins!
@@ -55,45 +31,27 @@
     The model is updated with Round of 32 results. Do a Partial (Yes) model to start the model at the RO16, or a Full (No) model to re-run all 67 games.
   </p>
 
-    <form action="{{ url_for('autobracket.bracket') }}" method="POST">
-      
-      <section class="ro32">
-      Use RO32 results?<br>
-      <input name="model_current" type="radio" id="partial" value="partial" required><label for="partial">Yes</label>
-      <input name="model_current" type="radio" id="full" value="full"><label for="full">No</label>
-      </section>
+  <form action="{{ url_for('autobracket.bracket') }}" method="POST">
+    
+    <section class="ro32">
+    Use RO32 results?<br>
+    <input name="model_current" type="radio" id="partial" value="partial" required><label for="partial">Yes</label>
+    <input name="model_current" type="radio" id="full" value="full"><label for="full">No</label>
+    </section>
 
-      
-      <section class="model_type">
-      Model type?<br>
-      <input name="model_choice" type="radio" id="classic" value="classic" required><label for="classic">Classic</label>
-      <input name="model_choice" type="radio" id="modern" value="modern"><label for="partial">Modern</label>
-      </section>
+    
+    <section class="model_type">
+    Model type?<br>
+    <input name="model_choice" type="radio" id="classic" value="classic" required><label for="classic">Classic</label>
+    <input name="model_choice" type="radio" id="modern" value="modern"><label for="partial">Modern</label>
+    </section>
 
-      <section class="added_chaos">
-      <label for='chaosbox'>Added chaos?</label><br>
-      <input id='chaosbox' name='chaos_choice' type="number" min="0" max="10" step="1" required>
-      </section>
+    <section class="added_chaos">
+    <label for='chaosbox'>Added chaos?</label><br>
+    <input id='chaosbox' name='chaos_choice' type="number" min="0" max="10" step="1" required>
+    </section>
 
 
-      <input type="submit" value="Go!">
-    </form>
-</main>
-    <footer>
-      <hr>
-      <nav>
-        <a class="email" href="mailto:mike@tarpey.dev">email</a>
-        <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-        <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-        <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-        <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-        <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-        <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-        <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-        <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-        <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-      </nav>
-    </footer>
-</body>
-
-</html>
+    <input type="submit" value="Go!">
+  </form>
+{% endblock %}

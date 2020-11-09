@@ -61,10 +61,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# Flask stuff:
-instance/
-.webassets-cache
-
 # Scrapy stuff:
 .scrapy
 
@@ -146,3 +142,7 @@ tarpeydev-8a855309bf53.json
 
 # constructed DDR data
 data/ddr/constructed
+
+# Flask stuff:
+instance/
+.webassets-cache

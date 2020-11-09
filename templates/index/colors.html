@@ -1,38 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>colors</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/colors.css') }}">
+{% extends 'base.html' %}
+  
+{% block title %}colors{% endblock %}
 
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-  <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-  <meta name="msapplication-TileColor" content="#2d89ef">
-  <meta name="theme-color" content="#ffffff">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/colors.css') }}">
+{% endblock %}
 
-</head>
+{% block header %}colors{% endblock %}
 
-<body>
-  <header>
-    <nav>
-      Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
-      <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-      <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-      <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-      <a class="links" href="{{ url_for('index.links') }}">links</a>
-      <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-    </nav>
-  </header>
-  <main>
-    <h1>colors</h1>
+{% block content %}
   <p>
     I use colors to stay organized in all aspects of life...
   </p>
@@ -102,21 +78,4 @@
   <p>
     <a href="{{ url_for('index.index') }}">Back to the home page</a>
   </p>
-  </main>
-  <footer>
-    <hr>
-    <nav>
-      <a class="email" href="mailto:mike@tarpey.dev">email</a>
-      <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-      <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-      <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-      <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-      <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-      <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-      <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-      <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-      <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-    </nav>
-  </footer>
-</body>
-</html>
+{% endblock %}

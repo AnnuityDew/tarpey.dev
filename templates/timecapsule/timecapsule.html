@@ -1,77 +1,31 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/style.css') }}">
+{% extends 'base.html' %}
+  
+{% block title %}timecapsule{% endblock %}
 
-<html class="default">	
+{% block header %}timecapsule{% endblock %}
 
-<head>
-	<title>timecapsule</title>
+{% block content %}
+<p>
+This is the time capsule. 
+</p>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='index/favicon/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='index/favicon/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ url_for('static', filename='index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='index/favicon/favicon.ico') }}">
-    <meta name="msapplication-TileColor" content="#2d89ef">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<p>
+  I bought tarpey.dev with the primary goal of improving my programming skills by building out some small apps...but I haven't lost sight of the fact that my website used to be an important portal for me to express what I was feeling (especially during an emotionally turbulent high school and college career). I think it makes sense for me to give these pages I built during my academic career a place of their own.
+</p>
 
-</head>
+<p>
+  Just about everything contained within is untouched since the last iteration of michaeltarpey.com (probably since 2013 or so). The high school pages are even older than that. I scrubbed each page for inactive email addresses and old scripts before uploading.
+</p>
 
-<body>
-    <header>
-        <nav>
-          Jump to:
-          <a class="index" href="{{ url_for('index.index') }}">index</a>
-          <a class="haveyouseenx" href="{{ url_for('haveyouseenx.search') }}">haveyouseenx</a>
-          <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
-          <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
-          <a class="autobracket" href="{{ url_for('autobracket.generate') }}">autobracket</a>
-          <a class="timecapsule" href="{{ url_for('timecapsule.timecapsule') }}">timecapsule</a>
-          <a class="links" href="{{ url_for('index.links') }}">links</a>
-          <a class="colors" href="{{ url_for('index.colors') }}">colors</a>
-        </nav>
-      </header>
-      <main>
-          <h1>timecapsule</h1>
-    <p>
-        This is the time capsule. 
-    </p>
+<p>
+  <b class="bold_warning">Some links won't work, and the profile information is obviously pretty dated.</b> If you're looking for my up-to-date resume, you can visit <a href="https://www.linkedin.com/in/mptarpey/">LinkedIn</a>.
+</p>
 
-    <p>
-        I bought tarpey.dev with the primary goal of improving my programming skills by building out some small apps...but I haven't lost sight of the fact that my website used to be an important portal for me to express what I was feeling (especially during an emotionally turbulent high school and college career). I think it makes sense for me to give these pages I built during my academic career a place of their own.
-    </p>
+<p>
+  There are three hidden pages that are only accessible by typing in the correct URL. (From what I can tell, this is intended behavior from past me. I was still uploading HTML templates for these pages, but there are no links to them within the site.)
+</p>
 
-    <p>
-        Just about everything contained within is untouched since the last iteration of michaeltarpey.com (probably since 2013 or so). The high school pages are even older than that. I scrubbed each page for inactive email addresses and old scripts before uploading.
-    </p>
-
-    <p>
-        <b class="bold_warning">Some links won't work, and the profile information is obviously pretty dated.</b> If you're looking for my up-to-date resume, you can visit <a href="https://www.linkedin.com/in/mptarpey/">LinkedIn</a>.
-    </p>
-
-    <p>
-        There are three hidden pages that are only accessible by typing in the correct URL. (From what I can tell, this is intended behavior from past me. I was still uploading HTML templates for these pages, but there are no links to them within the site.)
-    </p>
-
-    <p>
-        With all that said...<a href="{{ url_for('timecapsule.index') }}">click here to enter!</a>
-    </p>
-</main>
-<footer>
-    <hr>
-    <nav>
-      <a class="email" href="mailto:mike@tarpey.dev">email</a>
-      <a class="github" href="https://github.com/AnnuityDew/tarpey.dev">github</a>
-      <a class="discord" href="https://discord.com/invite/bVDZfNe">discord</a>
-      <a class="twitch" href="http://www.twitch.tv/annuitydew">twitch</a>
-      <a class="instagram" href="https://www.instagram.com/annuitydew/">instagram</a>
-      <a class="twitter" href="http://www.twitter.com/AnnuityDew">twitter</a>
-      <a class="youtube" href="http://www.youtube.com/user/annuitydew">youtube</a>
-      <a class="specs" href="https://pcpartpicker.com/b/zzMcCJ">specs</a>
-      <a class="steam" href="https://steamcommunity.com/id/annuitydew">steam</a>
-      <a class="tumblr" href="https://annuitydew.tumblr.com/">tumblr</a>
-    </nav>
-  </footer>
-</body>
-
-</html>
+<p>
+  With all that said...<a href="{{ url_for('timecapsule.index') }}">click here to enter!</a>
+</p>
+{% endblock %}

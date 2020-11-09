@@ -3,21 +3,16 @@ import os
 
 # import third party packages
 from flask import Flask
+from google.cloud import firestore
 
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(
-        __name__
-    )
-    app.config.from_mapping(
-        SECRET_KEY=os.environ['SECRET_KEY'],
-        # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
+    app = Flask(__name__, instance_relative_config=True)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
+        app.config.from_pyfile('config.py')
     else:
         # load the test config if passed in
         app.config.from_mapping(test_config)
@@ -28,7 +23,13 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # import db
+    from tarpeydev import db
+    # make sure app can close the connection to db
+    db.add_db_syncs_and_teardowns(app)
+
     # import apps
+    from tarpeydev import admin
     from tarpeydev import index
     from tarpeydev import haveyouseenx
     from tarpeydev import mildredleague
@@ -37,6 +38,7 @@ def create_app(test_config=None):
     from tarpeydev import timecapsule
 
     # register apps
+    app.register_blueprint(admin.bp)
     app.register_blueprint(index.index_bp)
     app.register_blueprint(haveyouseenx.hysx_bp)
     app.register_blueprint(mildredleague.ml_bp)
