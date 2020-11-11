@@ -1,0 +1,706 @@
+﻿game_id,away,a_name,a_nick,a_division,a_score,home,h_name,h_nick,h_division,h_score,week_s,week_e,season,playoff
+1,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,125,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,80,1,1,2013,0
+2,Team Reddy,Neel Reddy,Neel,West Whatever,57,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,76,1,1,2013,0
+3,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,106,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,6,1,1,2013,0
+4,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,122,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,126,1,1,2013,0
+5,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,123,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,125,1,1,2013,0
+6,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,102,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,50,2,2,2013,0
+7,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,74,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,112,2,2,2013,0
+8,Team Reddy,Neel Reddy,Neel,West Whatever,105,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,78,2,2,2013,0
+9,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,60,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,61,2,2,2013,0
+10,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,5,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,98,2,2,2013,0
+11,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,68,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,92,3,3,2013,0
+12,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,66,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,98,3,3,2013,0
+13,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,96,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,76,3,3,2013,0
+14,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,62,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,68,3,3,2013,0
+15,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,-2,Team Reddy,Neel Reddy,Neel,West Whatever,82,3,3,2013,0
+16,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,134,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,107,4,4,2013,0
+17,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,53,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,103,4,4,2013,0
+18,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,116,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,56,4,4,2013,0
+19,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,65,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,-2,4,4,2013,0
+20,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,125,Team Reddy,Neel Reddy,Neel,West Whatever,89,4,4,2013,0
+21,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,115,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,85,5,5,2013,0
+22,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,0,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,69,5,5,2013,0
+23,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,121,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,61,5,5,2013,0
+24,Team Reddy,Neel Reddy,Neel,West Whatever,93,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,76,5,5,2013,0
+25,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,87,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,73,5,5,2013,0
+26,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,49,Team Reddy,Neel Reddy,Neel,West Whatever,110,6,6,2013,0
+27,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,64,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,132,6,6,2013,0
+28,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,58,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,117,6,6,2013,0
+29,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,111,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,72,6,6,2013,0
+30,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,45,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,6,6,6,2013,0
+31,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,-2,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,88,7,7,2013,0
+32,Team Reddy,Neel Reddy,Neel,West Whatever,102,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,92,7,7,2013,0
+33,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,73,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,82,7,7,2013,0
+34,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,105,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,62,7,7,2013,0
+35,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,35,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,80,7,7,2013,0
+36,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,104,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,60,8,8,2013,0
+37,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,58,Team Reddy,Neel Reddy,Neel,West Whatever,99,8,8,2013,0
+38,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,69,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,86,8,8,2013,0
+39,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,125,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,66,8,8,2013,0
+40,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,56,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,-2,8,8,2013,0
+41,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,38,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,93,9,9,2013,0
+42,Team Reddy,Neel Reddy,Neel,West Whatever,75,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,64,9,9,2013,0
+43,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,64,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,69,9,9,2013,0
+44,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,0,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,102,9,9,2013,0
+45,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,66,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,58,9,9,2013,0
+46,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,30,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,84,10,10,2013,0
+47,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,86,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,86,10,10,2013,0
+48,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,92,Team Reddy,Neel Reddy,Neel,West Whatever,91,10,10,2013,0
+49,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,101,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,77,10,10,2013,0
+50,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,54,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,16,10,10,2013,0
+51,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,79,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,96,11,11,2013,0
+52,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,77,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,107,11,11,2013,0
+53,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,104,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,92,11,11,2013,0
+54,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,51,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,82,11,11,2013,0
+55,Team Reddy,Neel Reddy,Neel,West Whatever,101,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,0,11,11,2013,0
+56,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,93,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,42,12,12,2013,0
+57,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,23,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,103,12,12,2013,0
+58,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,10,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,78,12,12,2013,0
+59,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,91,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,36,12,12,2013,0
+60,Team Reddy,Neel Reddy,Neel,West Whatever,112,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,114,12,12,2013,0
+61,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,106,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,85,13,13,2013,0
+62,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,7,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,56,13,13,2013,0
+63,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,77,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,130,13,13,2013,0
+64,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,44,Team Reddy,Neel Reddy,Neel,West Whatever,94,13,13,2013,0
+65,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,88,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,118,13,13,2013,0
+66,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,218,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,214,14,15,2013,1
+67,Team Reddy,Neel Reddy,Neel,West Whatever,204,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,263,14,15,2013,1
+68,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,131,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,154,14,15,2013,1
+69,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,152,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,165,14,15,2013,1
+70,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,11,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,105,14,15,2013,1
+71,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,235,Cecil's Cargo Shorts,Christian Costa,Christian,West Whatever,163,16,17,2013,1
+72,Team Reddy,Neel Reddy,Neel,West Whatever,159,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,148,16,17,2013,1
+73,Team Stonerock Bradford,D. Stonerock Bradford,Debbie,West Whatever,205,HTTR RGSkins,Danny Rinehart,Danny,East Coast Bias,131,16,17,2013,1
+74,Can't Get It Up,Hardy Chen,Hardy,East Coast Bias,102,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,135,16,17,2013,1
+75,Team Sexbang,Bryant Sexbang,Bryant,West Whatever,4,Eagles Will Fly,Tommy Pfifferling,Tommy,West Whatever,173,16,17,2013,1
+76,Rise Up?,Brandon Dilbeck,Brando,West Whatever,95,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,104,1,1,2014,0
+77,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,106,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,72,1,1,2014,0
+78,beckley poopers,Benjamin Everette,Ben,West Whatever,56,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,108,1,1,2014,0
+79,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,83,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,63,1,1,2014,0
+80,VA Beach Warriors,DJ Conti,Conti,West Whatever,88,Rock Lobsters,Matthew Debski,Debski,West Whatever,61,1,1,2014,0
+81,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,74,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,76,1,1,2014,0
+82,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,80,Rise Up?,Brandon Dilbeck,Brando,West Whatever,61,2,2,2014,0
+83,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,103,beckley poopers,Benjamin Everette,Ben,West Whatever,88,2,2,2014,0
+84,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,50,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,125,2,2,2014,0
+85,VA Beach Warriors,DJ Conti,Conti,West Whatever,80,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,98,2,2,2014,0
+86,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,68,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,63,2,2,2014,0
+87,Rock Lobsters,Matthew Debski,Debski,West Whatever,96,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,100,2,2,2014,0
+88,Rise Up?,Brandon Dilbeck,Brando,West Whatever,92,beckley poopers,Benjamin Everette,Ben,West Whatever,61,3,3,2014,0
+89,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,74,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,49,3,3,2014,0
+90,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,89,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,87,3,3,2014,0
+91,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,104,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,57,3,3,2014,0
+92,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,84,VA Beach Warriors,DJ Conti,Conti,West Whatever,80,3,3,2014,0
+93,Rock Lobsters,Matthew Debski,Debski,West Whatever,101,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,51,3,3,2014,0
+94,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,80,Rise Up?,Brandon Dilbeck,Brando,West Whatever,64,4,4,2014,0
+95,beckley poopers,Benjamin Everette,Ben,West Whatever,66,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,68,4,4,2014,0
+96,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,100,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,82,4,4,2014,0
+97,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,116,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,85,4,4,2014,0
+98,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,69,Rock Lobsters,Matthew Debski,Debski,West Whatever,50,4,4,2014,0
+99,VA Beach Warriors,DJ Conti,Conti,West Whatever,123,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,105,4,4,2014,0
+100,Rise Up?,Brandon Dilbeck,Brando,West Whatever,105,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,86,5,5,2014,0
+101,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,87,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,76,5,5,2014,0
+102,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,69,beckley poopers,Benjamin Everette,Ben,West Whatever,66,5,5,2014,0
+103,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,67,Rock Lobsters,Matthew Debski,Debski,West Whatever,78,5,5,2014,0
+104,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,73,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,79,5,5,2014,0
+105,VA Beach Warriors,DJ Conti,Conti,West Whatever,69,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,86,5,5,2014,0
+106,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,61,Rise Up?,Brandon Dilbeck,Brando,West Whatever,75,6,6,2014,0
+107,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,91,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,91,6,6,2014,0
+108,VA Beach Warriors,DJ Conti,Conti,West Whatever,56,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,55,6,6,2014,0
+109,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,72,beckley poopers,Benjamin Everette,Ben,West Whatever,108,6,6,2014,0
+110,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,82,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,94,6,6,2014,0
+111,Rock Lobsters,Matthew Debski,Debski,West Whatever,93,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,105,6,6,2014,0
+112,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,77,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,87,7,7,2014,0
+113,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,70,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,86,7,7,2014,0
+114,beckley poopers,Benjamin Everette,Ben,West Whatever,88,VA Beach Warriors,DJ Conti,Conti,West Whatever,70,7,7,2014,0
+115,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,61,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,21,7,7,2014,0
+116,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,118,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,107,7,7,2014,0
+117,Rise Up?,Brandon Dilbeck,Brando,West Whatever,106,Rock Lobsters,Matthew Debski,Debski,West Whatever,82,7,7,2014,0
+118,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,75,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,89,8,8,2014,0
+119,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,96,beckley poopers,Benjamin Everette,Ben,West Whatever,112,8,8,2014,0
+120,VA Beach Warriors,DJ Conti,Conti,West Whatever,96,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,75,8,8,2014,0
+121,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,70,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,123,8,8,2014,0
+122,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,91,Rise Up?,Brandon Dilbeck,Brando,West Whatever,115,8,8,2014,0
+123,Rock Lobsters,Matthew Debski,Debski,West Whatever,143,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,95,8,8,2014,0
+124,beckley poopers,Benjamin Everette,Ben,West Whatever,77,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,94,9,9,2014,0
+125,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,90,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,59,9,9,2014,0
+126,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,108,VA Beach Warriors,DJ Conti,Conti,West Whatever,104,9,9,2014,0
+127,Rise Up?,Brandon Dilbeck,Brando,West Whatever,81,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,46,9,9,2014,0
+128,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,125,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,32,9,9,2014,0
+129,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,112,Rock Lobsters,Matthew Debski,Debski,West Whatever,102,9,9,2014,0
+130,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,108,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,59,10,10,2014,0
+131,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,76,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,105,10,10,2014,0
+132,VA Beach Warriors,DJ Conti,Conti,West Whatever,86,Rise Up?,Brandon Dilbeck,Brando,West Whatever,88,10,10,2014,0
+133,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,100,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,126,10,10,2014,0
+134,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,84,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,88,10,10,2014,0
+135,Rock Lobsters,Matthew Debski,Debski,West Whatever,68,beckley poopers,Benjamin Everette,Ben,West Whatever,110,10,10,2014,0
+136,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,83,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,71,11,11,2014,0
+137,Rise Up?,Brandon Dilbeck,Brando,West Whatever,107,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,79,11,11,2014,0
+138,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,108,VA Beach Warriors,DJ Conti,Conti,West Whatever,90,11,11,2014,0
+139,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,41,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,33,11,11,2014,0
+140,beckley poopers,Benjamin Everette,Ben,West Whatever,96,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,96,11,11,2014,0
+141,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,110,Rock Lobsters,Matthew Debski,Debski,West Whatever,79,11,11,2014,0
+142,Rise Up?,Brandon Dilbeck,Brando,West Whatever,129,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,55,12,12,2014,0
+143,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,101,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,75,12,12,2014,0
+144,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,105,VA Beach Warriors,DJ Conti,Conti,West Whatever,60,12,12,2014,0
+145,beckley poopers,Benjamin Everette,Ben,West Whatever,130,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,72,12,12,2014,0
+146,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,87,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,59,12,12,2014,0
+147,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,95,Rock Lobsters,Matthew Debski,Debski,West Whatever,87,12,12,2014,0
+148,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,65,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,53,13,13,2014,0
+149,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,64,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,98,13,13,2014,0
+150,VA Beach Warriors,DJ Conti,Conti,West Whatever,83,beckley poopers,Benjamin Everette,Ben,West Whatever,128,13,13,2014,0
+151,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,83,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,86,13,13,2014,0
+152,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,84,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,117,13,13,2014,0
+153,Rock Lobsters,Matthew Debski,Debski,West Whatever,117,Rise Up?,Brandon Dilbeck,Brando,West Whatever,122,13,13,2014,0
+154,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,195,Rise Up?,Brandon Dilbeck,Brando,West Whatever,223,14,15,2014,1
+155,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,171,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,159,14,15,2014,1
+156,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,140,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,160,14,15,2014,1
+157,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,209,beckley poopers,Benjamin Everette,Ben,West Whatever,194,14,15,2014,1
+158,Rock Lobsters,Matthew Debski,Debski,West Whatever,190,VA Beach Warriors,DJ Conti,Conti,West Whatever,139,14,15,2014,1
+159,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,82,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,128,14,15,2014,1
+160,EdelMAN HE'S FINE!,Matt Kindy,Kindy,East Coast Bias,151,Rise Up?,Brandon Dilbeck,Brando,West Whatever,190,16,17,2014,1
+161,Injured Like A Montee Ball,Jeff Sendzik,Sendzik,East Coast Bias,148,Revis Island Manning Mashers,Samik Das,Samik,East Coast Bias,134,16,17,2014,1
+162,team sneup,Stephanie Neupert,Stephanie,East Coast Bias,201,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,155,16,17,2014,1
+163,Rock Lobsters,Matthew Debski,Debski,West Whatever,173,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,143,16,17,2014,1
+164,Winners Get Wings,Arthur Neupert,Arthur,West Whatever,152,beckley poopers,Benjamin Everette,Ben,West Whatever,164,16,17,2014,1
+165,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,127,VA Beach Warriors,DJ Conti,Conti,West Whatever,107,16,17,2014,1
+166,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,88,Team Catch the Dream,Michael Allen,mballen,West Whatever,63,1,1,2015,0
+167,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,52,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,87,1,1,2015,0
+168,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,60,Brady's Balls Brigade,Samik Das,Samik,West Whatever,100,1,1,2015,0
+169,beckley poopers,Benjamin Everette,Ben,East Coast Bias,80,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,76,1,1,2015,0
+170,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,101,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,82,1,1,2015,0
+171,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,75,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,116,1,1,2015,0
+172,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,91,Kush Gordon,frank arguello,Frank,West Whatever,79,1,1,2015,0
+173,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,78,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,64,2,2,2015,0
+174,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,89,beckley poopers,Benjamin Everette,Ben,East Coast Bias,110,2,2,2015,0
+175,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,66,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,110,2,2,2015,0
+176,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,67,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,67,2,2,2015,0
+177,Brady's Balls Brigade,Samik Das,Samik,West Whatever,124,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,63,2,2,2015,0
+178,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,90,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,94,2,2,2015,0
+179,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,76,Kush Gordon,frank arguello,Frank,West Whatever,53,2,2,2015,0
+180,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,151,beckley poopers,Benjamin Everette,Ben,West Whatever,129,3,3,2015,0
+181,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,77,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,67,3,3,2015,0
+182,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,129,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,95,3,3,2015,0
+183,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,81,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,77,3,3,2015,0
+184,Kush Gordon,frank arguello,Frank,West Whatever,86,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,96,3,3,2015,0
+185,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,76,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,84,3,3,2015,0
+186,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,82,Brady's Balls Brigade,Samik Das,Samik,West Whatever,101,3,3,2015,0
+187,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,104,VA Beach Warriors,DJ Conti,Conti,West Whatever,73,4,4,2015,0
+188,beckley poopers,Benjamin Everette,Ben,East Coast Bias,71,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,78,4,4,2015,0
+189,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,63,Kush Gordon,frank arguello,Frank,West Whatever,84,4,4,2015,0
+190,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,56,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,68,4,4,2015,0
+191,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,67,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,74,4,4,2015,0
+192,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,81,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,80,4,4,2015,0
+193,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,52,Brady's Balls Brigade,Samik Das,Samik,West Whatever,87,4,4,2015,0
+194,Kush Gordon,frank arguello,Frank,West Whatever,69,Rise Up?,Brandon Dilbeck,Brando,West Whatever,63,5,5,2015,0
+195,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,50,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,90,5,5,2015,0
+196,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,56,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,95,5,5,2015,0
+197,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,103,beckley poopers,Benjamin Everette,Ben,East Coast Bias,67,5,5,2015,0
+198,Brady's Balls Brigade,Samik Das,Samik,West Whatever,85,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,83,5,5,2015,0
+199,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,114,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,48,5,5,2015,0
+200,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,97,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,95,5,5,2015,0
+201,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,66,Rainelle Rangers,patrick bell,Patrick,West Whatever,51,6,6,2015,0
+202,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,81,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,82,6,6,2015,0
+203,Kush Gordon,frank arguello,Frank,West Whatever,106,Brady's Balls Brigade,Samik Das,Samik,West Whatever,83,6,6,2015,0
+204,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,64,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,88,6,6,2015,0
+205,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,115,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,66,6,6,2015,0
+206,beckley poopers,Benjamin Everette,Ben,East Coast Bias,94,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,47,6,6,2015,0
+207,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,131,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,93,6,6,2015,0
+208,Brady's Balls Brigade,Samik Das,Samik,West Whatever,119,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,59,7,7,2015,0
+209,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,101,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,46,7,7,2015,0
+210,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,37,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,82,7,7,2015,0
+211,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,62,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,53,7,7,2015,0
+212,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,64,Kush Gordon,frank arguello,Frank,West Whatever,121,7,7,2015,0
+213,beckley poopers,Benjamin Everette,Ben,East Coast Bias,106,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,101,7,7,2015,0
+214,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,69,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,82,7,7,2015,0
+215,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,69,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,41,8,8,2015,0
+216,beckley poopers,Benjamin Everette,Ben,East Coast Bias,40,RowdyRuff Boys,Jeff Sendzik,Sendzik,East Coast Bias,52,8,8,2015,0
+217,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,111,I Dont Know What I'm doing,Matthew Debski,Debski,East Coast Bias,93,8,8,2015,0
+218,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,99,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,East Coast Bias,105,8,8,2015,0
+219,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,110,Kush Gordon,frank arguello,Frank,East Coast Bias,67,8,8,2015,0
+220,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,52,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,32,8,8,2015,0
+221,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,90,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,111,8,8,2015,0
+222,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,80,beckley poopers,Benjamin Everette,Ben,West Whatever,95,9,9,2015,0
+223,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,105,VA Beach Warriors,DJ Conti,Conti,West Whatever,107,9,9,2015,0
+224,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,77,Rise Up?,Brandon Dilbeck,Brando,West Whatever,93,9,9,2015,0
+225,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,111,Rainelle Rangers,patrick bell,Patrick,West Whatever,81,9,9,2015,0
+226,Kush Gordon,frank arguello,Frank,West Whatever,84,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,110,9,9,2015,0
+227,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,41,Team Catch the Dream,Michael Allen,mballen,West Whatever,60,9,9,2015,0
+228,Brady's Balls Brigade,Samik Das,Samik,West Whatever,106,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,47,9,9,2015,0
+229,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,82,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,59,10,10,2015,0
+230,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,75,RowdyRuff Boys,Jeff Sendzik,Sendzik,East Coast Bias,114,10,10,2015,0
+231,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,80,I Dont Know What I'm doing,Matthew Debski,Debski,East Coast Bias,58,10,10,2015,0
+232,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,63,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,East Coast Bias,80,10,10,2015,0
+233,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,47,Kush Gordon,frank arguello,Frank,East Coast Bias,102,10,10,2015,0
+234,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,52,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,106,10,10,2015,0
+235,beckley poopers,Benjamin Everette,Ben,East Coast Bias,54,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,107,10,10,2015,0
+236,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,75,Rise Up?,Brandon Dilbeck,Brando,West Whatever,79,11,11,2015,0
+237,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,83,Rainelle Rangers,patrick bell,Patrick,West Whatever,59,11,11,2015,0
+238,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,88,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,81,11,11,2015,0
+239,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,52,Team Catch the Dream,Michael Allen,mballen,West Whatever,41,11,11,2015,0
+240,Kush Gordon,frank arguello,Frank,West Whatever,76,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,63,11,11,2015,0
+241,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,53,beckley poopers,Benjamin Everette,Ben,West Whatever,80,11,11,2015,0
+242,Brady's Balls Brigade,Samik Das,Samik,West Whatever,72,VA Beach Warriors,DJ Conti,Conti,West Whatever,73,11,11,2015,0
+243,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,75,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,81,12,12,2015,0
+244,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,65,RowdyRuff Boys,Jeff Sendzik,Sendzik,East Coast Bias,129,12,12,2015,0
+245,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,124,I Dont Know What I'm doing,Matthew Debski,Debski,East Coast Bias,73,12,12,2015,0
+246,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,82,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,East Coast Bias,62,12,12,2015,0
+247,beckley poopers,Benjamin Everette,Ben,East Coast Bias,82,Kush Gordon,frank arguello,Frank,East Coast Bias,102,12,12,2015,0
+248,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,102,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,75,12,12,2015,0
+249,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,102,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,75,12,12,2015,0
+250,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,97,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,105,13,13,2015,0
+251,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,51,RowdyRuff Boys,Jeff Sendzik,Sendzik,East Coast Bias,106,13,13,2015,0
+252,beckley poopers,Benjamin Everette,Ben,East Coast Bias,103,I Dont Know What I'm doing,Matthew Debski,Debski,East Coast Bias,85,13,13,2015,0
+253,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,56,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,East Coast Bias,76,13,13,2015,0
+254,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,77,Kush Gordon,frank arguello,Frank,East Coast Bias,97,13,13,2015,0
+255,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,77,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,94,13,13,2015,0
+256,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,77,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,97,13,13,2015,0
+257,Kush Gordon,frank arguello,Frank,West Whatever,173,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,219,14,15,2015,1
+258,Brady's Balls Brigade,Samik Das,Samik,West Whatever,193,VA Beach Warriors,DJ Conti,Conti,West Whatever,176,14,15,2015,1
+259,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,141,beckley poopers,Benjamin Everette,Ben,East Coast Bias,139,14,15,2015,1
+260,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,224,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,120,14,15,2015,1
+261,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,240,Team Catch the Dream,Michael Allen,mballen,West Whatever,105,14,15,2015,1
+262,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,117,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,167,14,15,2015,1
+263,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,136,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,134,14,15,2015,1
+264,Brady's Balls Brigade,Samik Das,Samik,West Whatever,103,WE TALKING ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,West Whatever,143,16,17,2015,1
+265,Kush Gordon,frank arguello,Frank,West Whatever,189,VA Beach Warriors,DJ Conti,Conti,West Whatever,194,16,17,2015,1
+266,RowdyRuff Boys,Jeff Sendzik,Sendzik,West Whatever,154,Rise Up?,Brandon Dilbeck,Brando,West Whatever,179,16,17,2015,1
+267,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,185,beckley poopers,Benjamin Everette,Ben,West Whatever,93,16,17,2015,1
+268,I Dont Know What I'm doing,Matthew Debski,Debski,West Whatever,174,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,131,16,17,2015,1
+269,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,152,Team Catch the Dream,Michael Allen,mballen,East Coast Bias,183,16,17,2015,1
+270,Rainelle Rangers,patrick bell,Patrick,East Coast Bias,120,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,86,16,17,2015,1
+271,beckley poopers,Benjamin Everette,Ben,East Coast Bias,92.5,Greg Hardy Breakfast,Michael Allen,mballen,East Coast Bias,131,1,1,2016,0
+272,VA Beach Warriors,DJ Conti,Conti,West Whatever,130.6,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,109.26,1,1,2016,0
+273,Rise Up?,Brandon Dilbeck,Brando,West Whatever,102.92,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,85.48,1,1,2016,0
+274,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,56.36,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,53.54,1,1,2016,0
+275,Kush Gordon,frank arguello,Frank,East Coast Bias,93.12,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,86.34,1,1,2016,0
+276,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,115.16,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,97,1,1,2016,0
+277,VA Beach Warriors,DJ Conti,Conti,West Whatever,88.28,beckley poopers,Benjamin Everette,Ben,West Whatever,82.06,2,2,2016,0
+278,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,72.6,Rise Up?,Brandon Dilbeck,Brando,West Whatever,102.52,2,2,2016,0
+279,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,80.12,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,87.12,2,2,2016,0
+280,Kush Gordon,frank arguello,Frank,East Coast Bias,137.06,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,88.76,2,2,2016,0
+281,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,82.78,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,108.72,2,2,2016,0
+282,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,83.06,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,104.26,2,2,2016,0
+283,beckley poopers,Benjamin Everette,Ben,East Coast Bias,84.96,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,137.24,3,3,2016,0
+284,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,69.2,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,139.74,3,3,2016,0
+285,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,86.2,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,105.36,3,3,2016,0
+286,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,105.84,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,87.48,3,3,2016,0
+287,Brady's Balls Brigade,Samik Das,Samik,West Whatever,97.98,Kush Gordon,frank arguello,Frank,West Whatever,70.22,3,3,2016,0
+288,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,102.58,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,65.62,3,3,2016,0
+289,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,40.74,beckley poopers,Benjamin Everette,Ben,East Coast Bias,103.08,4,4,2016,0
+290,Rise Up?,Brandon Dilbeck,Brando,West Whatever,99.78,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,55.52,4,4,2016,0
+291,VA Beach Warriors,DJ Conti,Conti,West Whatever,85.06,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,40.92,4,4,2016,0
+292,Brady's Balls Brigade,Samik Das,Samik,West Whatever,141.8,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,127.52,4,4,2016,0
+293,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,78.2,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,111.22,4,4,2016,0
+294,Kush Gordon,frank arguello,Frank,East Coast Bias,116.56,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,71.94,4,4,2016,0
+295,beckley poopers,Benjamin Everette,Ben,East Coast Bias,106.78,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,95.96,5,5,2016,0
+296,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,73.86,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,65.12,5,5,2016,0
+297,VA Beach Warriors,DJ Conti,Conti,West Whatever,114.88,Rise Up?,Brandon Dilbeck,Brando,West Whatever,99.98,5,5,2016,0
+298,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,86.5,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,101.8,5,5,2016,0
+299,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,88.96,Brady's Balls Brigade,Samik Das,Samik,West Whatever,132.7,5,5,2016,0
+300,Kush Gordon,frank arguello,Frank,East Coast Bias,106.14,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,75.66,5,5,2016,0
+301,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,84.52,beckley poopers,Benjamin Everette,Ben,East Coast Bias,67.04,6,6,2016,0
+302,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,98.2,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,91.5,6,6,2016,0
+303,Kush Gordon,frank arguello,Frank,East Coast Bias,106.24,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,112.78,6,6,2016,0
+304,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,83.98,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,112.9,6,6,2016,0
+305,Brady's Balls Brigade,Samik Das,Samik,West Whatever,85.06,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,West Whatever,92.16,6,6,2016,0
+306,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,85.22,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,43.86,6,6,2016,0
+307,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,105.94,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,79.04,7,7,2016,0
+308,VA Beach Warriors,DJ Conti,Conti,West Whatever,89.32,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,102.54,7,7,2016,0
+309,Rise Up?,Brandon Dilbeck,Brando,West Whatever,65.82,Kush Gordon,frank arguello,Frank,West Whatever,75.88,7,7,2016,0
+310,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,58.92,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,100.3,7,7,2016,0
+311,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,85.24,Brady's Balls Brigade,Samik Das,Samik,West Whatever,128.64,7,7,2016,0
+312,beckley poopers,Benjamin Everette,Ben,East Coast Bias,72.94,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,67.38,7,7,2016,0
+313,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,73.92,VA Beach Warriors,DJ Conti,Conti,East Coast Bias,98.9,8,8,2016,0
+314,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,91.52,Rise Up?,Brandon Dilbeck,Brando,West Whatever,86.02,8,8,2016,0
+315,Kush Gordon,frank arguello,Frank,East Coast Bias,131.5,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,94.08,8,8,2016,0
+316,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,72.68,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,East Coast Bias,125.44,8,8,2016,0
+317,Brady's Balls Brigade,Samik Das,Samik,West Whatever,106.28,beckley poopers,Benjamin Everette,Ben,West Whatever,79.88,8,8,2016,0
+318,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,91.72,Greg Hardy Breakfast,Michael Allen,mballen,East Coast Bias,55.56,8,8,2016,0
+319,Rise Up?,Brandon Dilbeck,Brando,West Whatever,108.42,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,70.26,9,9,2016,0
+320,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,86.12,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,108.26,9,9,2016,0
+321,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,75.18,Kush Gordon,frank arguello,Frank,West Whatever,97.88,9,9,2016,0
+322,beckley poopers,Benjamin Everette,Ben,East Coast Bias,70.28,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,52.7,9,9,2016,0
+323,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,67.36,Brady's Balls Brigade,Samik Das,Samik,West Whatever,122.86,9,9,2016,0
+324,VA Beach Warriors,DJ Conti,Conti,West Whatever,60.44,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,West Whatever,137.16,9,9,2016,0
+325,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,91.38,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,100.7,10,10,2016,0
+326,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,78.54,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,72.44,10,10,2016,0
+327,Kush Gordon,frank arguello,Frank,East Coast Bias,105.24,beckley poopers,Benjamin Everette,Ben,East Coast Bias,84.8,10,10,2016,0
+328,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,108.24,Greg Hardy Breakfast,Michael Allen,mballen,East Coast Bias,77.76,10,10,2016,0
+329,Brady's Balls Brigade,Samik Das,Samik,West Whatever,155.92,VA Beach Warriors,DJ Conti,Conti,West Whatever,116.98,10,10,2016,0
+330,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,48.84,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,102.58,10,10,2016,0
+331,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,55.84,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,56.6,11,11,2016,0
+332,beckley poopers,Benjamin Everette,Ben,East Coast Bias,96.28,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,70.84,11,11,2016,0
+333,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,113.32,Kush Gordon,frank arguello,Frank,West Whatever,129.4,11,11,2016,0
+334,VA Beach Warriors,DJ Conti,Conti,West Whatever,95.18,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,53.98,11,11,2016,0
+335,Rise Up?,Brandon Dilbeck,Brando,West Whatever,81.1,Brady's Balls Brigade,Samik Das,Samik,West Whatever,65.98,11,11,2016,0
+336,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,82.84,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,86.3,11,11,2016,0
+337,beckley poopers,Benjamin Everette,Ben,East Coast Bias,99.4,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,79.56,12,12,2016,0
+338,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,75.38,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,88.84,12,12,2016,0
+339,VA Beach Warriors,DJ Conti,Conti,West Whatever,103,Kush Gordon,frank arguello,Frank,West Whatever,110.94,12,12,2016,0
+340,Rise Up?,Brandon Dilbeck,Brando,West Whatever,115.66,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,70.14,12,12,2016,0
+341,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,146.84,Brady's Balls Brigade,Samik Das,Samik,East Coast Bias,65.14,12,12,2016,0
+342,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,91.72,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,West Whatever,90.44,12,12,2016,0
+343,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,88.54,Greg Hardy Breakfast,Michael Allen,mballen,East Coast Bias,90.04,13,13,2016,0
+344,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,78.34,VA Beach Warriors,DJ Conti,Conti,West Whatever,119.12,13,13,2016,0
+345,Kush Gordon,frank arguello,Frank,East Coast Bias,120.46,Rise Up?,Brandon Dilbeck,Brando,East Coast Bias,90.34,13,13,2016,0
+346,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,55.08,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,87.16,13,13,2016,0
+347,Brady's Balls Brigade,Samik Das,Samik,West Whatever,104.66,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,96.26,13,13,2016,0
+348,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,61.7,beckley poopers,Benjamin Everette,Ben,East Coast Bias,56.36,13,13,2016,0
+349,Rise Up?,Brandon Dilbeck,Brando,West Whatever,188.32,Kush Gordon,frank arguello,Frank,West Whatever,227.46,14,15,2016,1
+350,VA Beach Warriors,DJ Conti,Conti,West Whatever,209.34,Brady's Balls Brigade,Samik Das,Samik,West Whatever,112.14,14,15,2016,1
+351,beckley poopers,Benjamin Everette,Ben,East Coast Bias,143.28,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,114.32,14,15,2016,1
+352,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,184.84,Send Sicks,Jeff Sendzik,Sendzik,West Whatever,167.88,14,15,2016,1
+353,Mildred's Redskins,Mildred Kinley,Mildred,East Coast Bias,152.16,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,170.24,14,15,2016,1
+354,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,126.72,Eagles Will Fly,tommy pfifferling,Tommy,West Whatever,131.5,14,15,2016,1
+355,VA Beach Warriors,DJ Conti,Conti,West Whatever,174.86,Kush Gordon,frank arguello,Frank,West Whatever,184.68,16,17,2016,1
+356,Rise Up?,Brandon Dilbeck,Brando,West Whatever,191.4,Brady's Balls Brigade,Samik Das,Samik,West Whatever,160.96,16,17,2016,1
+357,Greg Hardy Breakfast,Michael Allen,mballen,West Whatever,178.88,beckley poopers,Benjamin Everette,Ben,West Whatever,154.32,16,17,2016,1
+358,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,East Coast Bias,188.34,TAPATE'O HAWTSAWCE,Kyle Fontimayor,Fonti,East Coast Bias,204.06,16,17,2016,1
+359,Eagles Will Fly,tommy pfifferling,Tommy,East Coast Bias,121.1,Send Sicks,Jeff Sendzik,Sendzik,East Coast Bias,202.66,16,17,2016,1
+360,Happier Hour Baja Freezes,Michael Tarpey,Tarpey,West Whatever,161.58,Mildred's Redskins,Mildred Kinley,Mildred,West Whatever,204.68,16,17,2016,1
+361,Rise Up?,Brandon Dilbeck,Brando,Champions,65.04,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,120.6,1,1,2017,0
+362,Mildred's Redskins,Mildred Kinley,Mildred,Referees,78.3,Kush Gordon,frank arguello,Frank,Referees,77.64,1,1,2017,0
+363,beckley poopers,Benjamin Everette,Ben,Referees,55.62,VA Beach Warriors,DJ Conti,Conti,Referees,104.52,1,1,2017,0
+364,Brady's Balls Brigade,Samik Das,Samik,AFC East,106.98,Roll Safe,Michael Tarpey,Tarpey,AFC East,40.98,1,1,2017,0
+365,Timothy Teblows,Jake Casado,Jake,AFC East,63.34,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,62.64,1,1,2017,0
+366,Sa lt,Jeff Sendzik,Sendzik,AFC East,76.54,The Horsegasms,tommy pfifferling,Tommy,AFC East,95.28,1,1,2017,0
+367,Greg Hardy Breakfast,Michael Allen,mballen,Referees,77.12,Fear Boners,Charles Wilson,Charles,Referees,105.54,1,1,2017,0
+368,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,70.14,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,AFC East,76.44,2,2,2017,0
+369,Mildred's Redskins,Mildred Kinley,Mildred,Referees,59.46,Brady's Balls Brigade,Samik Das,Samik,Referees,107.48,2,2,2017,0
+370,Roll Safe,Michael Tarpey,Tarpey,Champions,89.2,The Horsegasms,tommy pfifferling,Tommy,Champions,68.98,2,2,2017,0
+371,beckley poopers,Benjamin Everette,Ben,Referees,69.42,Rise Up?,Brandon Dilbeck,Brando,Referees,61.88,2,2,2017,0
+372,Kush Gordon,frank arguello,Frank,Champions,77.46,Fear Boners,Charles Wilson,Charles,Champions,77.32,2,2,2017,0
+373,VA Beach Warriors,DJ Conti,Conti,AFC East,96.92,Sa lt,Jeff Sendzik,Sendzik,AFC East,95.52,2,2,2017,0
+374,Greg Hardy Breakfast,Michael Allen,mballen,Referees,119.2,Timothy Teblows,Jake Casado,Jake,Referees,75.08,2,2,2017,0
+375,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,102.48,Roll Safe,Michael Tarpey,Tarpey,Champions,48.92,3,3,2017,0
+376,Mildred's Redskins,Mildred Kinley,Mildred,Referees,118.1,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,Referees,98.1,3,3,2017,0
+377,Greg Hardy Breakfast,Michael Allen,mballen,Referees,79.92,Brady's Balls Brigade,Samik Das,Samik,Referees,84.12,3,3,2017,0
+378,Timothy Teblows,Jake Casado,Jake,AFC East,82.1,Kush Gordon,frank arguello,Frank,AFC East,65.32,3,3,2017,0
+379,VA Beach Warriors,DJ Conti,Conti,AFC East,129.52,Fear Boners,Charles Wilson,Charles,AFC East,77.88,3,3,2017,0
+380,The Horsegasms,tommy pfifferling,Tommy,Referees,91.86,beckley poopers,Benjamin Everette,Ben,Referees,68.1,3,3,2017,0
+381,Rise Up?,Brandon Dilbeck,Brando,Champions,61.06,Sa lt,Jeff Sendzik,Sendzik,Champions,85.62,3,3,2017,0
+382,The Horsegasms,tommy pfifferling,Tommy,Referees,54.06,Mildred's Redskins,Mildred Kinley,Mildred,Referees,76.3,4,4,2017,0
+383,Brady's Balls Brigade,Samik Das,Samik,AFC East,63.98,Timothy Teblows,Jake Casado,Jake,AFC East,61.86,4,4,2017,0
+384,Kush Gordon,frank arguello,Frank,Champions,111.58,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,Champions,84.42,4,4,2017,0
+385,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,85.82,VA Beach Warriors,DJ Conti,Conti,Champions,118.5,4,4,2017,0
+386,Fear Boners,Charles Wilson,Charles,Referees,67,Sa lt,Jeff Sendzik,Sendzik,Referees,90.86,4,4,2017,0
+387,beckley poopers,Benjamin Everette,Ben,Referees,121.14,Greg Hardy Breakfast,Michael Allen,mballen,Referees,88.88,4,4,2017,0
+388,Roll Safe,Michael Tarpey,Tarpey,Champions,63.7,Rise Up?,Brandon Dilbeck,Brando,Champions,74.58,4,4,2017,0
+389,Brady's Balls Brigade,Samik Das,Samik,AFC East,50.32,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,64.86,5,5,2017,0
+390,Kush Gordon,frank arguello,Frank,Champions,78.86,Rise Up?,Brandon Dilbeck,Brando,Champions,85.64,5,5,2017,0
+391,Roll Safe,Michael Tarpey,Tarpey,Champions,56.2,VA Beach Warriors,DJ Conti,Conti,Champions,74.72,5,5,2017,0
+392,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,125.72,Timothy Teblows,Jake Casado,Jake,Champions,84.98,5,5,2017,0
+393,Sa lt,Jeff Sendzik,Sendzik,AFC East,75.04,Mildred's Redskins,Mildred Kinley,Mildred,AFC East,68.96,5,5,2017,0
+394,The Horsegasms,tommy pfifferling,Tommy,Referees,71.76,Greg Hardy Breakfast,Michael Allen,mballen,Referees,88.54,5,5,2017,0
+395,Fear Boners,Charles Wilson,Charles,Referees,98.3,beckley poopers,Benjamin Everette,Ben,Referees,54.08,5,5,2017,0
+396,Roll Safe,Michael Tarpey,Tarpey,Champions,86.74,Greg Hardy Breakfast,Michael Allen,mballen,Champions,108.3,6,6,2017,0
+397,Rise Up?,Brandon Dilbeck,Brando,Champions,91.72,Mildred's Redskins,Mildred Kinley,Mildred,Champions,86.3,6,6,2017,0
+398,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,77.74,The Horsegasms,tommy pfifferling,Tommy,AFC East,107.88,6,6,2017,0
+399,Sa lt,Jeff Sendzik,Sendzik,AFC East,43.72,Kush Gordon,frank arguello,Frank,AFC East,62.34,6,6,2017,0
+400,beckley poopers,Benjamin Everette,Ben,Referees,93.04,Brady's Balls Brigade,Samik Das,Samik,Referees,52.28,6,6,2017,0
+401,Fear Boners,Charles Wilson,Charles,Referees,107.96,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Referees,119.42,6,6,2017,0
+402,VA Beach Warriors,DJ Conti,Conti,AFC East,100.18,Timothy Teblows,Jake Casado,Jake,AFC East,88.26,6,6,2017,0
+403,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,106.74,beckley poopers,Benjamin Everette,Ben,AFC East,78.78,7,7,2017,0
+404,Sa lt,Jeff Sendzik,Sendzik,AFC East,81.18,Roll Safe,Michael Tarpey,Tarpey,AFC East,70.88,7,7,2017,0
+405,Kush Gordon,frank arguello,Frank,Champions,101.32,VA Beach Warriors,DJ Conti,Conti,Champions,89.06,7,7,2017,0
+406,Brady's Balls Brigade,Samik Das,Samik,AFC East,77.56,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,AFC East,95.52,7,7,2017,0
+407,The Horsegasms,tommy pfifferling,Tommy,Referees,80.18,Fear Boners,Charles Wilson,Charles,Referees,91.74,7,7,2017,0
+408,Greg Hardy Breakfast,Michael Allen,mballen,Referees,103.76,Mildred's Redskins,Mildred Kinley,Mildred,Referees,69.32,7,7,2017,0
+409,Timothy Teblows,Jake Casado,Jake,AFC East,80.72,Rise Up?,Brandon Dilbeck,Brando,AFC East,47.72,7,7,2017,0
+410,Sa lt,Jeff Sendzik,Sendzik,AFC East,103.48,beckley poopers,Benjamin Everette,Ben,AFC East,90.28,8,8,2017,0
+411,Brady's Balls Brigade,Samik Das,Samik,AFC East,83.02,Rise Up?,Brandon Dilbeck,Brando,AFC East,86.06,8,8,2017,0
+412,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,131.48,The Horsegasms,tommy pfifferling,Tommy,Champions,86.82,8,8,2017,0
+413,Fear Boners,Charles Wilson,Charles,Referees,81.36,Timothy Teblows,Jake Casado,Jake,Referees,77.82,8,8,2017,0
+414,Greg Hardy Breakfast,Michael Allen,mballen,Referees,59.72,Kush Gordon,frank arguello,Frank,Referees,91.6,8,8,2017,0
+415,VA Beach Warriors,DJ Conti,Conti,AFC East,89.98,Mildred's Redskins,Mildred Kinley,Mildred,AFC East,37.62,8,8,2017,0
+416,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,74.76,Roll Safe,Michael Tarpey,Tarpey,AFC East,93.22,8,8,2017,0
+417,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,77.42,Greg Hardy Breakfast,Michael Allen,mballen,AFC East,101.16,9,9,2017,0
+418,The Horsegasms,tommy pfifferling,Tommy,Referees,72.34,Brady's Balls Brigade,Samik Das,Samik,Referees,81.5,9,9,2017,0
+419,beckley poopers,Benjamin Everette,Ben,Referees,57.9,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Referees,74.84,9,9,2017,0
+420,Roll Safe,Michael Tarpey,Tarpey,Champions,55.2,Kush Gordon,frank arguello,Frank,Champions,52.38,9,9,2017,0
+421,Mildred's Redskins,Mildred Kinley,Mildred,Referees,42.78,Fear Boners,Charles Wilson,Charles,Referees,97.48,9,9,2017,0
+422,Timothy Teblows,Jake Casado,Jake,AFC East,79.22,Sa lt,Jeff Sendzik,Sendzik,AFC East,81.7,9,9,2017,0
+423,Rise Up?,Brandon Dilbeck,Brando,Champions,97,VA Beach Warriors,DJ Conti,Conti,Champions,79.98,9,9,2017,0
+424,The Horsegasms,tommy pfifferling,Tommy,Referees,100.56,Kush Gordon,frank arguello,Frank,Referees,60.66,10,10,2017,0
+425,beckley poopers,Benjamin Everette,Ben,Referees,60.44,Timothy Teblows,Jake Casado,Jake,Referees,108.16,10,10,2017,0
+426,Fear Boners,Charles Wilson,Charles,Referees,114.76,Brady's Balls Brigade,Samik Das,Samik,Referees,101.94,10,10,2017,0
+427,VA Beach Warriors,DJ Conti,Conti,AFC East,82.82,Greg Hardy Breakfast,Michael Allen,mballen,AFC East,113.24,10,10,2017,0
+428,Rise Up?,Brandon Dilbeck,Brando,Champions,55.14,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,Champions,58.86,10,10,2017,0
+429,Mildred's Redskins,Mildred Kinley,Mildred,Referees,71.78,Roll Safe,Michael Tarpey,Tarpey,Referees,77.02,10,10,2017,0
+430,Sa lt,Jeff Sendzik,Sendzik,AFC East,67.38,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,AFC East,84.5,10,10,2017,0
+431,Brady's Balls Brigade,Samik Das,Samik,AFC East,97.9,Sa lt,Jeff Sendzik,Sendzik,AFC East,80.02,11,11,2017,0
+432,Fear Boners,Charles Wilson,Charles,Referees,130.8,Roll Safe,Michael Tarpey,Tarpey,Referees,85.58,11,11,2017,0
+433,Greg Hardy Breakfast,Michael Allen,mballen,Referees,39.5,Rise Up?,Brandon Dilbeck,Brando,Referees,81.2,11,11,2017,0
+434,Timothy Teblows,Jake Casado,Jake,AFC East,104,The Horsegasms,tommy pfifferling,Tommy,AFC East,98.8,11,11,2017,0
+435,Mildred's Redskins,Mildred Kinley,Mildred,Referees,61.88,beckley poopers,Benjamin Everette,Ben,Referees,122.76,11,11,2017,0
+436,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,93.1,VA Beach Warriors,DJ Conti,Conti,AFC East,86.22,11,11,2017,0
+437,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,98.34,Kush Gordon,frank arguello,Frank,Champions,84.94,11,11,2017,0
+438,Fear Boners,Charles Wilson,Charles,Referees,93.92,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,Referees,86.18,12,12,2017,0
+439,Sa lt,Jeff Sendzik,Sendzik,AFC East,90.42,Greg Hardy Breakfast,Michael Allen,mballen,AFC East,68.66,12,12,2017,0
+440,VA Beach Warriors,DJ Conti,Conti,AFC East,74.12,Brady's Balls Brigade,Samik Das,Samik,AFC East,160.18,12,12,2017,0
+441,Kush Gordon,frank arguello,Frank,Champions,87.36,beckley poopers,Benjamin Everette,Ben,Champions,92.74,12,12,2017,0
+442,Mildred's Redskins,Mildred Kinley,Mildred,Referees,46.18,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Referees,102.56,12,12,2017,0
+443,Rise Up?,Brandon Dilbeck,Brando,Champions,106.28,The Horsegasms,tommy pfifferling,Tommy,Champions,90.86,12,12,2017,0
+444,Roll Safe,Michael Tarpey,Tarpey,Champions,74.82,Timothy Teblows,Jake Casado,Jake,Champions,117.84,12,12,2017,0
+445,beckley poopers,Benjamin Everette,Ben,Referees,70.8,Roll Safe,Michael Tarpey,Tarpey,Referees,81.68,13,13,2017,0
+446,The Horsegasms,tommy pfifferling,Tommy,Referees,93.94,VA Beach Warriors,DJ Conti,Conti,Referees,71.78,13,13,2017,0
+447,Kush Gordon,frank arguello,Frank,Champions,129.2,Brady's Balls Brigade,Samik Das,Samik,Champions,86.92,13,13,2017,0
+448,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,80.66,Greg Hardy Breakfast,Michael Allen,mballen,Champions,83.98,13,13,2017,0
+449,Rise Up?,Brandon Dilbeck,Brando,Champions,86.02,Fear Boners,Charles Wilson,Charles,Champions,82.72,13,13,2017,0
+450,Timothy Teblows,Jake Casado,Jake,AFC East,102.38,Mildred's Redskins,Mildred Kinley,Mildred,AFC East,60.64,13,13,2017,0
+451,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,69.16,Sa lt,Jeff Sendzik,Sendzik,AFC East,94.6,13,13,2017,0
+452,Rise Up?,Brandon Dilbeck,Brando,Champions,110.22,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Champions,220.66,14,15,2017,1
+453,Fear Boners,Charles Wilson,Charles,Referees,204.52,Sa lt,Jeff Sendzik,Sendzik,Referees,198.82,14,15,2017,1
+454,Greg Hardy Breakfast,Michael Allen,mballen,Referees,232.26,Brady's Balls Brigade,Samik Das,Samik,Referees,121.64,14,15,2017,1
+455,Timothy Teblows,Jake Casado,Jake,AFC East,155.34,VA Beach Warriors,DJ Conti,Conti,AFC East,207.02,14,15,2017,1
+456,Roll Safe,Michael Tarpey,Tarpey,Champions,190.08,Kush Gordon,frank arguello,Frank,Champions,165.2,14,15,2017,1
+457,beckley poopers,Benjamin Everette,Ben,Referees,153.58,The Horsegasms,tommy pfifferling,Tommy,Referees,134.96,14,15,2017,1
+458,Mildred's Redskins,Mildred Kinley,Mildred,Referees,90.58,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,Referees,199.28,14,15,2017,1
+459,Fear Boners,Charles Wilson,Charles,Referees,173.1,TALKIN ABOUT PLAYOFFS,Kyle Fontimayor,Fonti,Referees,198.68,16,17,2017,1
+460,Rise Up?,Brandon Dilbeck,Brando,Champions,124.4,Sa lt,Jeff Sendzik,Sendzik,Champions,172.78,16,17,2017,1
+461,VA Beach Warriors,DJ Conti,Conti,AFC East,158.06,Greg Hardy Breakfast,Michael Allen,mballen,AFC East,168.8,16,17,2017,1
+462,Roll Safe,Michael Tarpey,Tarpey,Champions,208,Brady's Balls Brigade,Samik Das,Samik,Champions,164.96,16,17,2017,1
+463,beckley poopers,Benjamin Everette,Ben,Referees,127.12,Timothy Teblows,Jake Casado,Jake,Referees,141.72,16,17,2017,1
+464,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,156.16,Kush Gordon,frank arguello,Frank,AFC East,176.42,16,17,2017,1
+465,Mildred's Redskins,Mildred Kinley,Mildred,Referees,118.92,The Horsegasms,tommy pfifferling,Tommy,Referees,155.06,16,17,2017,1
+466,Greg Hardy Breakfast,Michael Allen,mballen,Referees,71.3,The Horsegasms,tommy pfifferling,Tommy,Referees,96.54,1,1,2018,0
+467,Roll Safe,Michael Tarpey,Tarpey,Champions,125.44,DR. SQUANCH,frank arguello,Frank,Champions,89.06,1,1,2018,0
+468,Brady's Balls Brigade,Samik Das,Samik,AFC East,90.26,Sa lt,Jeff Sendzik,Sendzik,AFC East,73.74,1,1,2018,0
+469,VA Beach Warriors,DJ Conti,Conti,AFC East,89.28,beckley poopers,Benjamin Everette,Ben,Referees,92.16,1,1,2018,0
+470,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,98.04,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,63.42,1,1,2018,0
+471,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,111.12,Rise Up?,Brandon Dilbeck,Brando,Champions,76.74,1,1,2018,0
+472,Fear Boners,Charles Wilson,Charles,Referees,146.46,Mildred's Redskins,Mildred Kinley,Mildred,Referees,72.2,1,1,2018,0
+473,beckley poopers,Benjamin Everette,Ben,Referees,57.84,Fear Boners,Charles Wilson,Charles,Referees,88.62,2,2,2018,0
+474,VA Beach Warriors,DJ Conti,Conti,AFC East,72.76,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,91.26,2,2,2018,0
+475,Mildred's Redskins,Mildred Kinley,Mildred,Referees,51.08,Rise Up?,Brandon Dilbeck,Brando,Champions,92.78,2,2,2018,0
+476,Greg Hardy Breakfast,Michael Allen,mballen,Referees,87.2,DR. SQUANCH,frank arguello,Frank,Champions,82.86,2,2,2018,0
+477,Sa lt,Jeff Sendzik,Sendzik,AFC East,99.5,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,98.54,2,2,2018,0
+478,Brady's Balls Brigade,Samik Das,Samik,AFC East,115.4,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,97.08,2,2,2018,0
+479,Roll Safe,Michael Tarpey,Tarpey,Champions,113.44,The Horsegasms,tommy pfifferling,Tommy,Referees,91.58,2,2,2018,0
+480,Sa lt,Jeff Sendzik,Sendzik,AFC East,67.8,DR. SQUANCH,frank arguello,Frank,Champions,98.46,3,3,2018,0
+481,VA Beach Warriors,DJ Conti,Conti,AFC East,88.72,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,79.6,3,3,2018,0
+482,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,64.7,Roll Safe,Michael Tarpey,Tarpey,Champions,83.54,3,3,2018,0
+483,Greg Hardy Breakfast,Michael Allen,mballen,Referees,80.12,beckley poopers,Benjamin Everette,Ben,Referees,57.84,3,3,2018,0
+484,The Horsegasms,tommy pfifferling,Tommy,Referees,80.58,Fear Boners,Charles Wilson,Charles,Referees,139.64,3,3,2018,0
+485,Rise Up?,Brandon Dilbeck,Brando,Champions,115.36,Brady's Balls Brigade,Samik Das,Samik,AFC East,115.44,3,3,2018,0
+486,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,95.54,Mildred's Redskins,Mildred Kinley,Mildred,Referees,56.5,3,3,2018,0
+487,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,80.52,Brady's Balls Brigade,Samik Das,Samik,AFC East,133.68,4,4,2018,0
+488,DR. SQUANCH,frank arguello,Frank,Champions,111.96,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,65.64,4,4,2018,0
+489,The Horsegasms,tommy pfifferling,Tommy,Referees,117.28,beckley poopers,Benjamin Everette,Ben,Referees,52.5,4,4,2018,0
+490,Sa lt,Jeff Sendzik,Sendzik,AFC East,46.74,VA Beach Warriors,DJ Conti,Conti,AFC East,105.06,4,4,2018,0
+491,Mildred's Redskins,Mildred Kinley,Mildred,Referees,0,Greg Hardy Breakfast,Michael Allen,mballen,Referees,94.26,4,4,2018,0
+492,Fear Boners,Charles Wilson,Charles,Referees,128.18,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,122.48,4,4,2018,0
+493,Rise Up?,Brandon Dilbeck,Brando,Champions,126.56,Roll Safe,Michael Tarpey,Tarpey,Champions,76.2,4,4,2018,0
+494,DR. SQUANCH,frank arguello,Frank,Champions,120.08,Fear Boners,Charles Wilson,Charles,Referees,54.42,5,5,2018,0
+495,Sa lt,Jeff Sendzik,Sendzik,AFC East,73.28,beckley poopers,Benjamin Everette,Ben,Referees,62.96,5,5,2018,0
+496,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,80.14,Brady's Balls Brigade,Samik Das,Samik,AFC East,110.74,5,5,2018,0
+497,VA Beach Warriors,DJ Conti,Conti,AFC East,93.44,Rise Up?,Brandon Dilbeck,Brando,Champions,66.8,5,5,2018,0
+498,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,94.62,Greg Hardy Breakfast,Michael Allen,mballen,Referees,104.3,5,5,2018,0
+499,Mildred's Redskins,Mildred Kinley,Mildred,Referees,40.7,The Horsegasms,tommy pfifferling,Tommy,Referees,68.32,5,5,2018,0
+500,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,115.78,Roll Safe,Michael Tarpey,Tarpey,Champions,109.46,5,5,2018,0
+501,Roll Safe,Michael Tarpey,Tarpey,Champions,141.78,VA Beach Warriors,DJ Conti,Conti,AFC East,117.8,6,6,2018,0
+502,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,144.1,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,103.28,6,6,2018,0
+503,beckley poopers,Benjamin Everette,Ben,Referees,57.28,DR. SQUANCH,frank arguello,Frank,Champions,64.04,6,6,2018,0
+504,Greg Hardy Breakfast,Michael Allen,mballen,Referees,87.66,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,65.26,6,6,2018,0
+505,The Horsegasms,tommy pfifferling,Tommy,Referees,103.92,Rise Up?,Brandon Dilbeck,Brando,Champions,85.6,6,6,2018,0
+506,Brady's Balls Brigade,Samik Das,Samik,AFC East,100.62,Fear Boners,Charles Wilson,Charles,Referees,89.04,6,6,2018,0
+507,Mildred's Redskins,Mildred Kinley,Mildred,Referees,64.42,Sa lt,Jeff Sendzik,Sendzik,AFC East,98.2,6,6,2018,0
+508,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,92.02,Sa lt,Jeff Sendzik,Sendzik,AFC East,105.06,7,7,2018,0
+509,DR. SQUANCH,frank arguello,Frank,Champions,79.88,Rise Up?,Brandon Dilbeck,Brando,Champions,81.46,7,7,2018,0
+510,beckley poopers,Benjamin Everette,Ben,Referees,77.64,Mildred's Redskins,Mildred Kinley,Mildred,Referees,46.52,7,7,2018,0
+511,Fear Boners,Charles Wilson,Charles,Referees,95.38,Greg Hardy Breakfast,Michael Allen,mballen,Referees,61.14,7,7,2018,0
+512,Roll Safe,Michael Tarpey,Tarpey,Champions,124.42,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,71.76,7,7,2018,0
+513,The Horsegasms,tommy pfifferling,Tommy,Referees,85.88,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,56.12,7,7,2018,0
+514,Brady's Balls Brigade,Samik Das,Samik,AFC East,104.84,VA Beach Warriors,DJ Conti,Conti,AFC East,120.88,7,7,2018,0
+515,The Horsegasms,tommy pfifferling,Tommy,Referees,91.8,Mildred's Redskins,Mildred Kinley,Mildred,Referees,58.32,8,8,2018,0
+516,Sa lt,Jeff Sendzik,Sendzik,AFC East,112.96,Roll Safe,Michael Tarpey,Tarpey,Champions,103.42,8,8,2018,0
+517,Rise Up?,Brandon Dilbeck,Brando,Champions,90.6,Greg Hardy Breakfast,Michael Allen,mballen,Referees,105.68,8,8,2018,0
+518,DR. SQUANCH,frank arguello,Frank,Champions,83.9,Brady's Balls Brigade,Samik Das,Samik,AFC East,124.96,8,8,2018,0
+519,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,113.02,VA Beach Warriors,DJ Conti,Conti,AFC East,85.86,8,8,2018,0
+520,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,93.7,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,74.44,8,8,2018,0
+521,Fear Boners,Charles Wilson,Charles,Referees,117,beckley poopers,Benjamin Everette,Ben,Referees,19.9,8,8,2018,0
+522,Rise Up?,Brandon Dilbeck,Brando,Champions,98.2,Sa lt,Jeff Sendzik,Sendzik,AFC East,102.98,9,9,2018,0
+523,Brady's Balls Brigade,Samik Das,Samik,AFC East,117.06,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,121.36,9,9,2018,0
+524,The Horsegasms,tommy pfifferling,Tommy,Referees,76.06,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,55.34,9,9,2018,0
+525,Roll Safe,Michael Tarpey,Tarpey,Champions,100.9,Greg Hardy Breakfast,Michael Allen,mballen,Referees,94.4,9,9,2018,0
+526,beckley poopers,Benjamin Everette,Ben,Referees,47.52,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,86.14,9,9,2018,0
+527,VA Beach Warriors,DJ Conti,Conti,AFC East,85.16,DR. SQUANCH,frank arguello,Frank,Champions,96.64,9,9,2018,0
+528,Mildred's Redskins,Mildred Kinley,Mildred,Referees,45.54,Fear Boners,Charles Wilson,Charles,Referees,105.92,9,9,2018,0
+529,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,120.66,VA Beach Warriors,DJ Conti,Conti,AFC East,65.86,10,10,2018,0
+530,Fear Boners,Charles Wilson,Charles,Referees,106.24,The Horsegasms,tommy pfifferling,Tommy,Referees,35.02,10,10,2018,0
+531,Greg Hardy Breakfast,Michael Allen,mballen,Referees,98.32,Mildred's Redskins,Mildred Kinley,Mildred,Referees,54.02,10,10,2018,0
+532,beckley poopers,Benjamin Everette,Ben,Referees,52.62,Brady's Balls Brigade,Samik Das,Samik,AFC East,102.9,10,10,2018,0
+533,DR. SQUANCH,frank arguello,Frank,Champions,110.42,Roll Safe,Michael Tarpey,Tarpey,Champions,151.26,10,10,2018,0
+534,Rise Up?,Brandon Dilbeck,Brando,Champions,115.1,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,55,10,10,2018,0
+535,Sa lt,Jeff Sendzik,Sendzik,AFC East,63.82,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,36.3,10,10,2018,0
+536,Mildred's Redskins,Mildred Kinley,Mildred,Referees,34.7,Roll Safe,Michael Tarpey,Tarpey,Champions,121.22,11,11,2018,0
+537,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,46.64,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,59.6,11,11,2018,0
+538,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,71.38,Sa lt,Jeff Sendzik,Sendzik,AFC East,95.38,11,11,2018,0
+539,VA Beach Warriors,DJ Conti,Conti,AFC East,101.5,Brady's Balls Brigade,Samik Das,Samik,AFC East,131.68,11,11,2018,0
+540,Rise Up?,Brandon Dilbeck,Brando,Champions,119.34,Fear Boners,Charles Wilson,Charles,Referees,111.92,11,11,2018,0
+541,beckley poopers,Benjamin Everette,Ben,Referees,66.94,Greg Hardy Breakfast,Michael Allen,mballen,Referees,83.46,11,11,2018,0
+542,DR. SQUANCH,frank arguello,Frank,Champions,127.42,The Horsegasms,tommy pfifferling,Tommy,Referees,49.92,11,11,2018,0
+543,beckley poopers,Benjamin Everette,Ben,Referees,85.86,The Horsegasms,tommy pfifferling,Tommy,Referees,80.44,12,12,2018,0
+544,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,80.32,Mildred's Redskins,Mildred Kinley,Mildred,Referees,62.52,12,12,2018,0
+545,Greg Hardy Breakfast,Michael Allen,mballen,Referees,92.68,Fear Boners,Charles Wilson,Charles,Referees,122.74,12,12,2018,0
+546,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,82.44,VA Beach Warriors,DJ Conti,Conti,AFC East,116.22,12,12,2018,0
+547,Sa lt,Jeff Sendzik,Sendzik,AFC East,71.54,Brady's Balls Brigade,Samik Das,Samik,AFC East,147.78,12,12,2018,0
+548,Rise Up?,Brandon Dilbeck,Brando,Champions,109.18,DR. SQUANCH,frank arguello,Frank,Champions,90.12,12,12,2018,0
+549,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,59.7,Roll Safe,Michael Tarpey,Tarpey,Champions,115.32,12,12,2018,0
+550,Greg Hardy Breakfast,Michael Allen,mballen,Referees,89.24,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,70.22,13,13,2018,0
+551,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,52.8,Sa lt,Jeff Sendzik,Sendzik,AFC East,60.8,13,13,2018,0
+552,Fear Boners,Charles Wilson,Charles,Referees,78.78,VA Beach Warriors,DJ Conti,Conti,AFC East,81.98,13,13,2018,0
+553,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,70.06,Rise Up?,Brandon Dilbeck,Brando,Champions,87.64,13,13,2018,0
+554,Roll Safe,Michael Tarpey,Tarpey,Champions,122.44,beckley poopers,Benjamin Everette,Ben,Referees,76.66,13,13,2018,0
+555,DR. SQUANCH,frank arguello,Frank,Champions,76.38,Mildred's Redskins,Mildred Kinley,Mildred,Referees,23.5,13,13,2018,0
+556,Brady's Balls Brigade,Samik Das,Samik,AFC East,120.24,The Horsegasms,tommy pfifferling,Tommy,Referees,70.06,13,13,2018,0
+557,Mildred's Redskins,Mildred Kinley,Mildred,Referees,37.44,beckley poopers,Benjamin Everette,Ben,Referees,42.3,14,14,2018,0
+558,Fear Boners,Charles Wilson,Charles,Referees,102.24,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,85.24,14,14,2018,0
+559,The Horsegasms,tommy pfifferling,Tommy,Referees,61.6,Greg Hardy Breakfast,Michael Allen,mballen,Referees,76.28,14,14,2018,0
+560,Roll Safe,Michael Tarpey,Tarpey,Champions,93.88,Rise Up?,Brandon Dilbeck,Brando,Champions,90.88,14,14,2018,0
+561,VA Beach Warriors,DJ Conti,Conti,AFC East,102.62,Sa lt,Jeff Sendzik,Sendzik,AFC East,61,14,14,2018,0
+562,Brady's Balls Brigade,Samik Das,Samik,AFC East,119.32,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,58.42,14,14,2018,0
+563,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,98,DR. SQUANCH,frank arguello,Frank,Champions,71.86,14,14,2018,0
+564,Sa lt,Jeff Sendzik,Sendzik,AFC East,126.74,Greg Hardy Breakfast,Michael Allen,mballen,Referees,95.94,15,15,2018,1
+565,VA Beach Warriors,DJ Conti,Conti,AFC East,69.36,Fear Boners,Charles Wilson,Charles,Referees,64.82,15,15,2018,1
+566,Rise Up?,Brandon Dilbeck,Brando,Champions,89.04,The Horsegasms,tommy pfifferling,Tommy,Referees,55.24,15,15,2018,1
+567,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,46.26,DR. SQUANCH,frank arguello,Frank,Champions,71.78,15,15,2018,1
+568,beckley poopers,Benjamin Everette,Ben,Referees,32.72,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,61.8,15,15,2018,1
+569,Mildred's Redskins,Mildred Kinley,Mildred,Referees,48.18,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,75.68,15,15,2018,1
+570,Bye,Bye,Bye,Bye,0,Brady's Balls Brigade,Samik Das,Samik,AFC East,73.6,15,15,2018,1
+571,Bye,Bye,Bye,Bye,0,Roll Safe,Michael Tarpey,Tarpey,Champions,99.72,15,15,2018,1
+572,VA Beach Warriors,DJ Conti,Conti,AFC East,112.56,Brady's Balls Brigade,Samik Das,Samik,AFC East,109.22,16,16,2018,1
+573,Sa lt,Jeff Sendzik,Sendzik,AFC East,83.38,Roll Safe,Michael Tarpey,Tarpey,Champions,100.02,16,16,2018,1
+574,Greg Hardy Breakfast,Michael Allen,mballen,Referees,127.5,Fear Boners,Charles Wilson,Charles,Referees,93.34,16,16,2018,1
+575,DR. SQUANCH,frank arguello,Frank,Champions,117.38,Rise Up?,Brandon Dilbeck,Brando,Champions,93.26,16,16,2018,1
+576,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,74.94,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,107.56,16,16,2018,1
+577,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,93.28,The Horsegasms,tommy pfifferling,Tommy,Referees,58.94,16,16,2018,1
+578,Mildred's Redskins,Mildred Kinley,Mildred,Referees,49.18,beckley poopers,Benjamin Everette,Ben,Referees,29.34,16,16,2018,1
+579,VA Beach Warriors,DJ Conti,Conti,AFC East,99.9,Roll Safe,Michael Tarpey,Tarpey,Champions,133.14,17,17,2018,1
+580,Sa lt,Jeff Sendzik,Sendzik,AFC East,113.56,Brady's Balls Brigade,Samik Das,Samik,AFC East,70.18,17,17,2018,1
+581,Greg Hardy Breakfast,Michael Allen,mballen,Referees,83.6,Fear Boners,Charles Wilson,Charles,Referees,58.4,17,17,2018,1
+582,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,64.08,DR. SQUANCH,frank arguello,Frank,Champions,85.1,17,17,2018,1
+583,Dalvin Cook's Hamstrings,Jake Casado,Jake,AFC East,92.3,Rise Up?,Brandon Dilbeck,Brando,Champions,100.72,17,17,2018,1
+584,Mildred's Redskins,Mildred Kinley,Mildred,Referees,12.44,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,56.14,17,17,2018,1
+585,beckley poopers,Benjamin Everette,Ben,Referees,39.94,The Horsegasms,tommy pfifferling,Tommy,Referees,107.88,17,17,2018,1
+586,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,103.8,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,68.08,1,1,2019,0
+587,DR. SQUANCH,frank arguello,Frank,Champions,91.16,Roll Safe,Michael Tarpey,Tarpey,Champions,75.64,1,1,2019,0
+588,Sa lt,Jeff Sendzik,Sendzik,AFC East,159.52,VA Beach Warriors,DJ Conti,Conti,AFC East,101.42,1,1,2019,0
+589,Greg Hardy Breakfast,Michael Allen,mballen,Referees,62.1,Mildred's Redskins,Mildred Kinley,Mildred,Referees,100.92,1,1,2019,0
+590,The Horsegasms,tommy pfifferling,Tommy,Referees,84.14,Brady's Balls Brigade,Samik Das,Samik,AFC East,100.94,1,1,2019,0
+591,Rise Up?,Brandon Dilbeck,Brando,Champions,64.16,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,97.76,1,1,2019,0
+592,Fear Boners,Charles Wilson,Charles,Referees,126.02,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,114.46,1,1,2019,0
+593,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,59.92,Fear Boners,Charles Wilson,Charles,Referees,100.04,2,2,2019,0
+594,Rise Up?,Brandon Dilbeck,Brando,Champions,65.62,VA Beach Warriors,DJ Conti,Conti,AFC East,90.16,2,2,2019,0
+595,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,105.5,Brady's Balls Brigade,Samik Das,Samik,AFC East,94.46,2,2,2019,0
+596,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,99.48,Roll Safe,Michael Tarpey,Tarpey,Champions,123.12,2,2,2019,0
+597,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,74.4,Sa lt,Jeff Sendzik,Sendzik,AFC East,71.32,2,2,2019,0
+598,Mildred's Redskins,Mildred Kinley,Mildred,Referees,72.46,DR. SQUANCH,frank arguello,Frank,Champions,99.8,2,2,2019,0
+599,The Horsegasms,tommy pfifferling,Tommy,Referees,71.5,Greg Hardy Breakfast,Michael Allen,mballen,Referees,55.32,2,2,2019,0
+600,Fear Boners,Charles Wilson,Charles,Referees,87.46,Rise Up?,Brandon Dilbeck,Brando,Champions,91.02,3,3,2019,0
+601,DR. SQUANCH,frank arguello,Frank,Champions,132.56,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,75.98,3,3,2019,0
+602,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,120.14,Roll Safe,Michael Tarpey,Tarpey,Champions,74.62,3,3,2019,0
+603,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,82.38,Greg Hardy Breakfast,Michael Allen,mballen,Referees,66.44,3,3,2019,0
+604,The Horsegasms,tommy pfifferling,Tommy,Referees,74.2,Mildred's Redskins,Mildred Kinley,Mildred,Referees,95.5,3,3,2019,0
+605,Brady's Balls Brigade,Samik Das,Samik,AFC East,115.44,Sa lt,Jeff Sendzik,Sendzik,AFC East,112.06,3,3,2019,0
+606,VA Beach Warriors,DJ Conti,Conti,AFC East,122.64,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,122.4,3,3,2019,0
+607,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,96.14,Brady's Balls Brigade,Samik Das,Samik,AFC East,43.5,4,4,2019,0
+608,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,41.88,DR. SQUANCH,frank arguello,Frank,Champions,73.18,4,4,2019,0
+609,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,92.18,The Horsegasms,tommy pfifferling,Tommy,Referees,75.8,4,4,2019,0
+610,Sa lt,Jeff Sendzik,Sendzik,AFC East,70.4,Mildred's Redskins,Mildred Kinley,Mildred,Referees,85.38,4,4,2019,0
+611,VA Beach Warriors,DJ Conti,Conti,AFC East,91.2,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,120,4,4,2019,0
+612,Greg Hardy Breakfast,Michael Allen,mballen,Referees,90.96,Fear Boners,Charles Wilson,Charles,Referees,79.8,4,4,2019,0
+613,Roll Safe,Michael Tarpey,Tarpey,Champions,107.98,Rise Up?,Brandon Dilbeck,Brando,Champions,75,4,4,2019,0
+614,The Horsegasms,tommy pfifferling,Tommy,Referees,117.84,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,83.5,5,5,2019,0
+615,Roll Safe,Michael Tarpey,Tarpey,Champions,99,Sa lt,Jeff Sendzik,Sendzik,AFC East,110.74,5,5,2019,0
+616,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,73.04,Brady's Balls Brigade,Samik Das,Samik,AFC East,125.02,5,5,2019,0
+617,VA Beach Warriors,DJ Conti,Conti,AFC East,135.64,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,95.7,5,5,2019,0
+618,Greg Hardy Breakfast,Michael Allen,mballen,Referees,80.16,DR. SQUANCH,frank arguello,Frank,Champions,118.2,5,5,2019,0
+619,Mildred's Redskins,Mildred Kinley,Mildred,Referees,70.42,Fear Boners,Charles Wilson,Charles,Referees,70.56,5,5,2019,0
+620,Rise Up?,Brandon Dilbeck,Brando,Champions,117.14,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,131.42,5,5,2019,0
+621,VA Beach Warriors,DJ Conti,Conti,AFC East,104.5,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,120.74,6,6,2019,0
+622,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,91.1,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,67.7,6,6,2019,0
+623,Greg Hardy Breakfast,Michael Allen,mballen,Referees,130,Rise Up?,Brandon Dilbeck,Brando,Champions,79,6,6,2019,0
+624,Fear Boners,Charles Wilson,Charles,Referees,60.94,Sa lt,Jeff Sendzik,Sendzik,AFC East,74.62,6,6,2019,0
+625,DR. SQUANCH,frank arguello,Frank,Champions,100.34,The Horsegasms,tommy pfifferling,Tommy,Referees,62.3,6,6,2019,0
+626,Brady's Balls Brigade,Samik Das,Samik,AFC East,62.76,Roll Safe,Michael Tarpey,Tarpey,Champions,96.42,6,6,2019,0
+627,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,108.6,Mildred's Redskins,Mildred Kinley,Mildred,Referees,59.42,6,6,2019,0
+628,Sa lt,Jeff Sendzik,Sendzik,AFC East,108.38,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,69.14,7,7,2019,0
+629,DR. SQUANCH,frank arguello,Frank,Champions,60.96,Rise Up?,Brandon Dilbeck,Brando,Champions,69.06,7,7,2019,0
+630,Mildred's Redskins,Mildred Kinley,Mildred,Referees,105.46,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,80.22,7,7,2019,0
+631,Fear Boners,Charles Wilson,Charles,Referees,96.54,The Horsegasms,tommy pfifferling,Tommy,Referees,91.94,7,7,2019,0
+632,Roll Safe,Michael Tarpey,Tarpey,Champions,105.02,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,64.84,7,7,2019,0
+633,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,74.66,Greg Hardy Breakfast,Michael Allen,mballen,Referees,84.54,7,7,2019,0
+634,Brady's Balls Brigade,Samik Das,Samik,AFC East,54.86,VA Beach Warriors,DJ Conti,Conti,AFC East,115.42,7,7,2019,0
+635,Rise Up?,Brandon Dilbeck,Brando,Champions,90.2,The Horsegasms,tommy pfifferling,Tommy,Referees,54.28,8,8,2019,0
+636,Sa lt,Jeff Sendzik,Sendzik,AFC East,93.86,Brady's Balls Brigade,Samik Das,Samik,AFC East,79.96,8,8,2019,0
+637,Mildred's Redskins,Mildred Kinley,Mildred,Referees,78.3,Greg Hardy Breakfast,Michael Allen,mballen,Referees,122.02,8,8,2019,0
+638,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,84.42,DR. SQUANCH,frank arguello,Frank,Champions,146.96,8,8,2019,0
+639,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,115.68,VA Beach Warriors,DJ Conti,Conti,AFC East,137.56,8,8,2019,0
+640,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,101.16,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,62.38,8,8,2019,0
+641,Roll Safe,Michael Tarpey,Tarpey,Champions,102.98,Fear Boners,Charles Wilson,Charles,Referees,68.54,8,8,2019,0
+642,VA Beach Warriors,DJ Conti,Conti,AFC East,102.34,Sa lt,Jeff Sendzik,Sendzik,AFC East,118.8,9,9,2019,0
+643,The Horsegasms,tommy pfifferling,Tommy,Referees,88.76,Roll Safe,Michael Tarpey,Tarpey,Champions,100.82,9,9,2019,0
+644,DR. SQUANCH,frank arguello,Frank,Champions,61.06,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,98.6,9,9,2019,0
+645,Fear Boners,Charles Wilson,Charles,Referees,56.46,Greg Hardy Breakfast,Michael Allen,mballen,Referees,66.96,9,9,2019,0
+646,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,74.1,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,89.8,9,9,2019,0
+647,Brady's Balls Brigade,Samik Das,Samik,AFC East,64.8,Rise Up?,Brandon Dilbeck,Brando,Champions,120.9,9,9,2019,0
+648,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,89.14,Mildred's Redskins,Mildred Kinley,Mildred,Referees,79.14,9,9,2019,0
+649,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,75.52,VA Beach Warriors,DJ Conti,Conti,AFC East,85.28,10,10,2019,0
+650,Brady's Balls Brigade,Samik Das,Samik,AFC East,90.16,Fear Boners,Charles Wilson,Charles,Referees,52.32,10,10,2019,0
+651,Greg Hardy Breakfast,Michael Allen,mballen,Referees,66.48,The Horsegasms,tommy pfifferling,Tommy,Referees,111.02,10,10,2019,0
+652,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,81.32,Mildred's Redskins,Mildred Kinley,Mildred,Referees,113.72,10,10,2019,0
+653,Roll Safe,Michael Tarpey,Tarpey,Champions,82.98,DR. SQUANCH,frank arguello,Frank,Champions,95.68,10,10,2019,0
+654,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,103.9,Rise Up?,Brandon Dilbeck,Brando,Champions,76.48,10,10,2019,0
+655,Sa lt,Jeff Sendzik,Sendzik,AFC East,135.44,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,87.76,10,10,2019,0
+656,Roll Safe,Michael Tarpey,Tarpey,Champions,58.04,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,51.4,11,11,2019,0
+657,Brady's Balls Brigade,Samik Das,Samik,AFC East,80.44,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,73.02,11,11,2019,0
+658,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,59.9,Sa lt,Jeff Sendzik,Sendzik,AFC East,102.08,11,11,2019,0
+659,VA Beach Warriors,DJ Conti,Conti,AFC East,92.36,DR. SQUANCH,frank arguello,Frank,Champions,87.74,11,11,2019,0
+660,The Horsegasms,tommy pfifferling,Tommy,Referees,94.12,Fear Boners,Charles Wilson,Charles,Referees,111.16,11,11,2019,0
+661,Greg Hardy Breakfast,Michael Allen,mballen,Referees,80.38,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,96.58,11,11,2019,0
+662,Mildred's Redskins,Mildred Kinley,Mildred,Referees,94.8,Rise Up?,Brandon Dilbeck,Brando,Champions,70.22,11,11,2019,0
+663,The Horsegasms,tommy pfifferling,Tommy,Referees,88.3,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,110.06,12,12,2019,0
+664,Fear Boners,Charles Wilson,Charles,Referees,53.04,Mildred's Redskins,Mildred Kinley,Mildred,Referees,70.26,12,12,2019,0
+665,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,80.68,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,146.02,12,12,2019,0
+666,VA Beach Warriors,DJ Conti,Conti,AFC East,112.02,Brady's Balls Brigade,Samik Das,Samik,AFC East,83.7,12,12,2019,0
+667,Sa lt,Jeff Sendzik,Sendzik,AFC East,93.3,Greg Hardy Breakfast,Michael Allen,mballen,Referees,92.84,12,12,2019,0
+668,Rise Up?,Brandon Dilbeck,Brando,Champions,88.58,Roll Safe,Michael Tarpey,Tarpey,Champions,51.4,12,12,2019,0
+669,DR. SQUANCH,frank arguello,Frank,Champions,68.14,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,48.6,12,12,2019,0
+670,Roll Safe,Michael Tarpey,Tarpey,Champions,101.7,VA Beach Warriors,DJ Conti,Conti,AFC East,76.6,13,13,2019,0
+671,Mildred's Redskins,Mildred Kinley,Mildred,Referees,106.32,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,86.06,13,13,2019,0
+672,Fear Boners,Charles Wilson,Charles,Referees,95.14,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,71.8,13,13,2019,0
+673,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,54.42,Greg Hardy Breakfast,Michael Allen,mballen,Referees,97.76,13,13,2019,0
+674,Rise Up?,Brandon Dilbeck,Brando,Champions,54.94,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,86.3,13,13,2019,0
+675,DR. SQUANCH,frank arguello,Frank,Champions,104.28,Brady's Balls Brigade,Samik Das,Samik,AFC East,73.74,13,13,2019,0
+676,Sa lt,Jeff Sendzik,Sendzik,AFC East,87.12,The Horsegasms,tommy pfifferling,Tommy,Referees,69.7,13,13,2019,0
+677,Mildred's Redskins,Mildred Kinley,Mildred,Referees,91.4,The Horsegasms,tommy pfifferling,Tommy,Referees,67.2,14,14,2019,0
+678,Greg Hardy Breakfast,Michael Allen,mballen,Referees,126.06,VA Beach Warriors,DJ Conti,Conti,AFC East,78.68,14,14,2019,0
+679,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,82.9,Fear Boners,Charles Wilson,Charles,Referees,114.7,14,14,2019,0
+680,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,66.1,Roll Safe,Michael Tarpey,Tarpey,Champions,85.4,14,14,2019,0
+681,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,110.24,Sa lt,Jeff Sendzik,Sendzik,AFC East,84.32,14,14,2019,0
+682,Brady's Balls Brigade,Samik Das,Samik,AFC East,97.06,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,103.62,14,14,2019,0
+683,Rise Up?,Brandon Dilbeck,Brando,Champions,86.08,DR. SQUANCH,frank arguello,Frank,Champions,75.12,14,14,2019,0
+684,Roll Safe,Michael Tarpey,Tarpey,Champions,123.14,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,109.22,15,15,2019,1
+685,VA Beach Warriors,DJ Conti,Conti,AFC East,122.32,Mildred's Redskins,Mildred Kinley,Mildred,Referees,55.22,15,15,2019,1
+686,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,125.38,Fear Boners,Charles Wilson,Charles,Referees,83.9,15,15,2019,1
+687,Rise Up?,Brandon Dilbeck,Brando,Champions,141.98,Greg Hardy Breakfast,Michael Allen,mballen,Referees,93.08,15,15,2019,1
+688,Brady's Balls Brigade,Samik Das,Samik,AFC East,49.12,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,78.28,15,15,2019,1
+689,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,107.72,The Horsegasms,tommy pfifferling,Tommy,Referees,66.9,15,15,2019,1
+690,Bye,Bye,Bye,Bye,0,Sa lt,Jeff Sendzik,Sendzik,AFC East,90.1,15,15,2019,1
+691,Bye,Bye,Bye,Bye,0,DR. SQUANCH,frank arguello,Frank,Champions,105.3,15,15,2019,1
+692,VA Beach Warriors,DJ Conti,Conti,AFC East,68.46,Sa lt,Jeff Sendzik,Sendzik,AFC East,81.04,16,16,2019,1
+693,Roll Safe,Michael Tarpey,Tarpey,Champions,72.26,DR. SQUANCH,frank arguello,Frank,Champions,100.16,16,16,2019,1
+694,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,35.8,Mildred's Redskins,Mildred Kinley,Mildred,Referees,92.94,16,16,2019,1
+695,Rise Up?,Brandon Dilbeck,Brando,Champions,135.48,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,103.32,16,16,2019,1
+696,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,92.42,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,72.66,16,16,2019,1
+697,Greg Hardy Breakfast,Michael Allen,mballen,Referees,99.16,Fear Boners,Charles Wilson,Charles,Referees,69.72,16,16,2019,1
+698,The Horsegasms,tommy pfifferling,Tommy,Referees,123.58,Brady's Balls Brigade,Samik Das,Samik,AFC East,90.94,16,16,2019,1
+699,DR. SQUANCH,frank arguello,Frank,Champions,70.62,Sa lt,Jeff Sendzik,Sendzik,AFC East,95.76,17,17,2019,1
+700,VA Beach Warriors,DJ Conti,Conti,AFC East,94.42,Roll Safe,Michael Tarpey,Tarpey,Champions,86.22,17,17,2019,1
+701,Dalvin Cook's Shoulder,Jake Casado,Jake,AFC East,119.94,Mildred's Redskins,Mildred Kinley,Mildred,Referees,159.06,17,17,2019,1
+702,MR. TWO TIME! TWO TIME!,Kyle Fontimayor,Fonti,Champions,61.26,Rise Up?,Brandon Dilbeck,Brando,Champions,89.48,17,17,2019,1
+703,Brady's Balls: Truly Inflated,Matt Kindy,Kindy,AFC East,74.5,SimsCity17: Top OfTheTannehill,Bradley Leer,Brad,Referees,127.32,17,17,2019,1
+704,The Horsegasms,tommy pfifferling,Tommy,Referees,98.68,Greg Hardy Breakfast,Michael Allen,mballen,Referees,98.32,17,17,2019,1
+705,Brady's Balls Brigade,Samik Das,Samik,AFC East,49.64,Fear Boners,Charles Wilson,Charles,Referees,51.56,17,17,2019,1

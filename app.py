@@ -4,7 +4,6 @@ import os
 
 # import third party packages
 from flask import Flask
-from google.cloud import firestore
 
 
 def create_app(test_config=None):

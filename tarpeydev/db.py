@@ -9,6 +9,7 @@ import pytz
 from flask import current_app, g
 from flask.cli import with_appcontext
 from google.cloud import firestore
+import pandas
 import pymongo
 from pymongo import MongoClient
 
@@ -38,12 +39,31 @@ def close_dbf(e=None):
         dbf.close()
 
 
+def get_dbb():
+    '''Retrieve the MongoDB backlogs.'''
+
+    if 'dbb' not in g:
+        g.client = MongoClient(current_app.config['BACKLOGS_KEY'])
+        g.dbb = g.client.backlogs
+
+    return g.dbb, g.client
+
+
+def close_dbb(e=None):
+    '''Close the MongoDB (if it's open).'''
+
+    client = g.pop('client', None)
+
+    if client is not None:
+        client.close()
+
+
 def get_dbm():
     '''Retrieve the MongoDB backlogs.'''
 
     if 'dbm' not in g:
-        g.client = MongoClient(current_app.config['BACKLOGS_KEY'])
-        g.dbm = g.client.backlogs
+        g.client = MongoClient(current_app.config['MILDRED_KEY'])
+        g.dbm = g.client.mildredleague
 
     return g.dbm, g.client
 
@@ -61,7 +81,7 @@ def get_users():
     '''Retrieve the MongoDB users.'''
 
     if 'dbu' not in g:
-        g.client = MongoClient(current_app.config['AUTH_KEY'])
+        g.client = MongoClient(current_app.config['USERS_KEY'])
         g.dbu = g.client.users
 
     return g.dbu, g.client
@@ -78,7 +98,7 @@ def close_users(e=None):
 
 def add_db_syncs_and_teardowns(app):
     '''Enable apps to resync with CSVs and close the db connection.
-    
+
     app.teardown_appcontext() tells Flask to call the close_db
     functions when cleaning up after returning the response.
 
@@ -86,7 +106,16 @@ def add_db_syncs_and_teardowns(app):
 
     app.cli.add_command(csv_sync_command)
     app.teardown_appcontext(close_dbf)
+    app.teardown_appcontext(close_dbb)
     app.teardown_appcontext(close_dbm)
+    app.teardown_appcontext(close_users)
+
+
+@click.command('csv-sync')
+@with_appcontext
+def csv_sync_command():
+    db_csv_sync()
+    click.echo('Resynced MongoDB and Firestore with CSVs!')
 
 
 def db_csv_sync():
@@ -105,12 +134,16 @@ def db_csv_sync():
     annuitydew.from_csv(backlog_path)
     annuitydew.to_mongo()
 
-
-@click.command('csv-sync')
-@with_appcontext
-def csv_sync_command():
-    db_csv_sync()
-    click.echo('Resynced MongoDB and Firestore with CSVs!')
+    # mildredleague
+    season_path = os.path.join(
+        os.getcwd(),
+        'data',
+        'mildredleague',
+        'mlgamesall.csv'
+    )
+    all_games = MildredLeagueSeason('all_games')
+    all_games.from_csv(season_path)
+    all_games.to_mongo()
 
 
 class Backlog:
@@ -207,10 +240,10 @@ class Backlog:
             )
 
     def to_mongo(self):
-        dbm, client = get_dbm()
-        dbm.annuitydew.insert_many([backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()])
+        dbb, client = get_dbb()
+        dbb.annuitydew.insert_many([backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()])
         # create index
-        dbm.annuitydew.create_index([
+        dbb.annuitydew.create_index([
             ("game_title", pymongo.TEXT),
             ("sub_title", pymongo.TEXT)
         ])
@@ -279,5 +312,131 @@ class BacklogGame:
             str(type(self.complete_date)) + "\n    " +
             f'game_notes={self.game_notes}, ' +
             str(type(self.game_notes)) + "\n" +
+            ')'
+        )
+
+
+class MildredLeagueSeason:
+    def __init__(self, season):
+        self.season = season
+        self.season_dict = {}
+
+    def add_game(self, mildred_league_game):
+        self.season_dict[mildred_league_game._id] = mildred_league_game
+
+    def remove_game(self, _id):
+        del self.season_dict[_id]
+
+    def from_csv(self, season_path):
+        with open(season_path) as season_csv:
+            season_reader = csv.reader(season_csv)
+            # skip header row
+            next(season_reader)
+            for row in season_reader:
+                # convert floats to float
+                if row[5] != '':
+                    row[5] = float(row[5])
+                if row[10] != '':
+                    row[10] = float(row[10])
+                if row[11] != '':
+                    row[11] = int(row[11])
+                if row[12] != '':
+                    row[12] = int(row[12])
+                if row[13] != '':
+                    row[13] = int(row[13])
+                if row[14] != '':
+                    row[14] = int(row[14])
+                # convert empty strings to None
+                row = [None if item == '' else item for item in row]
+                game = MildredLeagueGame(
+                    _id=row[0],
+                    away=row[1],
+                    a_name=row[2],
+                    a_nick=row[3],
+                    a_division=row[4],
+                    a_score=row[5],
+                    home=row[6],
+                    h_name=row[7],
+                    h_nick=row[8],
+                    h_division=row[9],
+                    h_score=row[10],
+                    week_s=row[11],
+                    week_e=row[12],
+                    season=row[13],
+                    playoff=row[14],
+                )
+                self.add_game(game)
+
+    def to_mongo(self):
+        dbm, client = get_dbm()
+        dbm.games.insert_many([mildred_league_game.to_dict() for _id, mildred_league_game in self.season_dict.items()])
+        # create index
+        dbm.games.create_index([
+            ("a_nick", pymongo.TEXT),
+            ("h_nick", pymongo.TEXT)
+        ])
+
+    def print_season(self):
+        print(f'Season(season={self.season})')
+        for _id, mildred_league_game in self.season_dict.items():
+            print(f'{_id}')
+
+
+class MildredLeagueGame:
+    def __init__(self, _id, away, a_name, a_nick, a_division,
+                 a_score, home, h_name, h_nick, h_division,
+                 h_score, week_s, week_e, season, playoff):
+        self._id = _id
+        self.away = away
+        self.a_name = a_name
+        self.a_nick = a_nick
+        self.a_division = a_division
+        self.a_score = a_score
+        self.home = home
+        self.h_name = h_name
+        self.h_nick = h_nick
+        self.h_division = h_division
+        self.h_score = h_score
+        self.week_s = week_s
+        self.week_e = week_e
+        self.season = season
+        self.playoff = playoff
+
+    def to_dict(self):
+        return self.__dict__
+
+    def print_game(self):
+        print(
+            'MildredLeagueGame(' + "\n    " +
+            f'_id={self._id}, ' +
+            str(type(self._id)) + "\n    " +
+            f'away={self.away}, ' +
+            str(type(self.away)) + "\n    " +
+            f'a_name={self.a_name}, ' +
+            str(type(self.a_name)) + "\n    " +
+            f'a_nick={self.a_nick}, ' +
+            str(type(self.a_nick)) + "\n    " +
+            f'a_division={self.a_division}, ' +
+            str(type(self.a_division)) + "\n    " +
+            f'a_score={self.a_score}, ' +
+            str(type(self.a_score)) + "\n    " +
+            f'home={self.home}, ' +
+            str(type(self.home)) + "\n    " +
+            f'h_name={self.h_name}, ' +
+            str(type(self.h_name)) + "\n    " +
+            f'h_nick={self.h_nick}, ' +
+            str(type(self.h_nick)) + "\n    " +
+            f'h_division={self.h_division}, ' +
+            str(type(self.h_division)) + "\n    " +
+            f'h_score={self.h_score}, ' +
+            str(type(self.h_score)) + "\n    " +
+            f'week_s={self.week_s}, ' +
+            str(type(self.week_s)) + "\n    " +
+            f'week_e={self.week_e}, ' +
+            str(type(self.week_e)) + "\n    " +
+            f'season={self.season}, ' +
+            str(type(self.season)) + "\n    " +
+            f'playoff={self.playoff}, ' +
+            str(type(self.playoff)) + "\n" +
             ')'
         )

@@ -1,17 +1,18 @@
 # import native Python packages
+
 import json
 import os
 
+
 # import third party packages
 from flask import Blueprint, render_template, request
-from google.cloud import firestore
 import numpy
 import pandas
 import plotly
 import plotly.express as px
 
 # import local stuff
-from tarpeydev.db import get_dbm
+from tarpeydev.db import get_dbb
 from tarpeydev.plotly_style import tarpeydev_default
 
 
@@ -22,12 +23,12 @@ hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')
 @hysx_bp.route('/home', methods=['GET'])
 def home():
     # read backlog and visualizations
-    dbm, client = get_dbm()
+    dbb, client = get_dbb()
     stats = list(
-        dbm.annuitydew.aggregate([
+        dbb.annuitydew.aggregate([
             {
                 '$group': {
-                    '_id': '$game_status', 
+                    '_id': '$game_status',
                     'count': {
                         '$sum': 1
                     }
@@ -36,13 +37,13 @@ def home():
         ])
     )
     playtime = list(
-        dbm.annuitydew.aggregate([
+        dbb.annuitydew.aggregate([
             {
                 '$group': {
-                    '_id': None, 
+                    '_id': None,
                     'total_hours': {
                         '$sum': '$game_hours'
-                    }, 
+                    },
                     'total_minutes': {
                         '$sum': '$game_minutes'
                     }
@@ -50,7 +51,7 @@ def home():
             }
         ])
     )
-    stats = {result.get('_id') : result.get('count') for result in stats}
+    stats = {result.get('_id'): result.get('count') for result in stats}
     playtime = int(playtime[0].get('total_hours') + playtime[0].get('total_minutes') / 60)
     treemap = system_treemap()
 
@@ -65,12 +66,12 @@ def home():
 @hysx_bp.route('/results', methods=['GET'])
 def results():
     search_term = request.args.get('query')
-    dbm, client = get_dbm()
+    dbb, client = get_dbb()
     # return all results if no search_term
     if search_term == '':
-        results = list(dbm.annuitydew.find())
+        results = list(dbb.annuitydew.find())
     else:
-        results = list(dbm.annuitydew.find(
+        results = list(dbb.annuitydew.find(
             {
                 '$text': {
                     '$search': search_term

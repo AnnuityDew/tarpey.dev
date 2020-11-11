@@ -43,9 +43,9 @@ def register():
                 "password": generate_password_hash(password)
             })
             return redirect(url_for('admin.login'))
-        
+
         flash(error)
-    
+
     return render_template('admin/register.html')
 
 
@@ -74,7 +74,7 @@ def login():
             return redirect(url_for('swagger_ui.show'))
         
         flash(error)
-    
+
     return render_template('admin/login.html')
 
 
@@ -100,9 +100,9 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('admin.login'))
-        
+
         return view(**kwargs)
-    
+
     return wrapped_view
 
 
