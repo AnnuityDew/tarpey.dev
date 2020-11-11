@@ -13,15 +13,15 @@ import scipy
 from scipy import stats
 
 
-autobracket_bp = Blueprint('autobracket', __name__, url_prefix='/autobracket')
+bp = Blueprint('autobracket', __name__, url_prefix='/autobracket')
 
 
-@autobracket_bp.route('/generate', methods=['GET', 'POST'])
+@bp.route('/generate', methods=['GET', 'POST'])
 def generate():
     return render_template('autobracket/generate.html')
 
 
-@autobracket_bp.route('/bracket', methods=['GET', 'POST'])
+@bp.route('/bracket', methods=['GET', 'POST'])
 def bracket():
 	# If you go straight to the bracket page, you'll get a 400 error!
 	if request.form == {}:

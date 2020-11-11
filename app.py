@@ -1,4 +1,5 @@
 # import native Python packages
+import json
 import os
 
 # import third party packages
@@ -39,10 +40,11 @@ def create_app(test_config=None):
 
     # register apps
     app.register_blueprint(admin.bp)
+    app.register_blueprint(admin.swag_bp)
     app.register_blueprint(index.index_bp)
     app.register_blueprint(haveyouseenx.hysx_bp)
     app.register_blueprint(mildredleague.ml_bp)
-    app.register_blueprint(autobracket.autobracket_bp)
+    app.register_blueprint(autobracket.bp)
     app.register_blueprint(timecapsule.timecapsule_bp)
     app.register_blueprint(ddr.ddr_bp)
 
