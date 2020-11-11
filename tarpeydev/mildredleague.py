@@ -1,12 +1,9 @@
 # import native Python packages
-import base64
-import functools
-import io
 import json
 import os
 
 # import third party packages
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 import numpy
 import pandas
 import plotly
@@ -35,7 +32,7 @@ def alltime():
     all_time_rankings_json = all_time_ranking_fig()
     all_time_matchups_json = matchup_heatmap_fig()
     all_time_wins_json = all_time_wins_fig()
-    
+
     return render_template(
         'mildredleague/alltime.html',
         ranks=all_time_rankings_json,
@@ -205,7 +202,7 @@ def all_games():
         )
     )
     # margin = home - away
-    all_games_df['h_margin'] = all_games_df['h_score_norm'] - all_games_df['a_score_norm'] 
+    all_games_df['h_margin'] = all_games_df['h_score_norm'] - all_games_df['a_score_norm']
 
     return all_games_df
 
@@ -242,9 +239,9 @@ def calc_records(games_df):
             away_points_for_df,
             home_points_against_df,
             away_points_against_df,
-         ],
-         how='inner',
-    ).rename_axis('nick_name')
+        ],
+        how='inner',
+        ).rename_axis('nick_name')
     # win total, loss total, game total, points for, points against, win percentage
     record_df['win_total'] = record_df['h_win'] + record_df['a_win']
     record_df['loss_total'] = record_df['h_loss'] + record_df['a_loss']
@@ -371,7 +368,7 @@ def all_time_wins_fig():
     # now convert the data to lists and add one at a time
     # to attach different colors in the cycle
     xy = record_df[['win_total', 'nick_name']].values.tolist()
-    
+
     for i, bar in enumerate(xy):
         figure.add_trace(
             go.Bar(
@@ -436,7 +433,7 @@ def all_time_ranking_fig():
 
     # need to pull out of data frame format for this particular figure
     annual_ranking_list = annual_ranking_df.values.tolist()
-    
+
     # need a separate set for the annotations to look good
     ranking_annotations = annual_ranking_df.values.tolist()
 
@@ -596,7 +593,7 @@ def season_boxplot(year, against=True):
             ),
             ignore_index=True,
         )
-        title_label='(Points For)'
+        title_label = '(Points For)'
     # this code runs to analyze Points Against.
     if against is True:
         score_df = season_df[['a_nick', 'h_score_norm']].rename(
@@ -607,7 +604,7 @@ def season_boxplot(year, against=True):
             ),
             ignore_index=True,
         )
-        title_label='(Points Against)'
+        title_label = '(Points Against)'
     # let's sort by playoff rank instead
     all_time_path = os.path.join(
         os.getcwd(),
@@ -660,4 +657,3 @@ def season_boxplot(year, against=True):
     figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
 
     return figure_json
-
