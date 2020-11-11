@@ -3,7 +3,6 @@ import click
 import csv
 import datetime
 import os
-import pytz
 
 # import third party packages
 from flask import current_app, g
@@ -43,7 +42,7 @@ def get_dbb():
     '''Retrieve the MongoDB backlogs.'''
 
     if 'dbb' not in g:
-        g.client = MongoClient(current_app.config['BACKLOGS_KEY'])
+        g.client = MongoClient(current_app.config['BACKLOGS_READER'])
         g.dbb = g.client.backlogs
 
     return g.dbb, g.client
@@ -135,15 +134,23 @@ def db_csv_sync():
     annuitydew.to_mongo()
 
     # mildredleague
-    season_path = os.path.join(
+    games_path = os.path.join(
         os.getcwd(),
         'data',
         'mildredleague',
-        'mlgamesall.csv'
+        'mlallgames.csv'
     )
-    all_games = MildredLeagueSeason('all_games')
-    all_games.from_csv(season_path)
-    all_games.to_mongo()
+    teams_path = os.path.join(
+        os.getcwd(),
+        'data',
+        'mildredleague',
+        'mlallteams.csv'
+    )
+    season_data = MildredLeagueSeason(2020)
+    season_data.games_from_csv(games_path)
+    season_data.teams_from_csv(teams_path)
+    season_data.games_to_mongo()
+    season_data.teams_to_mongo()
 
 
 class Backlog:
@@ -159,24 +166,19 @@ class Backlog:
 
     def from_csv(self, backlog_path):
         with open(backlog_path, encoding='latin1') as backlog_csv:
-            eastern = pytz.timezone('US/Eastern')
             backlog_reader = csv.reader(backlog_csv)
             # skip header row
             next(backlog_reader)
             for row in backlog_reader:
                 # convert date strings to datetime objects and ints to int
-                if row[7] != '':
-                    row[7] = int(row[7])
-                if row[8] != '':
-                    row[8] = int(row[8])
-                if row[10] != '':
-                    row[10] = eastern.localize(datetime.datetime.strptime(row[10], '%m/%d/%y').replace(hour=12))
-                if row[11] != '':
-                    row[11] = eastern.localize(datetime.datetime.strptime(row[11], '%m/%d/%y').replace(hour=12))
-                if row[12] != '':
-                    row[12] = eastern.localize(datetime.datetime.strptime(row[12], '%m/%d/%y').replace(hour=12))
-                if row[13] != '':
-                    row[13] = eastern.localize(datetime.datetime.strptime(row[13], '%m/%d/%y').replace(hour=12))
+                ints = [7, 8]
+                dates = [10, 11, 12, 13]
+                for column in ints:
+                    if row[column] != '':
+                        row[column] = int(row[column])
+                for column in dates:
+                    if row[column] != '':
+                        row[column] = datetime.datetime.strptime(row[column], '%m/%d/%y').replace(hour=16)
                 # convert empty strings to None
                 row = [None if item == '' else item for item in row]
                 game = BacklogGame(
@@ -200,18 +202,17 @@ class Backlog:
 
     def from_pandas(self, backlog_df):
         backlog_df = backlog_df.where(pandas.notnull(backlog_df), None)
-        eastern = pytz.timezone('US/Eastern')
         # convert strings to dates
         for index, row in backlog_df.iterrows():
             # convert date strings to Python datetime objects
             if row.add_date is not None:
-                row.add_date = eastern.localize(datetime.datetime.strptime(row.add_date, '%m/%d/%y').replace(hour=12))
+                row.add_date = datetime.datetime.strptime(row.add_date, '%m/%d/%y').replace(hour=16)
             if row.start_date is not None:
-                row.start_date = eastern.localize(datetime.datetime.strptime(row.start_date, '%m/%d/%y').replace(hour=12))
+                row.start_date = datetime.datetime.strptime(row.start_date, '%m/%d/%y').replace(hour=16)
             if row.beat_date is not None:
-                row.beat_date = eastern.localize(datetime.datetime.strptime(row.beat_date, '%m/%d/%y').replace(hour=12))
+                row.beat_date = datetime.datetime.strptime(row.beat_date, '%m/%d/%y').replace(hour=16)
             if row.complete_date is not None:
-                row.complete_date = eastern.localize(datetime.datetime.strptime(row.complete_date, '%m/%d/%y').replace(hour=12))
+                row.complete_date = datetime.datetime.strptime(row.complete_date, '%m/%d/%y').replace(hour=16)
             game = BacklogGame(
                 _id=index,
                 game_title=row.game_title,
@@ -241,14 +242,28 @@ class Backlog:
 
     def to_mongo(self):
         dbb, client = get_dbb()
-        dbb.annuitydew.insert_many([backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()])
+        doc_list = [backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()]
+        if list(dbb.annuitydew.find()) == doc_list:
+            print("All games are already synced!")
+        elif not list(dbb.annuitydew.find()):
+            dbb.annuitydew.insert_many(doc_list)
+            print("Bulk insert complete!")
+        else:
+            for _id, backlog_game in self.backlog_dict.items():
+                try:
+                    dbb.annuitydew.insert_one(backlog_game.to_dict())
+                    print("Inserted " + _id + ".")
+                except pymongo.errors.DuplicateKeyError:
+                    dbb.annuitydew.replace_one({"_id": _id}, backlog_game.to_dict())
+                    print("Replaced " + _id + ".")
+                
         # create index
         dbb.annuitydew.create_index([
             ("game_title", pymongo.TEXT),
             ("sub_title", pymongo.TEXT)
         ])
 
-    def print_backlog(self):
+    def print_contents(self):
         print(f'Backlog(backlog_owner={self.backlog_owner})')
         for _id, backlog_game in self.backlog_dict.items():
             print(f'{_id}: {backlog_game.game_title}')
@@ -279,7 +294,7 @@ class BacklogGame:
     def to_dict(self):
         return self.__dict__
 
-    def print_game(self):
+    def print_contents(self):
         print(
             'BacklogGame(' + "\n    " +
             f'_id={self._id}, ' +
@@ -319,33 +334,36 @@ class BacklogGame:
 class MildredLeagueSeason:
     def __init__(self, season):
         self.season = season
-        self.season_dict = {}
+        self.games_dict = {}
+        self.teams_dict = {}
 
-    def add_game(self, mildred_league_game):
-        self.season_dict[mildred_league_game._id] = mildred_league_game
+    def add_game(self, ml_game):
+        self.games_dict[ml_game._id] = ml_game
 
     def remove_game(self, _id):
-        del self.season_dict[_id]
+        del self.games_dict[_id]
 
-    def from_csv(self, season_path):
-        with open(season_path) as season_csv:
-            season_reader = csv.reader(season_csv)
+    def add_team(self, ml_team):
+        self.teams_dict[ml_team._id] = ml_team
+
+    def remove_team(self, ml_team):
+        del self.teams_dict[_id]
+
+    def games_from_csv(self, games_path):
+        with open(games_path) as games_csv:
+            games_reader = csv.reader(games_csv)
             # skip header row
-            next(season_reader)
-            for row in season_reader:
-                # convert floats to float
-                if row[5] != '':
-                    row[5] = float(row[5])
-                if row[10] != '':
-                    row[10] = float(row[10])
-                if row[11] != '':
-                    row[11] = int(row[11])
-                if row[12] != '':
-                    row[12] = int(row[12])
-                if row[13] != '':
-                    row[13] = int(row[13])
-                if row[14] != '':
-                    row[14] = int(row[14])
+            next(games_reader)
+            for row in games_reader:
+                # convert floats to float and ints to int
+                floats = [5, 10]
+                ints = [0, 11, 12, 13, 14]
+                for column in floats:
+                    if row[column] != '':
+                        row[column] = float(row[column])
+                for column in ints:
+                    if row[column] != '':
+                        row[column] = int(row[column])
                 # convert empty strings to None
                 row = [None if item == '' else item for item in row]
                 game = MildredLeagueGame(
@@ -367,18 +385,75 @@ class MildredLeagueSeason:
                 )
                 self.add_game(game)
 
-    def to_mongo(self):
+    def teams_from_csv(self, teams_path):
+        with open(teams_path) as teams_csv:
+            teams_reader = csv.reader(teams_csv)
+            # skip header row
+            next(teams_reader)
+            for row in teams_reader:
+                # convert ints to int
+                ints = [0, 4, 5, 6]
+                for column in ints:
+                    if row[column] != '':
+                        row[column] = int(row[column])
+                # convert empty strings to None
+                row = [None if item == '' else item for item in row]
+                team = MildredLeagueTeam(
+                    _id=row[0],
+                    team_name=row[1],
+                    full_name=row[2],
+                    nick_name=row[3],
+                    season=row[4],
+                    playoff_rank=row[5],
+                    active=row[6],
+                )
+                self.add_team(team)
+
+    def games_to_mongo(self):
         dbm, client = get_dbm()
-        dbm.games.insert_many([mildred_league_game.to_dict() for _id, mildred_league_game in self.season_dict.items()])
+        doc_list = [ml_game.to_dict() for _id, ml_game in self.games_dict.items()]
+        if list(dbm.games.find()) == doc_list:
+            print("All games are already synced!")
+        elif not list(dbm.games.find()):
+            dbm.games.insert_many(doc_list)
+            print("Bulk insert complete!")
+        else:
+            for _id, ml_game in self.games_dict.items():
+                try:
+                    dbm.games.insert_one(ml_game.to_dict())
+                    print("Inserted " + str(_id) + ".")
+                except pymongo.errors.DuplicateKeyError:
+                    dbm.games.replace_one({"_id": _id}, ml_game.to_dict())
+                    print("Replaced " + str(_id) + ".")
         # create index
         dbm.games.create_index([
             ("a_nick", pymongo.TEXT),
             ("h_nick", pymongo.TEXT)
         ])
+    def teams_to_mongo(self):
+        dbm, client = get_dbm()
+        doc_list = [ml_team.to_dict() for _id, ml_team in self.teams_dict.items()]
+        if list(dbm.teams.find()) == doc_list:
+            print("All teams are already synced!")
+        elif not list(dbm.teams.find()):
+            dbm.teams.insert_many(doc_list)
+            print("Bulk insert complete!")
+        else:
+            for _id, ml_team in self.teams_dict.items():
+                try:
+                    dbm.teams.insert_one(ml_team.to_dict())
+                    print("Inserted " + str(_id) + ".")
+                except pymongo.errors.DuplicateKeyError:
+                    dbm.teams.replace_one({"_id": _id}, ml_team.to_dict())
+                    print("Replaced " + str(_id) + ".")
+        # create index
+        dbm.teams.create_index([
+            ("nick_name", pymongo.TEXT)
+        ])
 
-    def print_season(self):
+    def print_contents(self):
         print(f'Season(season={self.season})')
-        for _id, mildred_league_game in self.season_dict.items():
+        for _id, ml_game in self.games_dict.items():
             print(f'{_id}')
 
 
@@ -405,7 +480,7 @@ class MildredLeagueGame:
     def to_dict(self):
         return self.__dict__
 
-    def print_game(self):
+    def print_contents(self):
         print(
             'MildredLeagueGame(' + "\n    " +
             f'_id={self._id}, ' +
@@ -438,5 +513,40 @@ class MildredLeagueGame:
             str(type(self.season)) + "\n    " +
             f'playoff={self.playoff}, ' +
             str(type(self.playoff)) + "\n" +
+            ')'
+        )
+
+
+class MildredLeagueTeam:
+    def __init__(self, _id, team_name, full_name, nick_name,
+                 season, playoff_rank, active):
+        self._id = _id
+        self.team_name = team_name
+        self.full_name = full_name
+        self.nick_name = nick_name
+        self.season = season
+        self.playoff_rank = playoff_rank
+        self.active = active
+
+    def to_dict(self):
+        return self.__dict__
+
+    def print_contents(self):
+        print(
+            'MildredLeagueGame(' + "\n    " +
+            f'_id={self._id}, ' +
+            str(type(self._id)) + "\n    " +
+            f'team_name={self.team_name}, ' +
+            str(type(self.team_name)) + "\n    " +
+            f'full_name={self.full_name}, ' +
+            str(type(self.full_name)) + "\n    " +
+            f'nick_name={self.nick_name}, ' +
+            str(type(self.nick_name)) + "\n    " +
+            f'season={self.season}, ' +
+            str(type(self.season)) + "\n    " +
+            f'playoff_rank={self.playoff_rank}, ' +
+            str(type(self.playoff_rank)) + "\n    " +
+            f'active={self.active}, ' +
+            str(type(self.active)) + "\n    " +
             ')'
         )

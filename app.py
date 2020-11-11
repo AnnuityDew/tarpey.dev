@@ -1,5 +1,4 @@
 # import native Python packages
-import json
 import os
 
 # import third party packages
@@ -30,22 +29,25 @@ def create_app(test_config=None):
 
     # import apps
     from tarpeydev import admin
-    from tarpeydev import index
-    from tarpeydev import haveyouseenx
-    from tarpeydev import mildredleague
-    from tarpeydev import ddr
+    from tarpeydev import api
     from tarpeydev import autobracket
+    from tarpeydev import ddr
+    from tarpeydev import haveyouseenx
+    from tarpeydev import index
+    from tarpeydev import mildredleague
+    from tarpeydev import swagger
     from tarpeydev import timecapsule
 
     # register apps
     app.register_blueprint(admin.bp)
-    app.register_blueprint(admin.swag_bp)
-    app.register_blueprint(index.index_bp)
-    app.register_blueprint(haveyouseenx.hysx_bp)
-    app.register_blueprint(mildredleague.ml_bp)
+    app.register_blueprint(api.api_bp)
     app.register_blueprint(autobracket.bp)
-    app.register_blueprint(timecapsule.timecapsule_bp)
     app.register_blueprint(ddr.ddr_bp)
+    app.register_blueprint(haveyouseenx.hysx_bp)
+    app.register_blueprint(index.index_bp)
+    app.register_blueprint(mildredleague.ml_bp)
+    app.register_blueprint(swagger.swag_bp)
+    app.register_blueprint(timecapsule.timecapsule_bp)
 
     # import and register errors
     # from . import errors

@@ -9,16 +9,60 @@
         {"url":"http://127.0.0.1:5000"},
         {"url":"https://tarpey.dev"}
     ],
+    "tags":[
+        {
+            "name":"users",
+            "description":"User operations."
+        },
+        {
+            "name":"quotes",
+            "description":"My favorites."
+        },
+        {
+            "name":"haveyouseenx",
+            "description":"See what games I've played."
+        },
+        {
+            "name":"mildredleague",
+            "description":"Respect your elders."
+        },
+        {
+            "name":"DDR",
+            "description":"Select a style!"
+        }
+    ],
     "schemes":"https",
     "paths":{
-        "/swagger/readuser/{username}":{
+        "/api/users/{username}":{
             "get":{
+                "tags":["users"],
                 "summary":"Get a user.",
                 "parameters":[
                     {
                         "name":"username",
                         "in":"path",
-                        "required":"true",
+                        "required":true,
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/haveyouseenx/search":{
+            "get":{
+                "tags":["haveyouseenx"],
+                "summary":"Look for a game I've played.",
+                "parameters":[
+                    {
+                        "name":"query",
+                        "in":"query",
+                        "required":true,
                         "schema":{
                             "type":"string"
                         }

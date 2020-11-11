@@ -1,8 +1,6 @@
 # import native Python packages
-
 import json
 import os
-
 
 # import third party packages
 from flask import Blueprint, render_template, request
@@ -12,6 +10,8 @@ import plotly
 import plotly.express as px
 
 # import local stuff
+from tarpeydev import api
+from tarpeydev.admin import login_required
 from tarpeydev.db import get_dbb
 from tarpeydev.plotly_style import tarpeydev_default
 
@@ -52,7 +52,10 @@ def home():
         ])
     )
     stats = {result.get('_id'): result.get('count') for result in stats}
-    playtime = int(playtime[0].get('total_hours') + playtime[0].get('total_minutes') / 60)
+    playtime = int(
+        playtime[0].get('total_hours') +
+        playtime[0].get('total_minutes') / 60
+    )
     treemap = system_treemap()
 
     return render_template(
@@ -63,26 +66,14 @@ def home():
     )
 
 
-@hysx_bp.route('/results', methods=['GET'])
+@hysx_bp.route('/search', methods=['GET'])
 def results():
-    search_term = request.args.get('query')
-    dbb, client = get_dbb()
-    # return all results if no search_term
-    if search_term == '':
-        results = list(dbb.annuitydew.find())
-    else:
-        results = list(dbb.annuitydew.find(
-            {
-                '$text': {
-                    '$search': search_term
-                }
-            }
-        ))
-
+    # run search
+    results = api.search(request.args.get('query'), True)
     return render_template(
         'haveyouseenx/results.html',
+        search_term=request.args.get('query'),
         results=results,
-        search_term=search_term,
     )
 
 
@@ -155,3 +146,21 @@ def system_treemap():
     figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
 
     return figure_json
+
+
+@hysx_bp.route('/adduser', methods=['POST'])
+@login_required
+def create():
+    return
+
+
+@hysx_bp.route('/updateuser', methods=['POST', 'PUT'])
+@login_required
+def update():
+    return
+
+
+@hysx_bp.route('/deleteuser', methods=['GET', 'DELETE'])
+@login_required
+def delete():
+    return
