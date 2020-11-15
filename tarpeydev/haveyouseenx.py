@@ -69,7 +69,7 @@ def home():
 @hysx_bp.route('/search', methods=['GET'])
 def results():
     # run search
-    results = api.search(request.args.get('query'), True)
+    results = api.search(request.args.get('query'))
     return render_template(
         'haveyouseenx/results.html',
         search_term=request.args.get('query'),

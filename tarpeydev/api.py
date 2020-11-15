@@ -12,7 +12,7 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
 @api_bp.route('/haveyouseenx/search', methods=['GET'])
-def search(search_term=None, front_end=False):
+def search(search_term=None):
     if search_term is None:
         search_term = request.args.get('query')
     if search_term is None:
@@ -30,10 +30,10 @@ def search(search_term=None, front_end=False):
                 }
             }
         ))
-    if front_end is True:
-        return results
-    else:
+    if request.path.startswith('/api/'):
         return jsonify(results), 200
+    else:
+        return results
 
 
 @api_bp.route('/users', methods=['POST'])
