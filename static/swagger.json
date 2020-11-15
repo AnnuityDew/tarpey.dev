@@ -54,6 +54,17 @@
                 }
             }
         },
+        "/api/index/random-quote":{
+            "get":{
+                "tags":["quotes"],
+                "summary":"Pick a random quote out of my favorites.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
         "/api/haveyouseenx/search":{
             "get":{
                 "tags":["haveyouseenx"],

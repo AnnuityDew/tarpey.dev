@@ -20,4 +20,4 @@ swag_bp = get_swaggerui_blueprint(
 @swag_bp.before_request
 def restrict_swagger():
     if g.user is None:
-        return redirect(url_for('admin.login'))
+        return redirect(url_for('users.login'))

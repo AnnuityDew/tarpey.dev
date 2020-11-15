@@ -38,42 +38,31 @@ def close_dbf(e=None):
         dbf.close()
 
 
-def get_dbb():
-    '''Retrieve the MongoDB backlogs.'''
+def get_dbmr():
+    '''Retrieve the MongoDB reader.'''
 
-    if 'dbb' not in g:
-        g.client = MongoClient(current_app.config['BACKLOGS_READER'])
-        g.dbb = g.client.backlogs
+    if 'client' not in g:
+        g.client = MongoClient(current_app.config['MONGO_READER'])
 
-    return g.dbb, g.client
-
-
-def close_dbb(e=None):
-    '''Close the MongoDB (if it's open).'''
-
-    client = g.pop('client', None)
-
-    if client is not None:
-        client.close()
+    return g.client
 
 
-def get_dbm():
-    '''Retrieve the MongoDB backlogs.'''
+def get_dbmw():
+    '''Retrieve the MongoDB writer.'''
 
-    if 'dbm' not in g:
-        g.client = MongoClient(current_app.config['MILDRED_KEY'])
-        g.dbm = g.client.mildredleague
+    if 'client' not in g:
+        g.client = MongoClient(current_app.config['MONGO_WRITER'])
 
-    return g.dbm, g.client
+    return g.client
 
 
-def close_dbm(e=None):
-    '''Close the MongoDB (if it's open).'''
+def get_dbma():
+    '''Retrieve the MongoDB admin.'''
 
-    client = g.pop('client', None)
+    if 'client' not in g:
+        g.client = MongoClient(current_app.config['MONGO_ADMIN'])
 
-    if client is not None:
-        client.close()
+    return g.client
 
 
 def get_users():
@@ -86,7 +75,7 @@ def get_users():
     return g.dbu, g.client
 
 
-def close_users(e=None):
+def close_mongo(e=None):
     '''Close the MongoDB (if it's open).'''
 
     client = g.pop('client', None)
@@ -105,9 +94,7 @@ def add_db_syncs_and_teardowns(app):
 
     app.cli.add_command(csv_sync_command)
     app.teardown_appcontext(close_dbf)
-    app.teardown_appcontext(close_dbb)
-    app.teardown_appcontext(close_dbm)
-    app.teardown_appcontext(close_users)
+    app.teardown_appcontext(close_mongo)
 
 
 @click.command('csv-sync')
@@ -120,7 +107,38 @@ def csv_sync_command():
 def db_csv_sync():
     '''Resync databases with CSV files.'''
 
-    # index
+    # index quotes
+    quotes_path = os.path.join(
+        os.getcwd(),
+        'data',
+        'index',
+        'index_quotes.csv'
+    )
+    data_list = list(csv.reader(open(quotes_path)))
+    instances = [Quote(data_list[0], i) for i in data_list[1:]]
+
+    client = get_dbma()
+    db = client.quotes
+    doc_list = [quote.to_dict() for quote in instances]
+    if list(db.quotes.find()) == doc_list:
+        print("All quotes are already synced!")
+    elif not list(db.quotes.find()):
+        db.quotes.insert_many(doc_list)
+        print("Bulk insert complete!")
+    else:
+        for doc in doc_list:
+            try:
+                db.quotes.insert_one(doc)
+                print("Inserted " + doc.get("_id") + ".")
+            except pymongo.errors.DuplicateKeyError:
+                db.quotes.replace_one({"_id": doc.get("_id")}, doc)
+                print("Replaced " + doc.get("_id") + ".")
+
+    # create index
+    db.quotes.create_index([
+        ("quote_text", pymongo.TEXT),
+        ("quote_origin", pymongo.TEXT)
+    ])
 
     # haveyouseenx
     backlog_path = os.path.join(
@@ -151,6 +169,27 @@ def db_csv_sync():
     season_data.teams_from_csv(teams_path)
     season_data.games_to_mongo()
     season_data.teams_to_mongo()
+
+
+class Quote:
+    # instantiate from the quotes CSV
+    def __init__(self, header, row):
+        self.__dict__ = dict(zip(header, row))
+
+    def to_dict(self):
+        return self.__dict__
+
+    def print_contents(self):
+        print(
+            'Quote(' + "\n    " +
+            f'_id={self._id}, ' +
+            str(type(self._id)) + "\n    " +
+            f'quote_text={self.quote_text}, ' +
+            str(type(self.quote_text)) + "\n    " +
+            f'quote_origin={self.quote_origin}, ' +
+            str(type(self.quote_origin)) + "\n    " +
+            ')'
+        )
 
 
 class Backlog:
@@ -241,24 +280,25 @@ class Backlog:
             )
 
     def to_mongo(self):
-        dbb, client = get_dbb()
+        client = get_dbma()
+        db = client.backlogs
         doc_list = [backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()]
-        if list(dbb.annuitydew.find()) == doc_list:
-            print("All games are already synced!")
-        elif not list(dbb.annuitydew.find()):
-            dbb.annuitydew.insert_many(doc_list)
+        if list(db.annuitydew.find()) == doc_list:
+            print("All backlog games are already synced!")
+        elif not list(db.annuitydew.find()):
+            db.annuitydew.insert_many(doc_list)
             print("Bulk insert complete!")
         else:
             for _id, backlog_game in self.backlog_dict.items():
                 try:
-                    dbb.annuitydew.insert_one(backlog_game.to_dict())
+                    db.annuitydew.insert_one(backlog_game.to_dict())
                     print("Inserted " + _id + ".")
                 except pymongo.errors.DuplicateKeyError:
-                    dbb.annuitydew.replace_one({"_id": _id}, backlog_game.to_dict())
+                    db.annuitydew.replace_one({"_id": _id}, backlog_game.to_dict())
                     print("Replaced " + _id + ".")
-                
+
         # create index
-        dbb.annuitydew.create_index([
+        db.annuitydew.create_index([
             ("game_title", pymongo.TEXT),
             ("sub_title", pymongo.TEXT)
         ])
@@ -346,7 +386,7 @@ class MildredLeagueSeason:
     def add_team(self, ml_team):
         self.teams_dict[ml_team._id] = ml_team
 
-    def remove_team(self, ml_team):
+    def remove_team(self, _id):
         del self.teams_dict[_id]
 
     def games_from_csv(self, games_path):
@@ -410,44 +450,47 @@ class MildredLeagueSeason:
                 self.add_team(team)
 
     def games_to_mongo(self):
-        dbm, client = get_dbm()
+        client = get_dbma()
+        db = client.mildredleague
         doc_list = [ml_game.to_dict() for _id, ml_game in self.games_dict.items()]
-        if list(dbm.games.find()) == doc_list:
-            print("All games are already synced!")
-        elif not list(dbm.games.find()):
-            dbm.games.insert_many(doc_list)
+        if list(db.games.find()) == doc_list:
+            print("All Mildred League games are already synced!")
+        elif not list(db.games.find()):
+            db.games.insert_many(doc_list)
             print("Bulk insert complete!")
         else:
             for _id, ml_game in self.games_dict.items():
                 try:
-                    dbm.games.insert_one(ml_game.to_dict())
+                    db.games.insert_one(ml_game.to_dict())
                     print("Inserted " + str(_id) + ".")
                 except pymongo.errors.DuplicateKeyError:
-                    dbm.games.replace_one({"_id": _id}, ml_game.to_dict())
+                    db.games.replace_one({"_id": _id}, ml_game.to_dict())
                     print("Replaced " + str(_id) + ".")
         # create index
-        dbm.games.create_index([
+        db.games.create_index([
             ("a_nick", pymongo.TEXT),
             ("h_nick", pymongo.TEXT)
         ])
+
     def teams_to_mongo(self):
-        dbm, client = get_dbm()
+        client = get_dbma()
+        db = client.mildredleague
         doc_list = [ml_team.to_dict() for _id, ml_team in self.teams_dict.items()]
-        if list(dbm.teams.find()) == doc_list:
-            print("All teams are already synced!")
-        elif not list(dbm.teams.find()):
-            dbm.teams.insert_many(doc_list)
+        if list(db.teams.find()) == doc_list:
+            print("All Mildred League teams are already synced!")
+        elif not list(db.teams.find()):
+            db.teams.insert_many(doc_list)
             print("Bulk insert complete!")
         else:
             for _id, ml_team in self.teams_dict.items():
                 try:
-                    dbm.teams.insert_one(ml_team.to_dict())
+                    db.teams.insert_one(ml_team.to_dict())
                     print("Inserted " + str(_id) + ".")
                 except pymongo.errors.DuplicateKeyError:
-                    dbm.teams.replace_one({"_id": _id}, ml_team.to_dict())
+                    db.teams.replace_one({"_id": _id}, ml_team.to_dict())
                     print("Replaced " + str(_id) + ".")
         # create index
-        dbm.teams.create_index([
+        db.teams.create_index([
             ("nick_name", pymongo.TEXT)
         ])
 

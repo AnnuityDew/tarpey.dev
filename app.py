@@ -28,7 +28,6 @@ def create_app(test_config=None):
     db.add_db_syncs_and_teardowns(app)
 
     # import apps
-    from tarpeydev import admin
     from tarpeydev import api
     from tarpeydev import autobracket
     from tarpeydev import ddr
@@ -37,9 +36,9 @@ def create_app(test_config=None):
     from tarpeydev import mildredleague
     from tarpeydev import swagger
     from tarpeydev import timecapsule
+    from tarpeydev import users
 
     # register apps
-    app.register_blueprint(admin.bp)
     app.register_blueprint(api.api_bp)
     app.register_blueprint(autobracket.bp)
     app.register_blueprint(ddr.ddr_bp)
@@ -48,6 +47,7 @@ def create_app(test_config=None):
     app.register_blueprint(mildredleague.ml_bp)
     app.register_blueprint(swagger.swag_bp)
     app.register_blueprint(timecapsule.timecapsule_bp)
+    app.register_blueprint(users.bp)
 
     # import and register errors
     # from . import errors
