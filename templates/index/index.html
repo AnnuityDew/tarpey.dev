@@ -11,7 +11,7 @@
 {% block content %}
 <h2 class="center">Thanks for visiting.</h2>
 <p class="center">
-  "{{ df.loc[quote_id, 'quote_text']|safe }}"<br>
-  <i>-{{ df.loc[quote_id, 'quote_origin']|safe }}</i>
+  "{{ quote.get('quote_text') }}"<br>
+  <i>-{{ quote.get('quote_origin') }}</i>
 </p>
 {% endblock %}

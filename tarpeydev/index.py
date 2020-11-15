@@ -1,12 +1,12 @@
 # import native Python packages
-import functools
-import random
 
 # import third party packages
 from flask import Blueprint, render_template
 import pandas
 import seaborn
 
+# import local stuff
+from tarpeydev import api
 
 index_bp = Blueprint('index', __name__, url_prefix='')
 
@@ -14,16 +14,14 @@ index_bp = Blueprint('index', __name__, url_prefix='')
 @index_bp.route('/')
 def index():
     # read quote file and pick a random one to show
-    quotes = read_quotes()
-    quote_id = random.randint(1, len(quotes.index))
+    quote = api.random_quote()
 
     # generate color palette using Seaborn for the main site buttons
     app_colors = main_color_palette()
 
     return render_template(
         'index/index.html',
-        df=quotes,
-        quote_id=quote_id,
+        quote=quote,
         colors=app_colors,
     )
 
