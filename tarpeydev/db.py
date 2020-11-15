@@ -93,6 +93,7 @@ def add_db_syncs_and_teardowns(app):
     '''
 
     app.cli.add_command(csv_sync_command)
+    app.cli.add_command(pandas_transformations_command)
     app.teardown_appcontext(close_dbf)
     app.teardown_appcontext(close_mongo)
 
@@ -102,6 +103,13 @@ def add_db_syncs_and_teardowns(app):
 def csv_sync_command():
     db_csv_sync()
     click.echo('Resynced MongoDB and Firestore with CSVs!')
+
+
+@click.command('chart-update')
+@with_appcontext
+def pandas_transformations_command():
+    pandas_transformations()
+    click.echo('Reran data transformations for charts!')
 
 
 def db_csv_sync():
@@ -169,6 +177,87 @@ def db_csv_sync():
     season_data.teams_from_csv(teams_path)
     season_data.games_to_mongo()
     season_data.teams_to_mongo()
+
+
+def pandas_transformations():
+    seasons = [2013, 2014, 2015, 2016, 2017, 2018, 2019]
+    for season in seasons:
+        season_boxplot_transform(season, against=True)
+        season_boxplot_transform(season, against=False)
+
+
+def season_boxplot_transform(season, against=True):
+    # read season data from api
+    season_df = pandas.read_json(api.season_data(season))
+    # normalized score columns for two-week playoff games
+    season_df['a_score_norm'] = (
+        season_df['a_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    season_df['h_score_norm'] = (
+        season_df['h_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    # we just want unique scores. so let's stack away and home.
+    # this code runs to analyze Points For.
+    if against is False:
+        score_df = season_df[['a_nick', 'a_score_norm']].rename(
+            columns={'a_nick': 'name', 'a_score_norm': 'score'},
+        ).append(
+            season_df[['h_nick', 'h_score_norm']].rename(
+                columns={'h_nick': 'name', 'h_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+        title_label = '(Points For)'
+    # this code runs to analyze Points Against.
+    if against is True:
+        score_df = season_df[['a_nick', 'h_score_norm']].rename(
+            columns={'a_nick': 'name', 'h_score_norm': 'score'},
+        ).append(
+            season_df[['h_nick', 'a_score_norm']].rename(
+                columns={'h_nick': 'name', 'a_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+        title_label = '(Points Against)'
+    # let's sort by playoff rank instead
+    # read season file, but we only need nick_name, year, and playoff_rank
+    ranking_df = pandas.read_json(
+        api.all_teams_data(),
+    )[['nick_name', 'year', 'playoff_rank']]
+    # merge this (filtered by year) into score_df so we can sort values
+    score_df = score_df.merge(
+        ranking_df.loc[ranking_df.year == int(year), ['nick_name', 'playoff_rank']],
+        left_on=['name'],
+        right_on=['nick_name'],
+        how='left',
+    ).sort_values(
+        by='playoff_rank', ascending=True,
+    )
+
+    # convert back to json for writing to Mongo
+    data = score_df.to_json()
+    return data
+
+    # finally, write back to MongoDB
+    client = get_dbmw()
+    db = client.mildredleague
+    if list(db.charts.find()) == doc_list:
+        print(str(season) + "boxplot chart is already synced!")
+    elif not list(db.charts.find()):
+        db.annuitydew.insert_many(doc_list)
+        print("Bulk insert complete!")
+    else:
+        for _id, backlog_game in self.backlog_dict.items():
+            try:
+                db.annuitydew.insert_one(backlog_game.to_dict())
+                print("Inserted " + _id + ".")
+            except pymongo.errors.DuplicateKeyError:
+                db.annuitydew.replace_one({"_id": _id}, backlog_game.to_dict())
+                print("Replaced " + _id + ".")
 
 
 class Quote:

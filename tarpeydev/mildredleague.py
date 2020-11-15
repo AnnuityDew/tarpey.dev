@@ -12,14 +12,16 @@ import plotly.figure_factory as ff
 import plotly.graph_objects as go
 
 # import custom local stuff
+from tarpeydev import api
+from tarpeydev.db import get_dbmw
 from tarpeydev.plotly_style import tarpeydev_default, tarpeydev_black
 
 
 ml_bp = Blueprint('mildredleague', __name__, url_prefix='/mildredleague')
 
 
-@ml_bp.route('/', methods=['GET', 'POST'])
-@ml_bp.route('/home', methods=['GET', 'POST'])
+@ml_bp.route('/', methods=['GET'])
+@ml_bp.route('/home', methods=['GET'])
 def home():
     return render_template(
         'mildredleague/home.html',
@@ -59,7 +61,7 @@ def season(year):
     )
 
 
-@ml_bp.route('/rules', methods=['GET', 'POST'])
+@ml_bp.route('/rules', methods=['GET'])
 def rules():
     return render_template(
         'mildredleague/rules.html',
@@ -559,73 +561,7 @@ def matchup_heatmap_fig():
     return figure_json
 
 
-def season_boxplot(year, against=True):
-    # read the selected season as a dataframe
-    season_path = os.path.join(
-        os.getcwd(),
-        'data',
-        'mildredleague',
-        'mlgames' + str(year) + '.csv',
-    )
-    # read season file
-    season_df = pandas.read_csv(
-        season_path,
-    )
-    # normalized score columns for two-week playoff games
-    season_df['a_score_norm'] = (
-        season_df['a_score'] / (
-            season_df['week_e'] - season_df['week_s'] + 1
-        )
-    )
-    season_df['h_score_norm'] = (
-        season_df['h_score'] / (
-            season_df['week_e'] - season_df['week_s'] + 1
-        )
-    )
-    # we just want unique scores. so let's stack away and home.
-    # this code runs to analyze Points For.
-    if against is False:
-        score_df = season_df[['a_nick', 'a_score_norm']].rename(
-            columns={'a_nick': 'name', 'a_score_norm': 'score'},
-        ).append(
-            season_df[['h_nick', 'h_score_norm']].rename(
-                columns={'h_nick': 'name', 'h_score_norm': 'score'},
-            ),
-            ignore_index=True,
-        )
-        title_label = '(Points For)'
-    # this code runs to analyze Points Against.
-    if against is True:
-        score_df = season_df[['a_nick', 'h_score_norm']].rename(
-            columns={'a_nick': 'name', 'h_score_norm': 'score'},
-        ).append(
-            season_df[['h_nick', 'a_score_norm']].rename(
-                columns={'h_nick': 'name', 'a_score_norm': 'score'},
-            ),
-            ignore_index=True,
-        )
-        title_label = '(Points Against)'
-    # let's sort by playoff rank instead
-    all_time_path = os.path.join(
-        os.getcwd(),
-        'data',
-        'mildredleague',
-        'mlalltime.csv'
-    )
-    # read season file, but we only need nick_name, year, and playoff_rank
-    ranking_df = pandas.read_csv(
-        all_time_path,
-    )[['nick_name', 'year', 'playoff_rank']]
-    # merge this (filtered by year) into score_df so we can sort values
-    score_df = score_df.merge(
-        ranking_df.loc[ranking_df.year == int(year), ['nick_name', 'playoff_rank']],
-        left_on=['name'],
-        right_on=['nick_name'],
-        how='left',
-    ).sort_values(
-        by='playoff_rank', ascending=True,
-    )
-
+def season_boxplot():
     # plotly boxplot!
     figure = px.box(
         score_df,

@@ -65,6 +65,38 @@
                 }
             }
         },
+        "/api/mildredleague/all-teams":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Get data for all teams in Mildred League's history.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/mildredleague/{season}":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Get data for a single season.",
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
         "/api/haveyouseenx/search":{
             "get":{
                 "tags":["haveyouseenx"],
