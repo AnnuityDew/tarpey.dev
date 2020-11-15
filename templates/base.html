@@ -19,8 +19,12 @@
 <body>
   <header>
     <nav>
-      Hello{% if g.user %}, {{ g.user.get('_id') }}{% endif %}! Jump to:
-      <a class="index" href="{{ url_for('index.index') }}">index</a>
+      Hello{% if g.user %}, {{ g.user.get('_id') }}!
+      <a href="{{ url_for('users.logout') }}">logout</a>
+      <a href="{{ url_for('swagger_ui.show') }}">swagger</a>
+      {% else %}! <a href="{{ url_for('users.login') }}">login</a>
+      {% endif %}
+      <a class="index" href="{{ url_for('index.index') }}">home</a>
       <a class="haveyouseenx" href="{{ url_for('haveyouseenx.home') }}">haveyouseenx</a>
       <a class="mildredleague" href="{{ url_for('mildredleague.home') }}">mildredleague</a>
       <a class="ddr" href="{{ url_for('ddr.home') }}">DDR</a>
