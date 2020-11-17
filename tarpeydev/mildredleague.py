@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 
 # import custom local stuff
 from tarpeydev import api
-from tarpeydev.db import get_dbmw
+from tarpeydev.db import get_dbm
 from tarpeydev.plotly_style import tarpeydev_default, tarpeydev_black
 
 
@@ -45,9 +45,9 @@ def alltime():
 
 @ml_bp.route('/<year>', methods=['GET', 'POST'])
 def season(year):
-    # pull boxplot score data for the season. True=against, False=for
-    boxplot_json_for = season_boxplot(year, False)
-    boxplot_json_against = season_boxplot(year, True)
+    # pull boxplot score data for the season
+    boxplot_json_for = season_boxplot(year, 'for')
+    boxplot_json_against = season_boxplot(year, 'against')
     notes = season_notes(year)
     table = season_table(year)
 
@@ -392,7 +392,7 @@ def all_time_ranking():
         os.getcwd(),
         'data',
         'mildredleague',
-        'mlalltime.csv'
+        'mlallteams.csv'
     )
     # read season file
     ranking_df = pandas.read_csv(
@@ -561,7 +561,11 @@ def matchup_heatmap_fig():
     return figure_json
 
 
-def season_boxplot():
+def season_boxplot(season, against):
+    # grab data
+    boxplot_data, response_code = api.season_boxplot_retrieve(season, against, api=True)
+    score_df = pandas.DataFrame(boxplot_data.json)
+    print(score_df)
     # plotly boxplot!
     figure = px.box(
         score_df,
@@ -570,7 +574,7 @@ def season_boxplot():
         color="name",
         color_discrete_sequence=px.colors.qualitative.Light24,
         points="all",
-        title=year + " Scores " + title_label,
+        title=season + " Scores " + against,
         template=tarpeydev_default()
     )
 

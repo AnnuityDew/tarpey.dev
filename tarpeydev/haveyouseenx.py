@@ -11,7 +11,7 @@ import plotly.express as px
 
 # import local stuff
 from tarpeydev import api
-from tarpeydev.db import get_dbmr
+from tarpeydev.db import get_dbm
 from tarpeydev.plotly_style import tarpeydev_default
 from tarpeydev.users import login_required
 
@@ -23,7 +23,7 @@ hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')
 @hysx_bp.route('/home', methods=['GET'])
 def home():
     # read backlog and visualizations
-    client = get_dbmr()
+    client = get_dbm()
     db = client.backlogs
     stats = list(
         db.annuitydew.aggregate([

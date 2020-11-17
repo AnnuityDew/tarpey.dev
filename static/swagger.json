@@ -97,6 +97,91 @@
                 }
             }
         },
+        "/api/mildredleague/boxplot/{season}/{against}/transform":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Transform single season data into boxplot data.",
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    },
+                    {
+                        "name":"against",
+                        "in":"path",
+                        "required":true,
+                        "type":"array",
+                        "items":{
+                            "type":"string",
+                            "enum":[
+                                "for",
+                                "against"
+                            ]
+                        },
+                        "collectionFormat":"multi"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/mildredleague/boxplot/{season}/{against}":{
+            "post":{
+                "tags":["mildredleague"],
+                "summary":"Put transformed boxplot data into the database.",
+                "consumes":[
+                    "application/json"
+                ],
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    },
+                    {
+                        "name":"against",
+                        "in":"path",
+                        "required":true,
+                        "type":"array",
+                        "items":{
+                            "type":"string",
+                            "enum":[
+                                "for",
+                                "against"
+                            ]
+                        },
+                        "collectionFormat":"multi"
+                    },
+                    {
+                       "in":"body",
+                       "name":"body",
+                       "description":"List of boxplot scores.",
+                       "required":true,
+                       "schema":{
+                          "type":"array",
+                          "items":{
+                             "$ref":"#/definitions/boxplot_doc"
+                          }
+                       }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
         "/api/haveyouseenx/search":{
             "get":{
                 "tags":["haveyouseenx"],
@@ -115,6 +200,31 @@
                     "200":{
                         "description":"successful operation"
                     }
+                }
+            }
+        }
+    },
+    "definitions":{
+        "boxplot_doc":{
+            "type":"object",
+            "properties":{
+                "_id":{
+                    "type":"integer",
+                    "format":"int64"
+                },
+                "name":{
+                    "type":"string"
+                },
+                "nick_name":{
+                    "type":"string"
+                },
+                "playoff_rank":{
+                    "type":"integer",
+                    "format":"int64"
+                },
+                "score":{
+                    "type":"integer",
+                    "format":"int64"
                 }
             }
         }

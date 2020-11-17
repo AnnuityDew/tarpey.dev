@@ -6,7 +6,7 @@ from flask import (
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from tarpeydev.db import get_dbmr, get_dbmw
+from tarpeydev.db import get_dbm
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 
@@ -16,7 +16,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        client = get_dbmw()
+        client = get_dbm()
         db = client.users
         error = None
 
@@ -53,7 +53,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        client = get_dbmr()
+        client = get_dbm()
         db = client.users
         error = None
         user = db.users.find_one({"_id": username})
@@ -84,7 +84,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        client = get_dbmr()
+        client = get_dbm()
         db = client.users
         g.user = db.users.find_one({"_id": user_id})
 
