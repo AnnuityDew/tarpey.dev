@@ -76,10 +76,21 @@
                 }
             }
         },
+        "/api/mildredleague/all-games":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Get data for all teams in Mildred League's history.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
         "/api/mildredleague/{season}":{
             "get":{
                 "tags":["mildredleague"],
-                "summary":"Get data for a single season.",
+                "summary":"Get data for all games in a single season.",
                 "parameters":[
                     {
                         "name":"season",
@@ -173,6 +184,94 @@
                              "$ref":"#/definitions/boxplot_doc"
                           }
                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/mildredleague/boxplot/{season}/{against}/get":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Get transformed boxplot data back from the database.",
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    },
+                    {
+                        "name":"against",
+                        "in":"path",
+                        "required":true,
+                        "type":"array",
+                        "items":{
+                            "type":"string",
+                            "enum":[
+                                "for",
+                                "against"
+                            ]
+                        },
+                        "collectionFormat":"multi"
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/mildredleague/notes/{season}":{
+            "post":{
+                "tags":["mildredleague"],
+                "summary":"Create a new note for a season.",
+                "consumes":[
+                    "text/plain"
+                ],
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    },
+                    {
+                        "name":"note",
+                        "in":"body",
+                        "required":true,
+                        "schema":{
+                            "type":"string"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/mildredleague/notes/{season}/get":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Retrieve all notes for the requested season.",
+                "parameters":[
+                    {
+                        "name":"season",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
                     }
                 ],
                 "responses":{

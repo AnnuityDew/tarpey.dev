@@ -19,7 +19,7 @@ mildredleague {{ season }}
   <b>Notes</b><br>
   <ul>
     {% for note in notes %}
-    <li>{{ note }}</li>
+    <li>{{ note.get('note') }}</li>
     {% endfor %}
   </ul>
 </p>

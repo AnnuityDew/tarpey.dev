@@ -13,7 +13,6 @@ import plotly.graph_objects as go
 
 # import custom local stuff
 from tarpeydev import api
-from tarpeydev.db import get_dbm
 from tarpeydev.plotly_style import tarpeydev_default, tarpeydev_black
 
 
@@ -30,8 +29,12 @@ def home():
 
 @ml_bp.route('/alltime', methods=['GET', 'POST'])
 def alltime():
-    # grab charts
-    all_time_rankings_json = all_time_ranking_fig()
+    # grab data from API
+    teams_data, response_code = api.all_teams_data(api=True)
+    ranking_df = pandas.DataFrame(teams_data.json)
+
+    # use data to make charts
+    all_time_rankings_json = all_time_ranking_fig(ranking_df)
     all_time_matchups_json = matchup_heatmap_fig()
     all_time_wins_json = all_time_wins_fig()
 
@@ -43,24 +46,6 @@ def alltime():
     )
 
 
-@ml_bp.route('/<year>', methods=['GET', 'POST'])
-def season(year):
-    # pull boxplot score data for the season
-    boxplot_json_for = season_boxplot(year, 'for')
-    boxplot_json_against = season_boxplot(year, 'against')
-    notes = season_notes(year)
-    table = season_table(year)
-
-    return render_template(
-        'mildredleague/season.html',
-        boxplot_for=boxplot_json_for,
-        boxplot_against=boxplot_json_against,
-        notes=notes,
-        table=table,
-        season=year,
-    )
-
-
 @ml_bp.route('/rules', methods=['GET'])
 def rules():
     return render_template(
@@ -68,68 +53,37 @@ def rules():
     )
 
 
-def season_notes(year):
-    # dictionary of notes on each page
-    notes = {
-        '2013': [
-            '2013 was the inaugural year of Mildred League. Brando was technically running the league at this point with Tarpey as co-commissioner.',
-            'The original name of the league was "El Futbol Drafto", and the championship game was still known as the "Drafto Bowl".',
-            'Bryant\'s 0-13 record this year stood as the worst regular season in league history until 2018, when Mildred\'s Redskins posted an 0-14 regular season record.',
-            'In the four-team playoff, Tarpey edged a 218-214 win over Brando in the semifinals and went on to upset the #1 seed Christian in the finals.',
-        ],
-        '2014': [
-            'The 2014 season marked the beginning of the "Winners Get Wings" tradition in Mildred League (Arthur\'s team name). For the next 5 seasons, the champion received a $25 gift card (sometimes BWW, sometimes cash...or in Brando\'s case I just bought him dinner).',
-            'The league expanded to 12 teams, but still had a clear top cut for the second year in a row. Four teams went 10-3 and made playoffs. The next best record was 7-5.',
-            'At 1,240 points for in the regular season, Brando had the rightful claim to the title and proceeded to win both of his playoff games handily.',
-        ],
-        '2015': [
-            'Another expansion in 2015 resulted in a 14-team league (which was initially met with some protest).',
-            '2015 was a tale of two divisions. East Coast Bias finished the season with 5 teams within 1.5 games of each other. The half-game was Conti\'s doing. His tie with Matt in week 2 ended up being the division winner for him.',
-            'None of what happened in ECB mattered though, because the new champ would come from the West. Fonti went 11-2 in the regular season and blew out both of his playoff matchups.',
-            'This was the beginning of a string of heartbreaks for both Samik (2nd) and Conti (3rd).',
-        ],
-        '2016': [
-            'By 2016 the league had scaled back to 12 teams and was largely run through a Facebook group.',
-            'This season marked a complete fall from grace for Tarpey: after winning the inaugural season, he finished dead last this year.',
-            'Division record tiebreakers had not yet been implemented, so Points For ended up deciding the three-way tie at 9-4 for the #2/#3/#4 seeds. In a heartbreaker, Fonti (8-5) finished one game out of playoffs and missed out on his chance to be the only back-to-back champion.',
-            'A competitive two-week final between Frank and Conti resulted in Frank\'s first championship. The heartbreakers for Conti (2nd) and Samik (4th) continued.',
-        ],
-        '2017': [
-            'Year 5 of Mildred League gave birth to the modern divisional format, somewhat inspired by MLB (3 divisions of 5/5/4 teams). The goal was to place more emphasis on divisional rivalries and winning the division - this has largely been successful!',
-            'Fonti won the Champions division handily, but the other two divisions were much more competitive. Sendzik edged out the AFC East by one game, and Charles did the same in the Referees division.',
-            'Brando did the commissioner a favor and avoided tiebreaker hell by securing the only wild card spot (despite an extremely low Points For total for the season). Just behind him, FOUR other teams finished at 7-6...',
-            'Fonti got revenge for his playoff miss in 2016 and became the first repeat champion.',
-        ],
-        '2018': [
-            'The prior season revealed that the new three-division format could work, but it needed an equivalent playoff overhaul. In 2018 the playoffs were expanded to 6 teams (3 division winners and 3 wild cards) and tiebreakers were overhauled to put more emphasis on winning divisional games.',
-            'The regular season was expanded to 14 games to accomodate three playoff rounds (and playoff matchups were shortened to one game instead of two).',
-            'The consolation bracket was also overhauled into a Swiss tournament, where the 3-0 team would receive their choice of draft order in the next season.',
-            'The Champions and AFC East divisions had clear cut winners (Samik in particular seemed poised to finally break through with a record Points For total).',
-            'The playoffs were chaos (see the bracket below). The only chalk was Tarpey winning his second title. Every other matchup was a seeding upset.',
-            'Conti (2nd) and Samik (4th) once again came up just short of a title. =[',
-            'After a mostly-Washington draft, Mildred\'s Redskins set the record for the worst regular season performance of all time at 0-14.',
-        ],
-        '2019': [
-            'Arguably the most competitive season to date, Mildred League VII was the first to use non-traditional rosters [QB/RB/2WR/TE/2FLX/1K/1D/5B]. Moving an RB to FLX was aimed at better reflecting the modern NFL and providing teams with more flexibility in such a deep league. Shortening the bench was aimed at increasing comeback potential for teams behind in the standings (better waiver opportunities).',
-            'This was also the first money league season ($20 entry).',
-            'Comeback story of the year belonged to Mildred, who turned an 0-14 year into 9-5 and a division win + playoff berth.',
-            'Tiebreaker hell was once again narrowly averted after Brad\'s last week choke cleared the way for Conti to take yet another shot at the title. (At one point, a five-way tie for the last playoff spot was possible...)',
-            'After winning the consolation bracket in 2018, Frank made his first pick draft slot count and claimed a first-round bye, then defeated Tarpey in the semifinals. However, in the finals Frank cleared the way for Sendzik\'s first title!',
-        ],
-    }
-    return notes[year]
+@ml_bp.route('/<int:season>', methods=['GET', 'POST'])
+def season_page(season):
+    # pull boxplot score data for the season
+    boxplot_json_for = season_boxplot(season, 'for')
+    boxplot_json_against = season_boxplot(season, 'against')
+    notes = api.read_season_notes(season)
+    table = season_table(season)
+
+    return render_template(
+        'mildredleague/season.html',
+        boxplot_for=boxplot_json_for,
+        boxplot_against=boxplot_json_against,
+        notes=notes,
+        table=table,
+        season=season,
+    )
 
 
-def season_table(year):
-    # pull all games and filter for the season
+def season_table(season):
+    # pull games for the requested season
     season_games_df = all_games()
-    season_games_df = season_games_df.loc[season_games_df.season == int(year)]
+    season_games_df = season_games_df.loc[season_games_df.season == int(season)]
+
+    # run calc records for the season
     season_records_df = calc_records(
         season_games_df
     ).reset_index()
     # pull all rankings and filter for the season
-    season_ranking_df = all_time_ranking()
-    season_ranking_df = season_ranking_df.loc[season_ranking_df.year == int(year)]
+    teams_data, response_code = api.all_teams_data(api=True)
+    season_ranking_df = pandas.DataFrame(teams_data.json)
+    season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
     # merge playoff ranking and active status
     season_records_df = season_records_df.merge(
         season_ranking_df[['nick_name', 'playoff_rank', 'active']],
@@ -143,43 +97,9 @@ def season_table(year):
 
 
 def all_games():
-    # read each season's summary of games
-    season_files = [
-        'mlgames2013.csv',
-        'mlgames2014.csv',
-        'mlgames2015.csv',
-        'mlgames2016.csv',
-        'mlgames2017.csv',
-        'mlgames2018.csv',
-        'mlgames2019.csv',
-    ]
-
-    # empty dataframe for all games
-    all_games_df = pandas.DataFrame()
-
-    # for each CSV, append to the all games dataframe
-    for season_file in season_files:
-        # file path construction
-        season_path = os.path.join(
-            os.getcwd(),
-            'data',
-            'mildredleague',
-            season_file
-        )
-        # read season file
-        season_df = pandas.read_csv(
-            season_path,
-        )
-        if all_games_df.empty is True:
-            all_games_df = season_df
-        else:
-            all_games_df = all_games_df.append(
-                season_df,
-                ignore_index=True,
-            )
-
-    # fix datatypes
-    all_games_df = all_games_df.convert_dtypes()
+    # read data for all games
+    games_data, response_code = api.all_games_data(api=True)
+    all_games_df = pandas.DataFrame(games_data.json)
 
     # which team won?
     all_games_df['a_win'] = 0
@@ -402,15 +322,12 @@ def all_time_ranking():
     return ranking_df
 
 
-def all_time_ranking_fig():
-    # data pull
-    ranking_df = all_time_ranking()
-
+def all_time_ranking_fig(ranking_df):
     # pivot by year for all teams
     annual_ranking_df = pandas.pivot(
         ranking_df,
         index='nick_name',
-        columns='year',
+        columns='season',
         values='playoff_rank'
     )
 
@@ -486,7 +403,8 @@ def matchup_heatmap_fig():
         all_games_df
     ).reset_index()
     # pull all-time file to filter active teams
-    ranking_df = all_time_ranking()
+    teams_data, response_code = api.all_teams_data(api=True)
+    ranking_df = pandas.DataFrame(teams_data.json)
 
     # game total custom data for the hover text
     game_df = matchup_df.merge(
@@ -565,7 +483,7 @@ def season_boxplot(season, against):
     # grab data
     boxplot_data, response_code = api.season_boxplot_retrieve(season, against, api=True)
     score_df = pandas.DataFrame(boxplot_data.json)
-    print(score_df)
+
     # plotly boxplot!
     figure = px.box(
         score_df,
@@ -574,7 +492,7 @@ def season_boxplot(season, against):
         color="name",
         color_discrete_sequence=px.colors.qualitative.Light24,
         points="all",
-        title=season + " Scores " + against,
+        title=str(season) + " Scores " + against,
         template=tarpeydev_default()
     )
 
