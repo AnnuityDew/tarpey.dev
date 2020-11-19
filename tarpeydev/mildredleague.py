@@ -36,7 +36,9 @@ def alltime():
     games_df = pandas.DataFrame(games_data.json)
 
     # use data to make charts
-    all_time_matchups_json = matchup_heatmap_fig(games_df)
+    x_opponents, y_winners, z_matchup_data, matchup_colors, hover_data = (
+        matchup_heatmap_fig(games_df)
+    )
     x_seasons, y_ranking_names, z_rankings, heatmap_colors = (
         all_time_ranking_fig(ranking_df)
     )
@@ -44,7 +46,11 @@ def alltime():
 
     return render_template(
         'mildredleague/alltime.html',
-        matchups=all_time_matchups_json,
+        x_opponents=x_opponents,
+        y_winners=y_winners,
+        z_matchup_data=z_matchup_data,
+        matchup_colors=matchup_colors,
+        hover_data=hover_data,
         x_seasons=x_seasons,
         y_ranking_names=y_ranking_names,
         z_rankings=z_rankings,
@@ -144,32 +150,27 @@ def matchup_heatmap_fig(games_df):
 
     # start creating the figure!
     # y axis labels
-    winners = matchup_df.index.to_list()
+    y_winners = matchup_df.index.to_list()
+    y_winners.reverse()
     # x axis labels
-    opponents = matchup_df.columns.get_level_values(1).to_list()
-    figure = go.Figure(
-        data=go.Heatmap(
-            z=matchup_df[['win_pct']],
-            customdata=game_df[['game_total']],
-            hovertemplate='Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
-            x=opponents,
-            y=winners,
-            colorscale=plotly.colors.diverging.Tropic,
-        )
-    )
+    x_opponents = matchup_df.columns.get_level_values(1).to_list()
+    # z axis data, replacing nan with 0s
+    z_matchup_data = matchup_df[['win_pct']].fillna(-1).values.tolist()
+    z_matchup_data.reverse()
+    # custom hovertext data, replacing nan with 0s
+    hover_data = game_df[['game_total']].fillna(0).values.tolist()
+    hover_data.reverse()
+    # color data
+    matchup_colors = [
+        [0, plotly.colors.diverging.Tropic[0]],
+        [0.5, '#FFFFFF'],
+        [1, plotly.colors.diverging.Tropic[-1]],
+    ]
 
-    # update margins and colors
-    figure.update_layout(
-        title="Matchup Win Percentage (Active Teams)",
-        margin=dict(l=120, r=60, t=150, autoexpand=True),
-        # custom xaxis and yaxis titles
-    )
-    figure.update_xaxes(showgrid=False, showline=False, side='top', ticks='')
-    figure.update_yaxes(showgrid=False, showline=False, ticks='')
 
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
+    #'Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
 
-    return figure_json
+    return x_opponents, y_winners, z_matchup_data, matchup_colors, hover_data
 
 
 def all_time_ranking_fig(ranking_df):
@@ -350,6 +351,8 @@ def calc_records(games_df):
 
 
 def calc_matchup_records(games_df):
+    # normalize games
+    games_df = normalize_games(games_df)
     # grouping for away and home matchup winners
     away_wins_df = pandas.pivot_table(games_df, values='a_win', index=['a_nick', 'h_nick'], aggfunc='sum', fill_value=0)
     home_wins_df = pandas.pivot_table(games_df, values='h_win', index=['h_nick', 'a_nick'], aggfunc='sum', fill_value=0)

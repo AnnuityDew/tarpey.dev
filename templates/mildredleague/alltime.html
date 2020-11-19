@@ -21,10 +21,44 @@
 <div class="plots" id="matchup_heatmap">
   <script>
     MATCHUPS = document.getElementById('matchup_heatmap')
-    var data = {{matchups | safe}};
-    var layout = {};
+    // pull x_data, y_data, z_data, and color data from Python
+    var xData = {{x_opponents | safe}};
+    var yData = {{y_winners | safe}};
+    var zData = {{z_matchup_data | safe}};
+    // replace z data -1s with nulls
+    for (var i = 0; i < zData.length; i++)
+      for (var j = 0; j < zData[i].length; j++)
+        if (zData[i][j] == -1)
+          zData[i][j] = null;
+    var colorData = {{matchup_colors | safe}};
+    var hoverData = {{hover_data | safe}};
+    var plotData = [{
+      x: xData,
+      y: yData,
+      z: zData,
+      customdata: hoverData,
+      type: 'heatmap',
+      colorscale: colorData,
+      hovertemplate: 'Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
+    }];  
+    var layout = {
+      template: tarpeydevDefault,
+      title: "Matchup Win Percentage (Active Teams)",
+      margin: {l:120, r:60, t:150, autoexpand: true},
+      xaxis: {
+        showgrid: false,
+        showline: false,
+        ticks: '',
+        side: 'top',
+      },
+      yaxis: {
+        showgrid: false,
+        showline: false,
+        ticks: '',
+      },
+    };
     var config = {responsive: true};
-    Plotly.newPlot(MATCHUPS, data, layout, config);
+    Plotly.newPlot(MATCHUPS, plotData, layout, config);
   </script>
 </div>
 
@@ -59,6 +93,7 @@
       xaxis: {
         showgrid: false,
         showline: false,
+        side: 'top',
       },
       yaxis: {
         showgrid: false,
