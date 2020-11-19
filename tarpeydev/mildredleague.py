@@ -1,6 +1,5 @@
 # import native Python packages
 import json
-import os
 
 # import third party packages
 from flask import Blueprint, render_template
@@ -28,16 +27,20 @@ def home():
 
 @ml_bp.route('/alltime', methods=['GET'])
 def alltime():
-    # grab data from API
+    # grab teams data from API
     teams_data, response_code = api.all_teams_data(api=True)
     ranking_df = pandas.DataFrame(teams_data.json)
 
+    # grab games data from API
+    games_data, response_code = api.all_games_data(api=True)
+    games_df = pandas.DataFrame(games_data.json)
+
     # use data to make charts
-    all_time_matchups_json = matchup_heatmap_fig()
+    all_time_matchups_json = matchup_heatmap_fig(games_df)
     x_seasons, y_ranking_names, z_rankings, heatmap_colors = (
         all_time_ranking_fig(ranking_df)
     )
-    x_data_bars, y_data_bars, bar_colors = all_time_wins_fig()
+    x_data_bars, y_data_bars, bar_colors = all_time_wins_fig(games_df)
 
     return render_template(
         'mildredleague/alltime.html',
@@ -61,11 +64,18 @@ def rules():
 
 @ml_bp.route('/<int:season>', methods=['GET'])
 def season_page(season):
+    # grab games data from API
+    games_data, response_code = api.all_games_data(api=True)
+    games_df = pandas.DataFrame(games_data.json)
+
+    # grab notes data from API
+    notes = api.read_season_notes(season)
+
     # pull boxplot score data for the season
     x_data_for, y_data_for, color_data_for = season_boxplot(season, 'for')
     x_data_against, y_data_against, color_data_against = season_boxplot(season, 'against')
     notes = api.read_season_notes(season)
-    table = season_table(season)
+    table = season_table(season, games_df)
 
     return render_template(
         'mildredleague/season.html',
@@ -81,12 +91,10 @@ def season_page(season):
     )
 
 
-def matchup_heatmap_fig():
-    # pull all games ever
-    all_games_df = all_games()
+def matchup_heatmap_fig(games_df):
     # convert to record_df
     matchup_df = calc_matchup_records(
-        all_games_df
+        games_df
     ).reset_index()
     # pull all-time file to filter active teams
     teams_data, response_code = api.all_teams_data(api=True)
@@ -201,11 +209,9 @@ def all_time_ranking_fig(ranking_df):
     return x_seasons, y_ranking_names, z_rankings, heatmap_colors
 
 
-def all_time_wins_fig():
-    # pull all games ever
-    all_games_df = all_games()
+def all_time_wins_fig(games_df):
     # regular season df
-    regular_df = all_games_df.loc[all_games_df.playoff == 0]
+    regular_df = games_df.loc[games_df.playoff == 0]
     # convert to record_df
     record_df = calc_records(
         regular_df
@@ -250,36 +256,7 @@ def season_boxplot(season, against):
     return x_data, y_data, color_data
 
 
-def season_table(season):
-    # pull games for the requested season
-    season_games_df = all_games()
-    season_games_df = season_games_df.loc[season_games_df.season == int(season)]
-
-    # run calc records for the season
-    season_records_df = calc_records(
-        season_games_df
-    ).reset_index()
-    # pull all rankings and filter for the season
-    teams_data, response_code = api.all_teams_data(api=True)
-    season_ranking_df = pandas.DataFrame(teams_data.json)
-    season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
-    # merge playoff ranking and active status
-    season_records_df = season_records_df.merge(
-        season_ranking_df[['nick_name', 'playoff_rank', 'active']],
-        on='nick_name',
-        how='left',
-    ).sort_values(
-        by='playoff_rank', ascending=True
-    )
-
-    return season_records_df
-
-
-def all_games():
-    # read data for all games
-    games_data, response_code = api.all_games_data(api=True)
-    all_games_df = pandas.DataFrame(games_data.json)
-
+def normalize_games(all_games_df):
     # which team won?
     all_games_df['a_win'] = 0
     all_games_df['h_win'] = 0
@@ -429,3 +406,28 @@ def calc_matchup_records(games_df):
     matchup_df['win_pct'] = matchup_df['win_total'] / matchup_df['game_total']
 
     return matchup_df
+
+
+def season_table(season, games_df):
+    # filter to games for the requested season
+    games_df = normalize_games(games_df)
+    games_df = games_df.loc[games_df.season == int(season)]
+
+    # run calc records for the season
+    season_records_df = calc_records(
+        games_df
+    ).reset_index()
+    # pull all rankings and filter for the season
+    teams_data, response_code = api.all_teams_data(api=True)
+    season_ranking_df = pandas.DataFrame(teams_data.json)
+    season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
+    # merge playoff ranking and active status
+    season_records_df = season_records_df.merge(
+        season_ranking_df[['nick_name', 'playoff_rank', 'active']],
+        on='nick_name',
+        how='left',
+    ).sort_values(
+        by='playoff_rank', ascending=True
+    )
+
+    return season_records_df

@@ -3,7 +3,7 @@ import json
 import random
 
 # import third party packages
-from flask import Blueprint, jsonify, request, url_for
+from flask import Blueprint, jsonify, request
 import pandas
 import pymongo
 
