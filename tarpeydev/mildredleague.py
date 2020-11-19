@@ -13,7 +13,6 @@ import plotly.graph_objects as go
 
 # import custom local stuff
 from tarpeydev import api
-from tarpeydev.plotly_style import tarpeydev_default, tarpeydev_black
 
 
 ml_bp = Blueprint('mildredleague', __name__, url_prefix='/mildredleague')
@@ -27,22 +26,29 @@ def home():
     )
 
 
-@ml_bp.route('/alltime', methods=['GET', 'POST'])
+@ml_bp.route('/alltime', methods=['GET'])
 def alltime():
     # grab data from API
     teams_data, response_code = api.all_teams_data(api=True)
     ranking_df = pandas.DataFrame(teams_data.json)
 
     # use data to make charts
-    all_time_rankings_json = all_time_ranking_fig(ranking_df)
     all_time_matchups_json = matchup_heatmap_fig()
-    all_time_wins_json = all_time_wins_fig()
+    x_seasons, y_ranking_names, z_rankings, heatmap_colors = (
+        all_time_ranking_fig(ranking_df)
+    )
+    x_data_bars, y_data_bars, bar_colors = all_time_wins_fig()
 
     return render_template(
         'mildredleague/alltime.html',
-        ranks=all_time_rankings_json,
         matchups=all_time_matchups_json,
-        wins=all_time_wins_json,
+        x_seasons=x_seasons,
+        y_ranking_names=y_ranking_names,
+        z_rankings=z_rankings,
+        heatmap_colors=heatmap_colors,
+        x_data_bars=x_data_bars,
+        y_data_bars=y_data_bars,
+        bar_colors=bar_colors,
     )
 
 
@@ -53,22 +59,195 @@ def rules():
     )
 
 
-@ml_bp.route('/<int:season>', methods=['GET', 'POST'])
+@ml_bp.route('/<int:season>', methods=['GET'])
 def season_page(season):
     # pull boxplot score data for the season
-    boxplot_json_for = season_boxplot(season, 'for')
-    boxplot_json_against = season_boxplot(season, 'against')
+    x_data_for, y_data_for, color_data_for = season_boxplot(season, 'for')
+    x_data_against, y_data_against, color_data_against = season_boxplot(season, 'against')
     notes = api.read_season_notes(season)
     table = season_table(season)
 
     return render_template(
         'mildredleague/season.html',
-        boxplot_for=boxplot_json_for,
-        boxplot_against=boxplot_json_against,
         notes=notes,
         table=table,
         season=season,
+        x_data_for=x_data_for,
+        y_data_for=y_data_for,
+        color_data_for=color_data_for,
+        x_data_against=x_data_against,
+        y_data_against=y_data_against,
+        color_data_against=color_data_against,
     )
+
+
+def matchup_heatmap_fig():
+    # pull all games ever
+    all_games_df = all_games()
+    # convert to record_df
+    matchup_df = calc_matchup_records(
+        all_games_df
+    ).reset_index()
+    # pull all-time file to filter active teams
+    teams_data, response_code = api.all_teams_data(api=True)
+    ranking_df = pandas.DataFrame(teams_data.json)
+
+    # game total custom data for the hover text
+    game_df = matchup_df.merge(
+        ranking_df.loc[
+            ranking_df.active == 1,
+            ['nick_name']
+        ].drop_duplicates(),
+        left_on='winner',
+        right_on='nick_name',
+        how='inner',
+    ).merge(
+        ranking_df.loc[
+            ranking_df.active == 1,
+            ['nick_name']
+        ].drop_duplicates(),
+        left_on='loser',
+        right_on='nick_name',
+        how='inner',
+    ).drop(
+        columns=['nick_name_x', 'nick_name_y']
+    ).set_index(keys=['winner', 'loser'])[['game_total']].unstack()
+
+    # inner join will result in only active teams. unstack
+    matchup_df = matchup_df.merge(
+        ranking_df.loc[
+            ranking_df.active == 1,
+            ['nick_name']
+        ].drop_duplicates(),
+        left_on='winner',
+        right_on='nick_name',
+        how='inner',
+    ).merge(
+        ranking_df.loc[
+            ranking_df.active == 1,
+            ['nick_name']
+        ].drop_duplicates(),
+        left_on='loser',
+        right_on='nick_name',
+        how='inner',
+    ).drop(
+        columns=['nick_name_x', 'nick_name_y']
+    ).set_index(keys=['winner', 'loser'])[['win_pct']].unstack()
+
+    # start creating the figure!
+    # y axis labels
+    winners = matchup_df.index.to_list()
+    # x axis labels
+    opponents = matchup_df.columns.get_level_values(1).to_list()
+    figure = go.Figure(
+        data=go.Heatmap(
+            z=matchup_df[['win_pct']],
+            customdata=game_df[['game_total']],
+            hovertemplate='Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
+            x=opponents,
+            y=winners,
+            colorscale=plotly.colors.diverging.Tropic,
+        )
+    )
+
+    # update margins and colors
+    figure.update_layout(
+        title="Matchup Win Percentage (Active Teams)",
+        margin=dict(l=120, r=60, t=150, autoexpand=True),
+        # custom xaxis and yaxis titles
+    )
+    figure.update_xaxes(showgrid=False, showline=False, side='top', ticks='')
+    figure.update_yaxes(showgrid=False, showline=False, ticks='')
+
+    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return figure_json
+
+
+def all_time_ranking_fig(ranking_df):
+    # pivot by year for all teams
+    annual_ranking_df = pandas.pivot(
+        ranking_df,
+        index='nick_name',
+        columns='season',
+        values='playoff_rank'
+    )
+
+    # temporary variable to rank relevance of a team.
+    # higher numbers are less relevant.
+    # 15 for teams that didn't play in a given year
+    # (worst rank for a team that existed would be 14)
+    annual_ranking_df_temp = annual_ranking_df.fillna(15)
+    annual_ranking_df_temp['relevance'] = annual_ranking_df_temp.sum(axis=1)
+    annual_ranking_df['relevance'] = annual_ranking_df_temp['relevance']
+    annual_ranking_df.sort_values(by='relevance', ascending=False, inplace=True)
+    annual_ranking_df.reset_index(inplace=True)
+
+    # y axis labels
+    y_ranking_names = annual_ranking_df.nick_name.to_list()
+
+    # drop unnecessary columns
+    annual_ranking_df.drop(columns=['nick_name', 'relevance'], inplace=True)
+
+    # x axis labels
+    x_seasons = annual_ranking_df.columns.tolist()
+
+    # need to pull out of data frame format for this particular figure,
+    # and replace np.nan with 0 (to then replace with None)
+    z_rankings = annual_ranking_df.fillna(0).values.tolist()
+
+    heatmap_colors = [[0, '#6baed6'], [1, '#08306b']]
+
+    return x_seasons, y_ranking_names, z_rankings, heatmap_colors
+
+
+def all_time_wins_fig():
+    # pull all games ever
+    all_games_df = all_games()
+    # regular season df
+    regular_df = all_games_df.loc[all_games_df.playoff == 0]
+    # convert to record_df
+    record_df = calc_records(
+        regular_df
+    ).reset_index().sort_values('win_total', ascending=True)
+
+    # create list of x_data and y_data
+    x_data = record_df.win_total.values.tolist()
+    y_data = record_df.nick_name.values.tolist()
+    # color data needs to be tripled to have enough
+    # colors for every bar!
+    color_data = (
+        px.colors.cyclical.Phase[1:] +
+        px.colors.cyclical.Phase[1:] +
+        px.colors.cyclical.Phase[1:]
+    )
+
+    return x_data, y_data, color_data
+
+
+def season_boxplot(season, against):
+    # grab data from API
+    boxplot_data, response_code = api.season_boxplot_retrieve(
+        season,
+        against,
+        api=True,
+    )
+    score_df = pandas.DataFrame(boxplot_data.json)
+
+    # names on the X axis
+    x_data = score_df.nick_name.unique().tolist()
+
+    # Y axis is scores. need 2D array
+    y_data = [
+        score_df.loc[
+            score_df.nick_name == name, 'score'
+        ].tolist() for name in x_data
+    ]
+
+    # list of hex color codes
+    color_data = px.colors.qualitative.Light24
+
+    return x_data, y_data, color_data
 
 
 def season_table(season):
@@ -250,268 +429,3 @@ def calc_matchup_records(games_df):
     matchup_df['win_pct'] = matchup_df['win_total'] / matchup_df['game_total']
 
     return matchup_df
-
-
-def all_time_wins_fig():
-    # pull all games ever
-    all_games_df = all_games()
-    # regular season df
-    regular_df = all_games_df.loc[all_games_df.playoff == 0]
-    # convert to record_df
-    record_df = calc_records(
-        regular_df
-    ).reset_index().sort_values('win_total', ascending=True)
-
-    figure = px.bar(
-        record_df,
-        x='win_total',
-        y='nick_name',
-        orientation='h',
-        color='nick_name',
-        template=tarpeydev_default(),
-    )
-
-    # generic bar chart so we can use our custom colors
-    # instead of using plotly express
-    figure = go.Figure()
-    figure.update_layout(
-        title="Regular Season Win Totals",
-        margin=dict(l=120, r=60),
-        xaxis=dict(
-            title=None,
-        ),
-        yaxis=dict(
-            title=None,
-        ),
-        showlegend=False,
-        hovermode='closest',
-        template=tarpeydev_default(),
-    )
-    # now convert the data to lists and add one at a time
-    # to attach different colors in the cycle
-    xy = record_df[['win_total', 'nick_name']].values.tolist()
-
-    for i, bar in enumerate(xy):
-        figure.add_trace(
-            go.Bar(
-                x=[xy[i][0]],
-                y=[xy[i][1]],
-                orientation='h',
-                name=xy[i][1],
-            )
-        )
-
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return figure_json
-
-
-def all_time_ranking():
-    # file path construction
-    all_time_path = os.path.join(
-        os.getcwd(),
-        'data',
-        'mildredleague',
-        'mlallteams.csv'
-    )
-    # read season file
-    ranking_df = pandas.read_csv(
-        all_time_path,
-    )
-
-    return ranking_df
-
-
-def all_time_ranking_fig(ranking_df):
-    # pivot by year for all teams
-    annual_ranking_df = pandas.pivot(
-        ranking_df,
-        index='nick_name',
-        columns='season',
-        values='playoff_rank'
-    )
-
-    # temporary variable to rank relevance of a team.
-    # higher numbers are less relevant.
-    # 15 for teams that didn't play in a given year
-    # (worst rank for a team that existed would be 14)
-    annual_ranking_df_temp = annual_ranking_df.fillna(15)
-    annual_ranking_df_temp['relevance'] = annual_ranking_df_temp.sum(axis=1)
-    annual_ranking_df['relevance'] = annual_ranking_df_temp['relevance']
-    annual_ranking_df.sort_values(by='relevance', ascending=False, inplace=True)
-    annual_ranking_df.reset_index(inplace=True)
-
-    # y axis labels
-    nick_names = annual_ranking_df.nick_name.to_list()
-
-    # drop unnecessary columns
-    annual_ranking_df.drop(columns=['nick_name', 'relevance'], inplace=True)
-
-    # x axis labels
-    seasons = annual_ranking_df.columns.tolist()
-
-    # need to pull out of data frame format for this particular figure
-    annual_ranking_list = annual_ranking_df.values.tolist()
-
-    # need a separate set for the annotations to look good
-    ranking_annotations = annual_ranking_df.values.tolist()
-
-    # convert to Int64 and blanks for the actual annotations
-    for i, player in enumerate(ranking_annotations):
-        for j, annual_result in enumerate(player):
-            if numpy.isnan(annual_result):
-                ranking_annotations[i][j] = ''
-            else:
-                ranking_annotations[i][j] = int(annual_result)
-
-    # set up the figure and its axes
-    figure = ff.create_annotated_heatmap(
-        annual_ranking_list,
-        x=seasons,
-        y=nick_names,
-        annotation_text=ranking_annotations,
-        # subset of px.colors.sequential.Blues
-        colorscale=[
-            'rgb(107,174,214)',
-            'rgb(66,146,198)',
-            'rgb(33,113,181)',
-            'rgb(8,81,156)',
-            'rgb(8,48,107)',
-        ],
-    )
-
-    # update margins and colors
-    figure.update_layout(
-        title="Mildred League Placements by Season",
-        template=tarpeydev_black(),
-        margin=dict(l=120, r=60),
-    )
-    figure.update_xaxes(showgrid=False, showline=False)
-    figure.update_yaxes(showgrid=False, showline=False)
-
-    # convert to JSON for the web
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return figure_json
-
-
-def matchup_heatmap_fig():
-    # pull all games ever
-    all_games_df = all_games()
-    # convert to record_df
-    matchup_df = calc_matchup_records(
-        all_games_df
-    ).reset_index()
-    # pull all-time file to filter active teams
-    teams_data, response_code = api.all_teams_data(api=True)
-    ranking_df = pandas.DataFrame(teams_data.json)
-
-    # game total custom data for the hover text
-    game_df = matchup_df.merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='winner',
-        right_on='nick_name',
-        how='inner',
-    ).merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='loser',
-        right_on='nick_name',
-        how='inner',
-    ).drop(
-        columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['winner', 'loser'])[['game_total']].unstack()
-
-    # inner join will result in only active teams. unstack
-    matchup_df = matchup_df.merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='winner',
-        right_on='nick_name',
-        how='inner',
-    ).merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='loser',
-        right_on='nick_name',
-        how='inner',
-    ).drop(
-        columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['winner', 'loser'])[['win_pct']].unstack()
-
-    # start creating the figure!
-    # y axis labels
-    winners = matchup_df.index.to_list()
-    # x axis labels
-    opponents = matchup_df.columns.get_level_values(1).to_list()
-    figure = go.Figure(
-        data=go.Heatmap(
-            z=matchup_df[['win_pct']],
-            customdata=game_df[['game_total']],
-            hovertemplate='Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
-            x=opponents,
-            y=winners,
-            colorscale=plotly.colors.diverging.Tropic,
-        )
-    )
-
-    # update margins and colors
-    figure.update_layout(
-        title="Matchup Win Percentage (Active Teams)",
-        template=tarpeydev_default(),
-        margin=dict(l=120, r=60, t=150, autoexpand=True),
-        # custom xaxis and yaxis titles
-    )
-    figure.update_xaxes(showgrid=False, showline=False, side='top', ticks='')
-    figure.update_yaxes(showgrid=False, showline=False, ticks='')
-
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return figure_json
-
-
-def season_boxplot(season, against):
-    # grab data
-    boxplot_data, response_code = api.season_boxplot_retrieve(season, against, api=True)
-    score_df = pandas.DataFrame(boxplot_data.json)
-
-    # plotly boxplot!
-    figure = px.box(
-        score_df,
-        x="name",
-        y="score",
-        color="name",
-        color_discrete_sequence=px.colors.qualitative.Light24,
-        points="all",
-        title=str(season) + " Scores " + against,
-        template=tarpeydev_default()
-    )
-
-    # turn off names at the bottom
-    figure.update_xaxes(showticklabels=False)
-
-    # update margins and colors
-    figure.update_layout(
-        xaxis_title=None,
-        margin=dict(l=70, r=50, t=60, b=30),
-        legend=dict(
-            orientation='h',
-            y=0,
-            xanchor='left',
-            x=0,
-        ),
-    )
-
-    # convert to JSON for the web
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return figure_json

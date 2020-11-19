@@ -8,6 +8,7 @@
 
 {% block java %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{{ url_for('static', filename='mildredleague/js/mildredleague.js') }}"></script>
 {% endblock %}
 
 {% block header %}mildredleague stats{% endblock %}
@@ -19,43 +20,117 @@
 
 <div class="plots" id="matchup_heatmap">
   <script>
-    var graphs = {{matchups | safe}};
+    MATCHUPS = document.getElementById('matchup_heatmap')
+    var data = {{matchups | safe}};
     var layout = {};
     var config = {responsive: true};
-    Plotly.react('matchup_heatmap', graphs, layout, config);
+    Plotly.newPlot(MATCHUPS, data, layout, config);
   </script>
 </div>
 
 <div class="plots" id="ranking_heatmap">
   <script>
-    var graphs = {{ranks | safe}};
-    var layout = {};
+    // ranking heatmap object
+    RANKINGS = document.getElementById('ranking_heatmap')
+    // pull x_data, y_data, z_data, and color data from Python
+    var xData = {{x_seasons | safe}};
+    var yData = {{y_ranking_names | safe}};
+    var zData = {{z_rankings | safe}};
+    var colorData = {{heatmap_colors | safe}};
+    // replace z data 0s with nulls
+    for (var i = 0; i < zData.length; i++)
+      for (var j = 0; j < zData[i].length; j++)
+        if (zData[i][j] == 0)
+          zData[i][j] = null;
+    // plotData constructed all in one go for a heatmap.
+    // annotations will be looped however
+    var plotData = [{
+      x: xData,
+      y: yData,
+      z: zData,
+      type: 'heatmap',
+      colorscale: colorData,
+      showscale: false,
+    }];
+    var layout = {
+      template: tarpeydevDefault,
+      title: 'Placements by Season',
+      margin: {l:120, r:60},
+      xaxis: {
+        showgrid: false,
+        showline: false,
+      },
+      yaxis: {
+        showgrid: false,
+        showline: false,
+      },
+      annotations: [],
+      plot_bgcolor: 'rgba(255,255,255,0.0)',
+    };
+    // begin loop to push each annotation into annotations
+    for ( var i = 0; i < yData.length; i++ ) {
+      for ( var j = 0; j < xData.length; j++ ) {
+        var currentValue = zData[i][j];
+        // replace z data 0s with nulls
+        if (currentValue == null) {
+          var postedAnnotation = '';
+        } else {
+          var postedAnnotation = currentValue;
+        };
+        var result = {
+          xref: 'x1',
+          yref: 'y1',
+          x: xData[j],
+          y: yData[i],
+          text: postedAnnotation,
+          showarrow: false,
+        };
+        layout.annotations.push(result);
+      }
+    }
     var config = {responsive: true};
-    Plotly.react('ranking_heatmap', graphs, layout, config);
+    Plotly.newPlot(RANKINGS, plotData, layout, config);
   </script>
 </div>
 
 <div class="plots" id="win_bars">
   <script>
-    var graphs = {{wins | safe}};
-    var layout = {};
-    var config = {responsive: true};
-    Plotly.react('win_bars', graphs, layout, config);
-
-    window.onresize = function() {
-      Plotly.relayout('matchup_heatmap', {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
-      });
-      Plotly.relayout('ranking_heatmap', {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
-      });
-      Plotly.relayout('win_bars', {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
-      });
+    // win bars object
+    TOTALWINS = document.getElementById('win_bars')
+    // pull x_data, y_data, and color data from Python
+    var xData = {{ x_data_bars | safe }};
+    var yData = {{ y_data_bars | safe }};
+    var barColors = {{ bar_colors | safe }};
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    // bars are colored at the trace level and not
+    // the layout level
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        x: [xData[i]],
+        y: [yData[i]],
+        name: yData[i],
+        type: 'bar',
+        orientation: 'h',
+        marker: {
+          color: barColors[i],
+        }
+      };
+      plotData.push(trace);
     };
+    var layout = {
+      template: tarpeydevDefault,
+      title: "Regular Season Win Totals",
+      margin: {l:120, r:60},
+      xaxis:{title:null},
+      yaxis:{title:null},
+      showlegend: false,
+      hovermode: 'closest',
+    };
+    var config = {responsive: true};
+    Plotly.newPlot(TOTALWINS, plotData, layout, config);
   </script>
 </div>
 {% endblock %}

@@ -12,7 +12,6 @@ import plotly.express as px
 # import local stuff
 from tarpeydev import api
 from tarpeydev.db import get_dbm
-from tarpeydev.plotly_style import tarpeydev_default
 from tarpeydev.users import login_required
 
 

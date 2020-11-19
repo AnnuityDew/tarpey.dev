@@ -8,6 +8,7 @@
 
 {% block java %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{{ url_for('static', filename='mildredleague/js/mildredleague.js') }}"></script>
 {% endblock %}
 
 {% block header %}
@@ -28,33 +29,82 @@ mildredleague {{ season }}
   <b>Stats</b>
 </p>
 
-<div class="boxplots" id="boxplot_for">
-  <script>
-    var graphs = {{boxplot_for | safe}};
-    var layout = {};
-    var config = {responsive: true};
-    Plotly.react('boxplot_for', graphs, layout, config);
-  </script>
-</div>
+<div class="boxplots">
+  <div class="boxplot" id="boxplot_for">
+    <script>
+      // boxplot for object
+      BOXPLOTFOR = document.getElementById('boxplot_for');
+      // pull x_data and y_data from Python
+      var xData = {{ x_data_for | safe }};
+      var yData = {{ y_data_for | safe }};
+      // plotData needs to be an array of valid traces, so
+      // here's a loop that constructs the traces from
+      // x_data and y_data, then pushes it into plotData
+      var plotData = [];
+      for ( var i = 0; i < xData.length; i ++ ) {
+        var trace = {
+          type: 'box',
+          y: yData[i],
+          name: xData[i],
+          boxpoints: 'all',
+        };
+        plotData.push(trace);
+      };
+      var layout = { 
+        template: tarpeydevDefault,
+        title: {{ season }} + ' Points For',
+        margin: {l:70, r:50, t:60, b:30},
+        legend: {orientation:'h', y:0, xanchor:'left', x:0},
+        xaxis: {
+          title: null,
+          showticklabels: false,
+        },
+        colorway: {{ color_data_for | safe }},
+      };
+      var config = { 
+        responsive: true
+      };
+      Plotly.newPlot(BOXPLOTFOR, plotData, layout, config)
+    </script>
+  </div>
 
-<div class="boxplots" id="boxplot_against">
-  <script>
-    var graphs = {{boxplot_against | safe}};
-    var layout = {};
-    var config = {responsive: true};
-    Plotly.react('boxplot_against', graphs, layout, config);
-
-    window.onresize = function() {
-      Plotly.relayout('boxplot_for', {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
-      });
-      Plotly.relayout('boxplot_against', {
-        'xaxis.autorange': true,
-        'yaxis.autorange': true
-      });
-    };
-  </script>
+  <div class="boxplot" id="boxplot_against">
+    <script>
+      // boxplot against object
+      BOXPLOTAGAINST = document.getElementById('boxplot_against');
+      // pull x_data and y_data from Python
+      var xData = {{ x_data_against | safe }};
+      var yData = {{ y_data_against | safe }};
+      // plotData needs to be an array of valid traces, so
+      // here's a loop that constructs the traces from
+      // x_data and y_data, then pushes it into plotData
+      var plotData = [];
+      for ( var i = 0; i < xData.length; i ++ ) {
+        var trace = {
+          type: 'box',
+          y: yData[i],
+          name: xData[i],
+          boxpoints: 'all',
+        };
+        plotData.push(trace);
+      };
+      var layout = { 
+        template: tarpeydevDefault,
+        title: {{ season }} + ' Points Against',
+        margin: {l:70, r:50, t:60, b:30},
+        legend: {orientation:'h', y:0, xanchor:'left', x:0},
+        xaxis: {
+          title: null,
+          showticklabels: false,
+        },
+        colorway: {{ color_data_against | safe }},
+      };
+      var config = { 
+        responsive: true
+      };
+      Plotly.newPlot(BOXPLOTAGAINST, plotData, layout, config)
+    </script>
+  </div>
 </div>
 
 <p>
