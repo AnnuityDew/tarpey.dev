@@ -2,7 +2,6 @@
 import click
 import csv
 import datetime
-import json
 import os
 
 # import third party packages
