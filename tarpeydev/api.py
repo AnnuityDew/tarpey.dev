@@ -199,7 +199,7 @@ def season_boxplot_retrieve(season, against, api=False):
     client = get_dbm()
     db = client.mildredleague
     collection = getattr(db, against + str(season))
-    data = list(collection.find())
+    data = list(collection.find({"name":{'$ne':'Bye'}}))
     if not data:
         return "No data found!", 400
     elif request.path.startswith('/api/') or api is True:

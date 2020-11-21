@@ -1,14 +1,10 @@
 # import native Python packages
-import json
 
 # import third party packages
 from flask import Blueprint, render_template
-import numpy
 import pandas
 import plotly
 import plotly.express as px
-import plotly.figure_factory as ff
-import plotly.graph_objects as go
 
 # import custom local stuff
 from tarpeydev import api
@@ -162,13 +158,9 @@ def matchup_heatmap_fig(games_df):
     hover_data.reverse()
     # color data
     matchup_colors = [
-        [0, plotly.colors.diverging.Tropic[0]],
-        [0.5, '#FFFFFF'],
-        [1, plotly.colors.diverging.Tropic[-1]],
+        [i / (len(plotly.colors.diverging.Temps_r) - 1), color]
+        for i, color in enumerate(plotly.colors.diverging.Temps_r)
     ]
-
-
-    #'Winner: %{y}<br>Opponent: %{x}<br>Win %: %{z:.3f}<br>Games: %{customdata} <extra></extra>',
 
     return x_opponents, y_winners, z_matchup_data, matchup_colors, hover_data
 
@@ -205,7 +197,10 @@ def all_time_ranking_fig(ranking_df):
     # and replace np.nan with 0 (to then replace with None)
     z_rankings = annual_ranking_df.fillna(0).values.tolist()
 
-    heatmap_colors = [[0, '#6baed6'], [1, '#08306b']]
+    heatmap_colors = [
+        [i / (len(plotly.colors.diverging.Temps) - 1), color]
+        for i, color in enumerate(plotly.colors.diverging.Temps)
+    ]
 
     return x_seasons, y_ranking_names, z_rankings, heatmap_colors
 
@@ -430,7 +425,7 @@ def season_table(season, games_df):
         on='nick_name',
         how='left',
     ).sort_values(
-        by='playoff_rank', ascending=True
+        by=['playoff_rank', 'loss_total'], ascending=True
     )
 
     return season_records_df

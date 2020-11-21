@@ -129,7 +129,6 @@ def system_treemap():
         color=numpy.log10(system_status_df['game_hours']),
         color_continuous_scale=px.colors.diverging.Spectral_r,
         hover_data=['game_hours'],
-        template=tarpeydev_default(),
     )
 
     # update margins and colors

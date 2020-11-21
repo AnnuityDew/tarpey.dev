@@ -56,7 +56,35 @@
         showline: false,
         ticks: '',
       },
+      annotations: [],
     };
+    // begin loop to push each annotation into annotations
+    for ( var i = 0; i < yData.length; i++ ) {
+      for ( var j = 0; j < xData.length; j++ ) {
+        var currentValue = zData[i][j];
+        // replace z data 0s with nulls
+        if (currentValue < .20 || currentValue > .80) {
+          var postedAnnotation = '';
+          var chosenColor = '#FFFFFF';
+        } else {
+          var postedAnnotation = currentValue;
+          var chosenColor = '#000000';
+        };
+        var result = {
+          xref: 'x1',
+          yref: 'y1',
+          x: xData[j],
+          y: yData[i],
+          text: parseFloat(postedAnnotation*100).toFixed(1)+"%",
+          font: {
+            size: 12,
+            color: chosenColor,
+          },
+          showarrow: false,
+        };
+        layout.annotations.push(result);
+      }
+    }
     var config = {responsive: true};
     Plotly.newPlot(MATCHUPS, plotData, layout, config);
   </script>
@@ -112,6 +140,11 @@
         } else {
           var postedAnnotation = currentValue;
         };
+        if (currentValue <= 3 || currentValue >= 12) {
+          var chosenColor = '#FFFFFF';
+        } else {
+          var chosenColor = '#000000';
+        };
         var result = {
           xref: 'x1',
           yref: 'y1',
@@ -119,6 +152,9 @@
           y: yData[i],
           text: postedAnnotation,
           showarrow: false,
+          font: {
+            color: chosenColor,
+          },
         };
         layout.annotations.push(result);
       }
