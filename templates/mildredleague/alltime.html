@@ -18,6 +18,10 @@
   Scroll down for some visuals that tell the all-time story of Mildred League...
 </p>
 
+<p>
+  (Best viewed in landscape!)
+</p>
+
 <div class="plots" id="matchup_heatmap">
   <script>
     MATCHUPS = document.getElementById('matchup_heatmap')
@@ -52,6 +56,7 @@
         side: 'top',
       },
       yaxis: {
+        title: 'Winner',
         showgrid: false,
         showline: false,
         ticks: '',
@@ -77,7 +82,7 @@
           y: yData[i],
           text: parseFloat(postedAnnotation*100).toFixed(1)+"%",
           font: {
-            size: 12,
+            size: 10,
             color: chosenColor,
           },
           showarrow: false,
