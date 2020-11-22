@@ -8,6 +8,7 @@
 
 {% block java %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="{{ url_for('static', filename='index/js/tarpeydevlayout.js') }}"></script>
 {% endblock %}
 
 {% block header %}haveyouseenx{% endblock %}
@@ -35,12 +36,60 @@
   I haven't logged a playtime for every game yet, but so far there's over {{ playtime }} hours of gameplay in the database.
 </p>
 
-<div class="hysx_treemap" id="treemap">
+<div class="hysx" id="treemap">
   <script>
     var graphs = {{treemap | safe}};
-    var layout = {};
+    var layout = {template: tarpeydevDefault};
     var config = {responsive: true};
     Plotly.react('treemap', graphs, layout, config);
+  </script>
+</div>
+
+<div class="hysx" id="bubbles">
+  <script>
+    // pull x_data, y_data, z_data, and label data from Python
+    var xData = {{x_data_counts | safe}};
+    var yData = {{y_data_dist | safe}};
+    var zData = {{z_data_hours | safe}};
+    var bubbleNames = {{bubble_names | safe}}
+    var labelText = {{label_text | safe}}
+    var colorData = {{color_data | safe}}
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        x: xData[i],
+        y: yData[i],
+        name: bubbleNames[i],
+        mode: 'markers',
+        type: 'scatter',
+        text: labelText[i],
+        marker: {
+          size: zData[i],
+          sizemode: 'area',
+          sizeref: 0.5,
+        }
+      };
+      plotData.push(trace);
+    };
+    var layout = {
+      template: tarpeydevDefault,
+      title: 'Backlog Distribution',
+      showlegend: true,
+      xaxis: {
+        title: 'Game Count',
+        type: 'log',
+        autorange: true,
+      },
+      yaxis: {
+        title: '% in Category',
+      },
+      colorway: colorData,
+    };
+    var config = {responsive: true};
+    Plotly.newPlot('bubbles', plotData, layout, config);
   </script>
 </div>
 {% endblock %}

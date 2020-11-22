@@ -25,6 +25,60 @@ def random_quote():
     return quote
 
 
+@api_bp.route('/haveyouseenx/all-games', methods=['GET'])
+def backlog():
+    client = get_dbm()
+    db = client.backlogs
+    collection = db.annuitydew
+    results = list(collection.find())
+    return jsonify(results), 200
+
+
+@api_bp.route('/haveyouseenx/count-by-status', methods=['GET'])
+def count_by_status():
+    client = get_dbm()
+    db = client.backlogs
+    collection = db.annuitydew
+    results = list(
+        collection.aggregate([{
+            '$group': {
+                '_id': '$game_status',
+                'count': {
+                    '$sum': 1
+                }
+            }
+        }])
+    )
+    return jsonify(results), 200
+
+
+@api_bp.route('/haveyouseenx/playtime', methods=['GET'])
+def playtime():
+    client = get_dbm()
+    db = client.backlogs
+    collection = db.annuitydew
+    results = list(
+        collection.aggregate([{
+            '$group': {
+                '_id': None,
+                'total_hours': {
+                    '$sum': '$game_hours'
+                },
+                'total_minutes': {
+                    '$sum': '$game_minutes'
+                }
+            }
+        }])
+    )
+    # move chunks of 60 minutes into the hours count
+    leftover_minutes = results[0].get('total_minutes') % 60
+    hours_to_move = (results[0].get('total_minutes') - leftover_minutes) / 60
+    results[0]['total_hours'] = results[0]['total_hours'] + hours_to_move
+    results[0]['total_minutes'] = leftover_minutes
+
+    return jsonify(results), 200
+
+
 @api_bp.route('/haveyouseenx/search', methods=['GET'])
 def search(search_term=None):
     if search_term is None:

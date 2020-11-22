@@ -281,6 +281,39 @@
                 }
             }
         },
+        "/api/haveyouseenx/all-games":{
+            "get":{
+                "tags":["haveyouseenx"],
+                "summary":"Request data for all games I've played.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/haveyouseenx/count-by-status":{
+            "get":{
+                "tags":["haveyouseenx"],
+                "summary":"Request total count of games I've played, by status.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/api/haveyouseenx/playtime":{
+            "get":{
+                "tags":["haveyouseenx"],
+                "summary":"Request total playtime for games I've played.",
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
         "/api/haveyouseenx/search":{
             "get":{
                 "tags":["haveyouseenx"],
