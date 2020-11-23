@@ -36,13 +36,43 @@
   I haven't logged a playtime for every game yet, but so far there's over {{ playtime }} hours of gameplay in the database.
 </p>
 
-<div class="hysx" id="treemap">
+<div class="hysx" id="timeline">
   <script>
-    var graphs = {{treemap | safe}};
-    var layout = {template: tarpeydevDefault};
+    // pull x_data, y_data from Python
+    var yDataC = {{x_data_c | safe}};
+    var yDataB = {{x_data_b | safe}};
+    var yDataS = {{x_data_s | safe}};
+    var yDataNS = {{x_data_ns | safe}};
+    var xData = {{y_data_dates | safe}};
+    var xDataClean = [];
+    var colorData = {{area_colors | safe}};
+    // we just need a loop over the x data to convert
+    // to datetime
+    for ( var i = 0; i < xData.length; i ++ ) {
+      xDataClean[i] = new Date(xData[i])
+    };
+    var plotData = [
+      {x: xDataClean, y: yDataC, name: 'Completed', hovertext: yDataC, stackgroup: 'one', groupnorm: 'percent'},
+      {x: xDataClean, y: yDataB, name: 'Beaten', hovertext: yDataB, stackgroup: 'one'},
+      {x: xDataClean, y: yDataS, name: 'Started', hovertext: yDataS, stackgroup: 'one'},
+      {x: xDataClean, y: yDataNS, name: 'Not Started', hovertext: yDataNS, stackgroup: 'one'},
+    ];
+    var layout = {
+      template: tarpeydevDefault,
+      title: 'Backlog Timeline',
+      showlegend: true,
+      yaxis: {
+        title: '% in Category',
+      },
+      colorway: colorData,
+    };
     var config = {responsive: true};
-    Plotly.react('treemap', graphs, layout, config);
+    Plotly.newPlot('timeline', plotData, layout, config);
   </script>
+</div>
+
+<div class="hysx" id="treemap">
+<!-- treemap retired for now -->
 </div>
 
 <div class="hysx" id="bubbles">
@@ -80,8 +110,6 @@
       showlegend: true,
       xaxis: {
         title: 'Game Count',
-        type: 'log',
-        autorange: true,
       },
       yaxis: {
         title: '% in Category',
