@@ -47,7 +47,7 @@ def home():
     ) = system_bubbles(backlog_df.copy())
 
     (
-        x_data_c, x_data_b, x_data_s, x_data_ns, y_data_dates, area_colors
+        y_data_c, y_data_b, y_data_s, y_data_ns, x_data_dates, area_colors
     ) = timeline(backlog_df.copy(), stats)
 
     return render_template(
@@ -61,11 +61,11 @@ def home():
         bubble_names=bubble_names,
         label_text=label_text,
         color_data=color_data,
-        x_data_c=x_data_c,
-        x_data_b=x_data_b,
-        x_data_s=x_data_s,
-        x_data_ns=x_data_ns,
-        y_data_dates=y_data_dates,
+        y_data_c=y_data_c,
+        y_data_b=y_data_b,
+        y_data_s=y_data_s,
+        y_data_ns=y_data_ns,
+        x_data_dates=x_data_dates,
         area_colors=area_colors,
     )
 
@@ -232,7 +232,7 @@ def timeline(backlog, stats):
     backlog.event_date = pandas.to_datetime(backlog.event_date, utc=True)
 
     # sort by date descending
-    backlog.sort_values(['event_date'], ascending=False, inplace=True)
+    backlog.sort_values(['event_date', '_id', 'event_name'], ascending=False, inplace=True)
 
     # reset index
     backlog.reset_index(inplace=True)
@@ -275,7 +275,7 @@ def timeline(backlog, stats):
     # change sort to ascending and drop unnecessary columns
     # set index to event date
     backlog = backlog.sort_values(
-        ['event_date'], ascending=True
+        ['event_date', '_id', 'event_name'], ascending=True
     )[['event_date', 'ns', 's', 'b', 'c']]
 
     # drop duplicate dates (keep last, that will be most recent)
@@ -293,24 +293,22 @@ def timeline(backlog, stats):
     # limit our chart to dates after the birth of the backlog
     backlog = backlog[
         pandas.Timestamp(
-            '2015-10-09 00:00:00+0000', tz='UTC', freq='D'
-        ):pandas.Timestamp(
-            '2020-03-25 00:00:00+0000', tz='UTC', freq='D'
-        )
+            '2015-01-01 00:00:00+0000', tz='UTC', freq='D'
+        ):
     ]
 
     # x data is time, y_data is our timeline values
-    x_data_c = backlog.c.tolist()
-    x_data_b = backlog.b.tolist()
-    x_data_s = backlog.s.tolist()
-    x_data_ns = backlog.ns.tolist()
-    y_data_dates = backlog.index.tolist()
+    y_data_c = backlog.c.tolist()
+    y_data_b = backlog.b.tolist()
+    y_data_s = backlog.s.tolist()
+    y_data_ns = backlog.ns.tolist()
+    x_data_dates = backlog.index.tolist()
     # dates need to be converted to be JS-ready
-    y_data_dates = [
-        int(time_point.strftime("%s%f"))/1000 for time_point in y_data_dates
+    x_data_dates = [
+        int(time_point.strftime("%s%f"))/1000 for time_point in x_data_dates
     ]
 
     # color data
     area_colors = px.colors.sequential.Agsunset[::2]
 
-    return x_data_c, x_data_b, x_data_s, x_data_ns, y_data_dates, area_colors
+    return y_data_c, y_data_b, y_data_s, y_data_ns, x_data_dates, area_colors
