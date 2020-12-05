@@ -15,15 +15,24 @@ mildredleague rules
   <th>Rule</th><th>Description</th>
   <tr><td>Prize Pool</td><td>3rd place refund, 2nd place 2x refund, 1st place gets pot</td></tr>
   <tr><td>Roster</td><td>QB / RB / 2WR / TE / 2FLX / 1K / 1D / 5B</td></tr>
-  <tr><td>Divisions</td><td>Champions, AFC East, Referees</td></tr>
+  <tr><td>Divisions</td><td>Division 6, AFC East, Referees</td></tr>
   <tr><td>Playoffs</td><td>Three division winners (#1, #2, #3) and three wild cards (#4, #5, #6) make playoffs. Playoffs reseed after each round.</td></tr>
   <tr><td>Consolation Bracket</td><td>Swiss-style tournament. Winner earns choice of draft slot next year.</td></tr>
   <tr><td>Scheduling</td><td>Play divisional opponents twice. Schedule fills with non-division opponents.</td></tr>
 </table>
 
 <b>Playoff Tiebreakers</b>
+<p>
+  I have a thing for the NFL tiebreakers, so we use a system similar to theirs.
+  It's much more chaotic and interesting than a simple Points For tiebreaker, and
+  I like how it puts strong emphasis on our division matchups (not to mention it has already
+  paid off in the form of a few crazy playoff outcomes so far!).
+</p>
+<p>
+  Here's how it works:
+</p>
 <ol class="lettered_list">
-  <li>If two teams in the same division end up tied (i.e. 7-7), tiebreakers will happen in this order:</li>
+  <li>If two teams in the same division end up tied in overall record (i.e. both 7-7), tiebreakers will happen in this order:</li>
   <ol>
     <li>Head-to-head record</li>
     <li>Division record</li>
@@ -38,6 +47,47 @@ mildredleague rules
     <li>Points against</li>
     <li>Coin toss (a real one, not random number generated)</li>
   </ol>
-  <li>If 3+ teams end up tied, ties are broken INSIDE each division first before comparing teams from different divisions.</li>
+  <li>
+    If 3+ teams end up tied, we just use the same tiebreakers described
+    above depending on same division or different division. But there are
+    two special rules that might apply:
+  </li>
+    <ol>
+      <li>
+        Ties are broken INSIDE each division first before
+        comparing teams from different divisions.
+      </li>
+      <li>
+        When PART of a 3+ way tie breaks (say one team breaks out but
+        the other two teams are still tied), we go back to step 1 with
+        just the teams that are left still tied.
+      </li>
+    </ol>
+  <li>
+    For a 3+ team tie that's all in the same division, head-to-head record just
+    counts all games among teams in the tiebreaker. Some examples:
+  </li>
+    <ul>
+      <li>
+        If three teams have played each other twice each (this is the case in
+        all of our divisions), 3-1 beats 2-2 beats 1-3 would fully break the tie.
+      </li>
+      <li>
+        Or maybe everyone is 2-2...then we go to full
+        division record of all three teams.
+      </li>
+      <li>
+        There's another case where one team escapes the tiebreaker, but others
+        are still tied (in our three team example this could look something like
+        4-0, 1-3, 1-3). When this happens, the teams that are still tied start
+        back at step 1 of the tiebreaker!
+      </li>
+    </ul>
+  <li>
+    For a three team tie across the three divisions, one of the teams has to have
+    a SWEEP for head-to-head to apply. (This could be a winning sweep where they beat
+    both of the other teams, or a losing sweep where they lost to both of the other
+    teams.) If there's no sweep for anyone, it will go to Points For.
+  </li>
 </ol>
 {% endblock %}

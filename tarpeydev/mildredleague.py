@@ -1,4 +1,5 @@
 # import native Python packages
+from itertools import permutations
 
 # import third party packages
 from flask import Blueprint, render_template
@@ -77,7 +78,10 @@ def season_page(season):
     x_data_for, y_data_for, color_data_for = season_boxplot(season, 'for')
     x_data_against, y_data_against, color_data_against = season_boxplot(season, 'against')
     notes = api.read_season_notes(season)
-    table = season_table(season, games_df)
+    if season == 2020:
+        table = season_table_active(season, games_df)
+    else:
+        table = season_table(season, games_df)
 
     return render_template(
         'mildredleague/season.html',
@@ -94,6 +98,8 @@ def season_page(season):
 
 
 def matchup_heatmap_fig(games_df):
+    # normalize games
+    games_df = normalize_games(games_df)
     # convert to record_df
     matchup_df = calc_matchup_records(
         games_df
@@ -108,8 +114,7 @@ def matchup_heatmap_fig(games_df):
             ranking_df.active == 1,
             ['nick_name']
         ].drop_duplicates(),
-        left_on='winner',
-        right_on='nick_name',
+        on='nick_name',
         how='inner',
     ).merge(
         ranking_df.loc[
@@ -121,7 +126,7 @@ def matchup_heatmap_fig(games_df):
         how='inner',
     ).drop(
         columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['winner', 'loser'])[['game_total']].unstack()
+    ).set_index(keys=['nick_name', 'loser'])[['game_total']].unstack()
 
     # inner join will result in only active teams. unstack
     matchup_df = matchup_df.merge(
@@ -129,8 +134,7 @@ def matchup_heatmap_fig(games_df):
             ranking_df.active == 1,
             ['nick_name']
         ].drop_duplicates(),
-        left_on='winner',
-        right_on='nick_name',
+        on='nick_name',
         how='inner',
     ).merge(
         ranking_df.loc[
@@ -142,7 +146,7 @@ def matchup_heatmap_fig(games_df):
         how='inner',
     ).drop(
         columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['winner', 'loser'])[['win_pct']].unstack()
+    ).set_index(keys=['nick_name', 'loser'])[['win_pct']].unstack()
 
     # start creating the figure!
     # y axis labels
@@ -282,40 +286,38 @@ def normalize_games(all_games_df):
 
 
 def calc_records(games_df):
-    # season wins for away teams, home teams
-    away_wins_for_df = pandas.pivot_table(games_df, values='a_win', index='a_nick', aggfunc='sum', fill_value=0)
-    home_wins_for_df = pandas.pivot_table(games_df, values='h_win', index='h_nick', aggfunc='sum', fill_value=0)
-    # season losses for away teams, home teams
-    away_losses_for_df = pandas.pivot_table(games_df, values='h_win', index='a_nick', aggfunc='sum', fill_value=0)
-    home_losses_for_df = pandas.pivot_table(games_df, values='a_win', index='h_nick', aggfunc='sum', fill_value=0)
-    away_losses_for_df.rename(columns={'h_win': 'a_loss'}, inplace=True)
-    home_losses_for_df.rename(columns={'a_win': 'h_loss'}, inplace=True)
-    # ties
-    away_ties_df = pandas.pivot_table(games_df, values='a_tie', index='a_nick', aggfunc='sum', fill_value=0)
-    home_ties_df = pandas.pivot_table(games_df, values='h_tie', index='h_nick', aggfunc='sum', fill_value=0)
-    # season points for for away teams, home teams
-    away_points_for_df = pandas.pivot_table(games_df, values='a_score_norm', index='a_nick', aggfunc='sum', fill_value=0)
-    home_points_for_df = pandas.pivot_table(games_df, values='h_score_norm', index='h_nick', aggfunc='sum', fill_value=0)
-    # season points against for away teams, home teams
-    away_points_against_df = pandas.pivot_table(games_df, values='h_score_norm', index='a_nick', aggfunc='sum', fill_value=0)
-    home_points_against_df = pandas.pivot_table(games_df, values='a_score_norm', index='h_nick', aggfunc='sum', fill_value=0)
-    away_points_against_df.rename(columns={'h_score_norm': 'a_score_norm_against'}, inplace=True)
-    home_points_against_df.rename(columns={'a_score_norm': 'h_score_norm_against'}, inplace=True)
+    # season wins/losses/ties/PF/PA for away teams, home teams
+    away_df = pandas.pivot_table(
+        games_df,
+        values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'], 
+        index=['a_division', 'a_nick'],
+        aggfunc='sum',
+        fill_value=0
+        )
+    home_df = pandas.pivot_table(
+        games_df,
+        values=['h_win', 'a_win', 'h_tie', 'h_score_norm', 'a_score_norm'],
+        index=['h_division', 'h_nick'],
+        aggfunc='sum',
+        fill_value=0
+        )
+
+    # rename index and against columns
+    away_df = away_df.rename(
+        columns={'h_win': 'a_loss', 'h_score_norm': 'a_score_norm_against'},
+    ).rename_axis(
+        index={'a_nick': 'nick_name', 'a_division': 'division'}
+    )
+    home_df = home_df.rename(
+        columns={'a_win': 'h_loss', 'a_score_norm': 'h_score_norm_against'},
+    ).rename_axis(
+        index={'h_nick': 'nick_name', 'h_division': 'division'}
+    )
     # merge to one table
-    record_df = home_wins_for_df.join(
-        [
-            away_wins_for_df,
-            home_losses_for_df,
-            away_losses_for_df,
-            home_ties_df,
-            away_ties_df,
-            home_points_for_df,
-            away_points_for_df,
-            home_points_against_df,
-            away_points_against_df,
-        ],
+    record_df = home_df.join(
+        away_df,
         how='inner',
-        ).rename_axis('nick_name')
+        )
     # win total, loss total, game total, points for, points against, win percentage
     record_df['win_total'] = record_df['h_win'] + record_df['a_win']
     record_df['loss_total'] = record_df['h_loss'] + record_df['a_loss']
@@ -325,7 +327,7 @@ def calc_records(games_df):
     record_df['points_for'] = record_df['h_score_norm'] + record_df['a_score_norm']
     record_df['points_against'] = record_df['h_score_norm_against'] + record_df['a_score_norm_against']
     record_df['avg_margin'] = (record_df['points_for'] - record_df['points_against']) / record_df['games_played']
-    record_df.sort_values(by='win_total', ascending=True, inplace=True)
+    record_df.sort_values(by='win_pct', ascending=False, inplace=True)
     record_df.drop(
         columns=[
             'h_win',
@@ -346,31 +348,35 @@ def calc_records(games_df):
 
 
 def calc_matchup_records(games_df):
-    # normalize games
-    games_df = normalize_games(games_df)
-    # grouping for away and home matchup winners
-    away_wins_df = pandas.pivot_table(games_df, values='a_win', index=['a_nick', 'h_nick'], aggfunc='sum', fill_value=0)
-    home_wins_df = pandas.pivot_table(games_df, values='h_win', index=['h_nick', 'a_nick'], aggfunc='sum', fill_value=0)
-    # ties. only need to do this once since both teams receive a tie in a tie row
-    away_ties_df = pandas.pivot_table(games_df, values='a_tie', index=['a_nick', 'h_nick'], aggfunc='sum', fill_value=0)
-    home_ties_df = pandas.pivot_table(games_df, values='h_tie', index=['h_nick', 'a_nick'], aggfunc='sum', fill_value=0)
-    # grouping for away and home matchup OCCURRENCES
-    away_games_df = pandas.pivot_table(
-        games_df, values='season', index=['a_nick', 'h_nick'], aggfunc='count', fill_value=0
-    ).rename(columns={'season': 'a_games'})
-    home_games_df = pandas.pivot_table(
-        games_df, values='season', index=['h_nick', 'a_nick'], aggfunc='count', fill_value=0
-    ).rename(columns={'season': 'h_games'})
+    # grouping for away and home matchup winners, ties, occurrences
+    away_df = pandas.pivot_table(
+        games_df,
+        values=['a_win', 'a_tie', 'season'],
+        index=['a_nick', 'h_nick'],
+        aggfunc={
+            'a_win': 'sum',
+            'a_tie': 'sum',
+            'season': 'count',
+        },
+        fill_value=0,
+        ).rename(columns={'season': 'a_games'})
+    home_df = pandas.pivot_table(
+        games_df,
+        values=['h_win', 'h_tie', 'season'],
+        index=['h_nick', 'a_nick'],
+        aggfunc={
+            'h_win': 'sum',
+            'h_tie': 'sum',
+            'season': 'count',
+        },
+        fill_value=0,
+        ).rename(columns={'season': 'h_games'})
     # rename indices
-    away_wins_df.index.set_names(names=['winner', 'loser'], inplace=True)
-    home_wins_df.index.set_names(names=['winner', 'loser'], inplace=True)
-    away_ties_df.index.set_names(names=['winner', 'loser'], inplace=True)
-    home_ties_df.index.set_names(names=['winner', 'loser'], inplace=True)
-    away_games_df.index.set_names(names=['winner', 'loser'], inplace=True)
-    home_games_df.index.set_names(names=['winner', 'loser'], inplace=True)
+    away_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
+    home_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
     # join and sum to get total matchup wins
-    matchup_df = away_wins_df.join(
-        [home_wins_df, away_ties_df, home_ties_df],
+    matchup_df = away_df.join(
+        home_df,
         how='outer',
     ).fillna(0).convert_dtypes()
     # ties count for 0.5
@@ -380,17 +386,12 @@ def calc_matchup_records(games_df):
         matchup_df['a_tie'] * 0.5 +
         matchup_df['h_tie'] * 0.5
     )
-    # merge and sum to get total matchup occurrences
-    total_matchup_df = away_games_df.join(
-        [home_games_df],
-        how='outer',
-    ).fillna(0).convert_dtypes()
-    total_matchup_df['game_total'] = total_matchup_df.sum(axis=1)
+    matchup_df['game_total'] = (
+        matchup_df['a_games'] +
+        matchup_df['h_games']
+    )
     # get rid of intermediate columns. just wins and games now
-    matchup_df = matchup_df.join(
-        total_matchup_df,
-        how='outer',
-    ).convert_dtypes().drop(
+    matchup_df = matchup_df.convert_dtypes().drop(
         columns=[
             'a_win',
             'h_win',
@@ -400,8 +401,9 @@ def calc_matchup_records(games_df):
             'h_games',
         ]
     )
-    # add win pct column
+    # add win pct column and sort by
     matchup_df['win_pct'] = matchup_df['win_total'] / matchup_df['game_total']
+    matchup_df.sort_values(by=['win_pct'], ascending=False, inplace=True)
 
     return matchup_df
 
@@ -429,3 +431,370 @@ def season_table(season, games_df):
     )
 
     return season_records_df
+
+
+def season_table_active(season, games_df):
+    '''Only use this function for the active season, to
+    resolve tiebreakers.'''
+    # filter to games for the requested season
+    games_df = normalize_games(games_df)
+    games_df = games_df.loc[games_df.season == int(season)]
+
+    # to resolve tiebreakers, need records for the season
+    season_records_df = calc_records(
+        games_df
+    )
+    # also bring in H2H matchup records
+    matchup_df = calc_matchup_records(
+        games_df
+    )
+
+    # initial division ranking before tiebreakers.
+    season_records_df['division_rank'] = season_records_df.groupby(
+        level=['division'],
+    )['win_pct'].rank(
+        method='min',
+        ascending=False,
+    )
+
+    # begin loop to resolve division ties.
+    for div in season_records_df.index.unique(level='division'):
+        # filter down to the division of interest.
+        div_df = season_records_df.loc[[div]]
+        # let's calculate division record here
+        div_matchups = list(permutations(div_df.index.get_level_values('nick_name'), 2))
+        # group by winner to determine H2H among the group
+        div_matchup_df = matchup_df.loc[div_matchups].groupby(
+            level='nick_name'
+        ).agg(
+            {'win_total': sum, 'game_total': sum}
+        )
+        # win_pct in the divisional grouping, then join back to div_df
+        div_matchup_df['win_pct_div'] = (
+            div_matchup_df['win_total'] / div_matchup_df['game_total']
+        )
+        div_df = div_df.join(div_matchup_df[['win_pct_div']])
+        # loop over division_rank to determine where ties need to be broken.
+        for rank in div_df.division_rank.unique():
+            # if the length of the df is longer than 1 for any rank, there's a tie...
+            tied_df = div_df.loc[div_df.division_rank == rank]
+            if len(tied_df) > 1:
+                print(div_df)
+                print(tied_df)
+                untied_df = division_tiebreaker_one(tied_df, games_df, matchup_df)
+                div_df.update(untied_df)
+                print(untied_df)
+                print(div_df)
+        season_records_df.update(div_df)
+
+    # begin to determine playoff seed. first, separate the three division winners.
+    div_winners_df = season_records_df.loc[season_records_df.division_rank == 1]
+    div_losers_df = season_records_df.loc[season_records_df.division_rank > 1]
+    # calculate initial seeding based on pure win_pct.
+    div_winners_df['playoff_seed'] = div_winners_df.win_pct.rank(
+        method='min',
+        ascending=False,
+    )
+    div_losers_df['playoff_seed'] = div_losers_df.win_pct.rank(
+        method='min',
+        ascending=False,
+    ) + len(div_winners_df)
+
+    # now, tiebreakers...winners first
+    for seed in range(1, len(div_winners_df)):
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        tied_df = div_winners_df.loc[div_winners_df.playoff_seed == seed]
+        if len(tied_df) > 1:
+            print(tied_df)
+            untied_df = wild_card_tiebreaker_one(tied_df, games_df, matchup_df)
+            print(untied_df)
+            div_winners_df.update(untied_df)
+    
+    # break the rest of the ties for division losers.
+    for seed in range(len(div_winners_df) + 1, len(season_records_df)):
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        tied_df = div_losers_df.loc[div_losers_df.playoff_seed == seed]
+        if len(tied_df) > 1:
+            print(tied_df)
+            untied_df = wild_card_tiebreaker_one(tied_df, games_df, matchup_df)
+            print(untied_df)
+            div_losers_df.update(untied_df)
+
+    # pull all rankings and filter for the season
+    teams_data, response_code = api.all_teams_data(api=True)
+    season_ranking_df = pandas.DataFrame(teams_data.json)
+    season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
+    # merge playoff ranking and active status
+    season_records_df = season_records_df.merge(
+        season_ranking_df[['nick_name', 'playoff_rank', 'active']],
+        on='nick_name',
+        how='left',
+    ).sort_values(
+        by=['playoff_rank', 'loss_total'], ascending=True
+    )
+
+    return season_records_df
+
+
+def division_tiebreaker_one(tied_df, games_df, matchup_df):
+    # figure out who's got H2H among the 2+ teams by generating all possible matchups
+    matchups = list(permutations(tied_df.index.get_level_values('nick_name'), 2))
+    # group by winner to determine H2H among the group
+    matchup_df = matchup_df.loc[matchups].groupby(
+        level='nick_name'
+    ).agg(
+        {'win_total': sum, 'game_total': sum}
+    )
+    # win_pct in this H2H grouping
+    matchup_df['win_pct_h2h'] = matchup_df['win_total'] / matchup_df['game_total']
+    matchup_df['tiebreaker_rank'] = matchup_df.win_pct_h2h.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate div rank now
+    tied_df = tied_df.join(matchup_df[['tiebreaker_rank']])
+    tied_df['division_rank'] = tied_df['division_rank'] + tied_df['tiebreaker_rank']
+
+    # check time! are we still tied or is it broken?
+    for rank in tied_df.division_rank.unique():
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        # proceed to tiebreaker #2, which is division record.
+        still_tied_df = tied_df.loc[tied_df.division_rank == rank]
+        if len(still_tied_df) > 1:
+            untied_df = division_tiebreaker_two(still_tied_df)
+            tied_df.update(untied_df)
+
+    return tied_df
+
+
+def division_tiebreaker_two(tied_df):
+    # rank based on win_pct_div
+    tied_df['tiebreaker_two_rank'] = tied_df.win_pct_div.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate div rank now
+    tied_df['division_rank'] = tied_df['division_rank'] + tied_df['tiebreaker_two_rank']
+
+    # check time! are we still tied or is it broken?
+    for rank in tied_df.division_rank.unique():
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        # proceed to tiebreaker #3, which is points for.
+        still_tied_df = tied_df.loc[tied_df.division_rank == rank]
+        if len(still_tied_df) > 1:
+            untied_df = division_tiebreaker_three(still_tied_df)
+            tied_df.update(untied_df)
+
+    return tied_df
+
+
+def division_tiebreaker_three(tied_df):
+    # rank based on points for
+    tied_df['tiebreaker_three_rank'] = tied_df.points_for.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate div rank now
+    tied_df['division_rank'] = tied_df['division_rank'] + tied_df['tiebreaker_three_rank']
+
+    # check time! are we still tied or is it broken?
+    for rank in tied_df.division_rank.unique():
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        # proceed to tiebreaker #4, which is points against
+        still_tied_df = tied_df.loc[tied_df.division_rank == rank]
+        if len(still_tied_df) > 1:
+            untied_df = division_tiebreaker_four(still_tied_df)
+            tied_df.update(untied_df)
+
+    return tied_df
+
+
+def division_tiebreaker_four(tied_df):
+    # rank based on points against
+    tied_df['tiebreaker_four_rank'] = tied_df.points_against.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate div rank now
+    tied_df['division_rank'] = tied_df['division_rank'] + tied_df['tiebreaker_four_rank']
+
+    # check time! are we still tied or is it broken?
+    for rank in tied_df.division_rank.unique():
+        # if the length of the df is longer than 1 for any rank, there's a tie...
+        # proceed to tiebreaker #5, which is a real life coin flip.
+        still_tied_df = tied_df.loc[tied_df.division_rank == rank]
+        if len(still_tied_df) > 1:
+            print(still_tied_df)
+            print("You're gonna need a coin for this one.")
+
+    return tied_df
+
+
+def wild_card_tiebreaker_one(tied_df, games_df, matchup_df):
+    # need to filter out any teams at this stage that aren't the highest-ranked
+    # team in their division in the tiebreaker.
+    seed_to_break = tied_df.playoff_seed.min()
+    # if this tiebreaker only involves one division, just use division ranking
+    if len(tied_df.index.unique(level='division')) == 1:
+        tied_df['playoff_seed'] = tied_df.division_rank.rank(
+            method='min',
+            ascending=True,
+        ) + seed_to_break - 1
+    else:
+        # with two or more divisions involved, it's on to H2H record.
+        # but we can only compare the top remaining team in each division.
+        # here we need to filter any team that doesn't meet that criteria
+        # and add one to their playoff seed, so they'll be included
+        # in the next tiebreaker sequence.
+        # let's do a groupby object to get the min division rank in each
+        # division.
+        filter_df = tied_df.groupby(
+            'division'
+            ).agg(
+                {'division_rank': min}
+            ).rename(
+                columns={'division_rank': 'qualifying_rank'}
+            )
+        tied_df = tied_df.join(filter_df)
+        # split the tied_df here between teams that qualify to continue
+        # the tiebreaker and teams that have to wait for the next seed
+        qualified_tied_df = tied_df.loc[tied_df.division_rank == tied_df.qualifying_rank]
+        disqualified_tied_df = tied_df.loc[tied_df.division_rank != tied_df.qualifying_rank]
+
+        # send qualified teams to the next tiebreaker. when they return, concat
+        # with the disqualified teams
+        untied_df = wild_card_tiebreaker_two(qualified_tied_df, games_df, matchup_df, seed_to_break)
+    
+        # for wild card seeds, only one team can advance at a time.
+        # the rest of the remaining teams have to be reconsidered in the next
+        # seed's tiebreaker, so we reset seeds that weren't really tiebroken here.
+        disqualified_tied_df['playoff_seed'] = seed_to_break + 1
+        
+        # concat happens here inside the update
+        tied_df.update(pandas.concat([untied_df, disqualified_tied_df]))
+
+    return tied_df
+
+
+def wild_card_tiebreaker_two(tied_df, games_df, matchup_df, seed_to_break):
+    # figure out who's got H2H among the 2-3 teams by generating all possible matchups
+    matchups = list(permutations(tied_df.index.get_level_values('nick_name'), 2))
+    # group by winner to determine H2H among the group
+    matchup_df = matchup_df.loc[matchup_df.index.intersection(matchups)].groupby(
+        level='nick_name'
+    ).agg(
+        {'win_total': sum, 'game_total': sum}
+    )
+    # win_pct in this H2H grouping
+    matchup_df['win_pct_h2h'] = matchup_df['win_total'] / matchup_df['game_total']
+
+    # our sweep check will just be whether or not game_total in a row is
+    # 1 (in case of a 2-way tie) or 2 (in case of a 3-way tie). If it's not,
+    # H2H will be skipped for that team (set win_pct_h2h to .500)
+    matchup_df.loc[
+        matchup_df.game_total < len(matchup_df) - 1,
+        'win_pct_h2h'] = 0.5
+    
+    # now determine H2H rank in the group
+    matchup_df['wc_tiebreaker_two_rank'] = matchup_df.win_pct_h2h.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+    tied_df = tied_df.join(matchup_df[['wc_tiebreaker_two_rank']])
+
+    # if this is a two way tiebreaker where there was no H2H,
+    # we'll have to fill in tiebreaker_two with zeroes
+    # before we modify the playoff seed
+    tied_df['wc_tiebreaker_two_rank'] = tied_df['wc_tiebreaker_two_rank'].fillna(0)
+
+    # now modify playoff seed
+    tied_df['playoff_seed'] = tied_df['playoff_seed'] + tied_df['wc_tiebreaker_two_rank']
+
+    # for wild card seeds, only one team can advance at a time.
+    # the rest of the remaining teams have to be reconsidered in the next
+    # seed's tiebreaker, so we reset seeds that weren't really tiebroken here.
+    tied_df.loc[tied_df.playoff_seed != seed_to_break, 'playoff_seed'] = seed_to_break + 1
+
+    # check time! are we still tied or is it broken?
+    # if the count of teams at the seed_to_break is the same as before,
+    # proceed to tiebreaker #3, which is points for.
+    still_tied_df = tied_df.loc[tied_df.playoff_seed == seed_to_break]
+    disqualified_tied_df = tied_df.loc[tied_df.playoff_seed > seed_to_break]
+    if len(still_tied_df) == len(tied_df):
+        untied_df = wild_card_tiebreaker_three(still_tied_df, seed_to_break)
+        tied_df.update(untied_df)
+    # there's also the case where someone has dropped out of the tiebreaker;
+    # here we need to restart from step one with just the remaining teams.
+    elif len(still_tied_df) > 1:
+        untied_df = wild_card_tiebreaker_one(still_tied_df)
+        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+
+    return tied_df
+
+
+def wild_card_tiebreaker_three(tied_df, seed_to_break):
+    # rank based on points for
+    tied_df['wc_tiebreaker_three_rank'] = tied_df.points_for.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate playoff seed now
+    tied_df['playoff_seed'] = tied_df['playoff_seed'] + tied_df['wc_tiebreaker_three_rank']
+
+    # for wild card seeds, only one team can advance at a time.
+    # the rest of the remaining teams have to be reconsidered in the next
+    # seed's tiebreaker, so we reset seeds that weren't really tiebroken here.
+    tied_df.loc[tied_df.playoff_seed != seed_to_break, 'playoff_seed'] = seed_to_break + 1
+
+    # check time! are we still tied or is it broken?
+    # if the count of teams at the seed_to_break is the same as before,
+    # proceed to tiebreaker #4, which is points against.
+    still_tied_df = tied_df.loc[tied_df.playoff_seed == seed_to_break]
+    disqualified_tied_df = tied_df.loc[tied_df.playoff_seed > seed_to_break]
+    if len(still_tied_df) == len(tied_df):
+        untied_df = wild_card_tiebreaker_four(still_tied_df, seed_to_break)
+        tied_df.update(untied_df)
+    # there's also the case where someone has dropped out of the tiebreaker;
+    # here we need to restart from step one with just the remaining teams.
+    elif len(still_tied_df) > 1:
+        untied_df = wild_card_tiebreaker_one(still_tied_df)
+        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+
+    return tied_df
+
+
+def wild_card_tiebreaker_four(tied_df, seed_to_break):
+    # rank based on points against
+    tied_df['wc_tiebreaker_four_rank'] = tied_df.points_against.rank(
+        method='min',
+        ascending=False,
+    ) - 1
+
+    # recalculate playoff seed now
+    tied_df['playoff_seed'] = tied_df['playoff_seed'] + tied_df['wc_tiebreaker_four_rank']
+
+    # for wild card seeds, only one team can advance at a time.
+    # the rest of the remaining teams have to be reconsidered in the next
+    # seed's tiebreaker, so we reset seeds that weren't really tiebroken here.
+    tied_df.loc[tied_df.playoff_seed != seed_to_break, 'playoff_seed'] = seed_to_break + 1
+
+    # check time! are we still tied or is it broken?
+    # if the count of teams at the seed_to_break is the same as before,
+    # proceed to tiebreaker #5, which is an irl coin flip.
+    still_tied_df = tied_df.loc[tied_df.playoff_seed == seed_to_break]
+    disqualified_tied_df = tied_df.loc[tied_df.playoff_seed > seed_to_break]
+    if len(still_tied_df) == len(tied_df):
+        print(still_tied_df)
+        print("You're gonna need a coin for this one. Or maybe a six-sided die.")
+    # there's also the case where someone has dropped out of the tiebreaker;
+    # here we need to restart from step one with just the remaining teams.
+    elif len(still_tied_df) > 1:
+        untied_df = wild_card_tiebreaker_one(still_tied_df)
+        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+
+    return tied_df
