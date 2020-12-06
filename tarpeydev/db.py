@@ -404,7 +404,7 @@ class MildredLeagueSeason:
             next(teams_reader)
             for row in teams_reader:
                 # convert ints to int
-                ints = [0, 4, 5, 6]
+                ints = [0, 4, 5]
                 for column in ints:
                     if row[column] != '':
                         row[column] = int(row[column])

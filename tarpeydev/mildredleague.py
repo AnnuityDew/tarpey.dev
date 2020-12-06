@@ -108,45 +108,32 @@ def matchup_heatmap_fig(games_df):
     teams_data, response_code = api.all_teams_data(api=True)
     ranking_df = pandas.DataFrame(teams_data.json)
 
-    # game total custom data for the hover text
-    game_df = matchup_df.merge(
+    # inner joins are just to keep active teams
+    active_matchup_df = matchup_df.merge(
         ranking_df.loc[
-            ranking_df.active == 1,
+            ranking_df.active == 'yes',
             ['nick_name']
         ].drop_duplicates(),
         on='nick_name',
         how='inner',
     ).merge(
         ranking_df.loc[
-            ranking_df.active == 1,
+            ranking_df.active == 'yes',
             ['nick_name']
         ].drop_duplicates(),
         left_on='loser',
         right_on='nick_name',
         how='inner',
     ).drop(
-        columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['nick_name', 'loser'])[['game_total']].unstack()
+        columns=['nick_name_y']
+    ).rename(
+        columns={'nick_name_x': 'nick_name'}
+    ).set_index(keys=['nick_name', 'loser'])
 
-    # inner join will result in only active teams. unstack
-    matchup_df = matchup_df.merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        on='nick_name',
-        how='inner',
-    ).merge(
-        ranking_df.loc[
-            ranking_df.active == 1,
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='loser',
-        right_on='nick_name',
-        how='inner',
-    ).drop(
-        columns=['nick_name_x', 'nick_name_y']
-    ).set_index(keys=['nick_name', 'loser'])[['win_pct']].unstack()
+    # game total custom data for the hover text
+    game_df = active_matchup_df[['game_total']].unstack()
+    # win pct data is what drives the figure
+    matchup_df = active_matchup_df[['win_pct']].unstack()
 
     # start creating the figure!
     # y axis labels
@@ -215,11 +202,17 @@ def all_time_wins_fig(games_df):
     # convert to record_df
     record_df = calc_records(
         regular_df
-    ).reset_index().sort_values('win_total', ascending=True)
+    )
+    # group by nick_name (don't need division info for this figure)
+    record_df = record_df.groupby(
+        level=['nick_name'],
+    ).agg(
+        {'win_total': sum}
+    ).sort_values('win_total', ascending=True)
 
     # create list of x_data and y_data
     x_data = record_df.win_total.values.tolist()
-    y_data = record_df.nick_name.values.tolist()
+    y_data = record_df.index.tolist()
     # color data needs to be tripled to have enough
     # colors for every bar!
     color_data = (
@@ -289,7 +282,7 @@ def calc_records(games_df):
     # season wins/losses/ties/PF/PA for away teams, home teams
     away_df = pandas.pivot_table(
         games_df,
-        values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'], 
+        values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'],
         index=['a_division', 'a_nick'],
         aggfunc='sum',
         fill_value=0
@@ -509,7 +502,7 @@ def season_table_active(season, games_df):
             untied_df = wild_card_tiebreaker_one(tied_df, games_df, matchup_df)
             print(untied_df)
             div_winners_df.update(untied_df)
-    
+
     # break the rest of the ties for division losers.
     for seed in range(len(div_winners_df) + 1, len(season_records_df)):
         # if the length of the df is longer than 1 for any rank, there's a tie...
@@ -520,20 +513,13 @@ def season_table_active(season, games_df):
             print(untied_df)
             div_losers_df.update(untied_df)
 
-    # pull all rankings and filter for the season
-    teams_data, response_code = api.all_teams_data(api=True)
-    season_ranking_df = pandas.DataFrame(teams_data.json)
-    season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
-    # merge playoff ranking and active status
-    season_records_df = season_records_df.merge(
-        season_ranking_df[['nick_name', 'playoff_rank', 'active']],
-        on='nick_name',
-        how='left',
+    season_table = pandas.concat(
+        [div_winners_df, div_losers_df]
     ).sort_values(
-        by=['playoff_rank', 'loss_total'], ascending=True
+        by='playoff_seed'
     )
 
-    return season_records_df
+    return season_table.reset_index()
 
 
 def division_tiebreaker_one(tied_df, games_df, matchup_df):
@@ -659,7 +645,12 @@ def wild_card_tiebreaker_one(tied_df, games_df, matchup_df):
             ).rename(
                 columns={'division_rank': 'qualifying_rank'}
             )
-        tied_df = tied_df.join(filter_df)
+        # if we're looping back through here after a qualifying rank was
+        # determined in an earlier tiebreak for the same seed, this join will blow up
+        # (we don't need to recalculate the qualifying rank until looking
+        # at the next seed). so check for qualifying rank here before joining
+        if 'qualifying_rank' not in tied_df.columns:
+            tied_df = tied_df.join(filter_df)
         # split the tied_df here between teams that qualify to continue
         # the tiebreaker and teams that have to wait for the next seed
         qualified_tied_df = tied_df.loc[tied_df.division_rank == tied_df.qualifying_rank]
@@ -668,12 +659,12 @@ def wild_card_tiebreaker_one(tied_df, games_df, matchup_df):
         # send qualified teams to the next tiebreaker. when they return, concat
         # with the disqualified teams
         untied_df = wild_card_tiebreaker_two(qualified_tied_df, games_df, matchup_df, seed_to_break)
-    
+
         # for wild card seeds, only one team can advance at a time.
         # the rest of the remaining teams have to be reconsidered in the next
         # seed's tiebreaker, so we reset seeds that weren't really tiebroken here.
         disqualified_tied_df['playoff_seed'] = seed_to_break + 1
-        
+
         # concat happens here inside the update
         tied_df.update(pandas.concat([untied_df, disqualified_tied_df]))
 
@@ -684,27 +675,35 @@ def wild_card_tiebreaker_two(tied_df, games_df, matchup_df, seed_to_break):
     # figure out who's got H2H among the 2-3 teams by generating all possible matchups
     matchups = list(permutations(tied_df.index.get_level_values('nick_name'), 2))
     # group by winner to determine H2H among the group
-    matchup_df = matchup_df.loc[matchup_df.index.intersection(matchups)].groupby(
+    wc_matchup_df = matchup_df.loc[matchup_df.index.intersection(matchups)].groupby(
         level='nick_name'
     ).agg(
         {'win_total': sum, 'game_total': sum}
     )
     # win_pct in this H2H grouping
-    matchup_df['win_pct_h2h'] = matchup_df['win_total'] / matchup_df['game_total']
+    wc_matchup_df['win_pct_h2h'] = wc_matchup_df['win_total'] / wc_matchup_df['game_total']
 
     # our sweep check will just be whether or not game_total in a row is
     # 1 (in case of a 2-way tie) or 2 (in case of a 3-way tie). If it's not,
     # H2H will be skipped for that team (set win_pct_h2h to .500)
-    matchup_df.loc[
-        matchup_df.game_total < len(matchup_df) - 1,
+    wc_matchup_df.loc[
+        wc_matchup_df.game_total < len(wc_matchup_df) - 1,
         'win_pct_h2h'] = 0.5
-    
+
     # now determine H2H rank in the group
-    matchup_df['wc_tiebreaker_two_rank'] = matchup_df.win_pct_h2h.rank(
+    wc_matchup_df['wc_tiebreaker_two_rank'] = wc_matchup_df.win_pct_h2h.rank(
         method='min',
         ascending=False,
     ) - 1
-    tied_df = tied_df.join(matchup_df[['wc_tiebreaker_two_rank']])
+
+    # if we're looping back through here after a tiebreaker rank was
+    # determined in an earlier tiebreak for the same seed, this join will blow up
+    # so check for tiebreaker rank here before joining. if the column
+    # is already there, just update it.
+    if 'wc_tiebreaker_two_rank' not in tied_df.columns:
+        tied_df = tied_df.join(wc_matchup_df[['wc_tiebreaker_two_rank']])
+    else:
+        tied_df.update(wc_matchup_df[['wc_tiebreaker_two_rank']])
 
     # if this is a two way tiebreaker where there was no H2H,
     # we'll have to fill in tiebreaker_two with zeroes
@@ -730,8 +729,8 @@ def wild_card_tiebreaker_two(tied_df, games_df, matchup_df, seed_to_break):
     # there's also the case where someone has dropped out of the tiebreaker;
     # here we need to restart from step one with just the remaining teams.
     elif len(still_tied_df) > 1:
-        untied_df = wild_card_tiebreaker_one(still_tied_df)
-        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+        untied_df = wild_card_tiebreaker_one(still_tied_df, games_df, matchup_df)
+        tied_df.update(pandas.concat([untied_df, disqualified_tied_df]))
 
     return tied_df
 
@@ -763,7 +762,7 @@ def wild_card_tiebreaker_three(tied_df, seed_to_break):
     # here we need to restart from step one with just the remaining teams.
     elif len(still_tied_df) > 1:
         untied_df = wild_card_tiebreaker_one(still_tied_df)
-        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+        tied_df.update(pandas.concat([untied_df, disqualified_tied_df]))
 
     return tied_df
 
@@ -795,6 +794,6 @@ def wild_card_tiebreaker_four(tied_df, seed_to_break):
     # here we need to restart from step one with just the remaining teams.
     elif len(still_tied_df) > 1:
         untied_df = wild_card_tiebreaker_one(still_tied_df)
-        tied_df.update(pandas.concat([still_tied_df, disqualified_tied_df]))
+        tied_df.update(pandas.concat([untied_df, disqualified_tied_df]))
 
     return tied_df

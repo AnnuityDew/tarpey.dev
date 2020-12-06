@@ -26,6 +26,77 @@ mildredleague {{ season }}
 </p>
 
 <p>
+  <b>Full Standings</b>
+  <ul>
+    <li>Includes playoff games.</li>
+    <li>Scores for playoff games lasting two weeks have been normalized (divided by 2).</li>
+  </ul>
+  <div style="overflow-x:auto;"><table>
+    <thead>
+      {% for header in table.columns %}
+      <th class="season_header">{{ header }}</th>
+      {% endfor %}
+    </thead>
+    <tbody>
+      {% for index, row in table.iterrows() %}
+      <tr class="season_row">
+        <td class="division">
+          {{ row.division }}
+        </td>
+        <td class="nick_name">
+          {{ row.nick_name }}
+        </td>
+        <td class="win_total">
+          {{ '{:.0f}'.format(row.win_total) }}
+        </td>
+        <td class="loss_total">
+          {{ '{:.0f}'.format(row.loss_total) }}
+        </td>
+        <td class="tie_total">
+          {{ '{:.0f}'.format(row.tie_total) }}
+        </td>
+        <td class="games_played">
+          {{ '{:.0f}'.format(row.games_played) }}
+        </td>
+        <td class="win_pct">
+          {{ '{:03.3f}'.format(row.win_pct) }}
+        </td>
+        <td class="points_for">
+          {{ '{:06.2f}'.format(row.points_for) }}
+        </td>
+        <td class="points_against">
+          {{ '{:06.2f}'.format(row.points_against) }}
+        </td>
+        <td class="avg_margin">
+          {{ '{:04.2f}'.format(row.avg_margin) }}
+        </td>
+        {% if row.division_rank %}
+        <td class="division_rank">
+          {{ '{:.0f}'.format(row.division_rank) }}
+        </td>
+        {% endif %}
+        {% if row.playoff_seed %}
+        <td class="playoff_seed">
+          {{ '{:.0f}'.format(row.playoff_seed) }}
+        </td>
+        {% endif %}
+        {% if row.playoff_rank %}
+        <td class="playoff_rank">
+          {{ '{:.0f}'.format(row.playoff_rank) }}
+        </td>
+        {% endif %}
+        {% if row.active %}
+        <td class="active">
+          {{ row.active }}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+</p>
+
+<p>
   <b>Stats</b>
 </p>
 
@@ -106,58 +177,4 @@ mildredleague {{ season }}
     </script>
   </div>
 </div>
-
-<p>
-  <b>Full Standings</b>
-  <ul>
-    <li>Includes playoff games.</li>
-    <li>Scores for playoff games lasting two weeks have been normalized (divided by 2).</li>
-  </ul>
-  <div style="overflow-x:auto;"><table>
-    <thead>
-      {% for header in table.columns %}
-      <th class="season_header">{{ header }}</th>
-      {% endfor %}
-    </thead>
-    <tbody>
-      {% for index, row in table.iterrows() %}
-      <tr class="season_row">
-        <td class="nick_name">
-          {{ row.nick_name }}
-        </td>
-        <td class="win_total">
-          {{ row.win_total }}
-        </td>
-        <td class="loss_total">
-          {{ row.loss_total }}
-        </td>
-        <td class="tie_total">
-          {{ row.tie_total }}
-        </td>
-        <td class="games_played">
-          {{ row.games_played }}
-        </td>
-        <td class="win_pct">
-          {{ '{:03.3f}'.format(row.win_pct) }}
-        </td>
-        <td class="points_for">
-          {{ '{:06.2f}'.format(row.points_for) }}
-        </td>
-        <td class="points_against">
-          {{ '{:06.2f}'.format(row.points_against) }}
-        </td>
-        <td class="avg_margin">
-          {{ '{:04.2f}'.format(row.avg_margin) }}
-        </td>
-        <td class="playoff_rank">
-          {{ row.playoff_rank }}
-        </td>
-        <td class="active">
-          {{ row.active }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table></div>
-</p>
 {% endblock %}
