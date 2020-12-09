@@ -2,7 +2,7 @@
 from itertools import permutations
 
 # import third party packages
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 import pandas
 import plotly
 import plotly.express as px
@@ -95,6 +95,112 @@ def season_page(season):
         y_data_against=y_data_against,
         color_data_against=color_data_against,
     )
+
+
+@ml_bp.route('/<int:season>/sim', methods=['GET', 'POST'])
+def seed_sim(season):
+    if season != 2020:
+        return "You can't simulate this season.", 404
+    elif request.method == 'GET':
+        return render_template(
+            'mildredleague/sim.html',
+            season=season,
+        )
+    elif request.method == 'POST':
+        # grab games data from API
+        games_data, response_code = api.all_games_data(api=True)
+        games_df = pandas.DataFrame(games_data.json).set_index('_id')
+
+        # we're going to concatenate the API data with simulated data
+        # that the user has chosen, so we can rerun tiebreakers
+        winners_array = [
+            request.form['sim_game_1'],
+            request.form['sim_game_2'],
+            request.form['sim_game_3'],
+            request.form['sim_game_4'],
+            request.form['sim_game_5'],
+            request.form['sim_game_6'],
+            request.form['sim_game_7'],
+        ]
+        sim_df = pandas.DataFrame(
+            data=[
+                [
+                    'Division 6',
+                    'Referees',
+                    'AFC East',
+                    'Division 6',
+                    'Referees',
+                    'AFC East',
+                    'Referees',
+                ],
+                ['sim' for i in range(0, 7)],
+                [
+                    'Tarpey',
+                    'Charles',
+                    'Conti',
+                    'Frank',
+                    'mballen',
+                    'Jake',
+                    'Brad',
+                ],
+                [
+                    winners_array.count('Tarpey')*20 + 80,
+                    winners_array.count('Charles')*20 + 80,
+                    winners_array.count('Conti')*20 + 80,
+                    winners_array.count('Frank')*20 + 80,
+                    winners_array.count('mballen')*20 + 80,
+                    winners_array.count('Jake')*20 + 80,
+                    winners_array.count('Brad')*20 + 80,
+                ],
+                ['sim' for i in range(0, 7)],
+                [
+                    'Division 6',
+                    'Referees',
+                    'AFC East',
+                    'Division 6',
+                    'AFC East',
+                    'AFC East',
+                    'Referees',
+                ],
+                ['sim' for i in range(0, 7)],
+                [
+                    'Brando',
+                    'Mildred',
+                    'Samik',
+                    'Fonti',
+                    'Sendzik',
+                    'Kindy',
+                    'Tommy',
+                ],
+                [
+                    winners_array.count('Brando')*20 + 80,
+                    winners_array.count('Mildred')*20 + 80,
+                    winners_array.count('Samik')*20 + 80,
+                    winners_array.count('Fonti')*20 + 80,
+                    winners_array.count('Sendzik')*20 + 80,
+                    winners_array.count('Kindy')*20 + 80,
+                    winners_array.count('Tommy')*20 + 80,
+                ],
+                ['sim' for i in range(0, 7)],
+                [0 for i in range(0, 7)],
+                [2020 for i in range(0, 7)],
+                [14 for i in range(0, 7)],
+                [14 for i in range(0, 7)],
+            ]
+        ).transpose()
+        sim_df.columns = games_df.columns.tolist()
+        sim_df = pandas.concat([games_df, sim_df], ignore_index=True)
+
+        table = season_table_active(season, sim_df)[[
+            'division', 'nick_name', 'win_total', 'loss_total', 'division_rank', 'playoff_seed',
+        ]]
+
+        return render_template(
+            'mildredleague/sim.html',
+            winners=winners_array,
+            table=table,
+            sim=True,
+        )
 
 
 def matchup_heatmap_fig(games_df):
@@ -281,14 +387,14 @@ def normalize_games(all_games_df):
 def calc_records(games_df):
     # season wins/losses/ties/PF/PA for away teams, home teams
     away_df = pandas.pivot_table(
-        games_df,
+        games_df.convert_dtypes(),
         values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'],
         index=['a_division', 'a_nick'],
         aggfunc='sum',
         fill_value=0
         )
     home_df = pandas.pivot_table(
-        games_df,
+        games_df.convert_dtypes(),
         values=['h_win', 'a_win', 'h_tie', 'h_score_norm', 'a_score_norm'],
         index=['h_division', 'h_nick'],
         aggfunc='sum',

@@ -9,10 +9,15 @@
 .boxplots {
   width: 100%;
 }
-.season_row:nth-child(even) {background-color: #212121;}
-.season_row:hover {background-color: #353535;}
+tr:nth-child(even) {background-color: #212121;}
+tr:hover {background-color: #353535;}
 /* specific elements of /mildredleague/alltime */
 .plots {
   height: 50rem;
   width: 100%;
+}
+
+span {
+  display: inline-block;
+  width: 5em;
 }

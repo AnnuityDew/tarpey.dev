@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+  
+{% block title %}mildredleague {{ season }}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
+{% endblock %}
+
+{% block java %}
+{% endblock %}
+
+{% block header %}
+mildredleague {{ season }} week 14 sim
+{% endblock %}
+
+{% block content %}
+<p>
+  This is a special simulator for week 14 of the {{ season }} season. Choose the outcomes of the week 14 games, then click "Simulate" to update the standings.
+</p>
+
+<form action="{{ url_for('mildredleague.seed_sim', season=2020) }}" method="POST">
+    <section class="outcomes">
+    Who wins each matchup?<br>
+    <input name="sim_game_1" type="radio" id="Tarpey" value="Tarpey" required><label for="Tarpey"><span>Tarpey</span></label>
+    <input name="sim_game_1" type="radio" id="Brando" value="Brando"><label for="Brando"><span>Brando</span></label><br>
+    <input name="sim_game_2" type="radio" id="Charles" value="Charles" required><label for="Charles"><span>Charles</span></label>
+    <input name="sim_game_2" type="radio" id="Mildred" value="Mildred"><label for="Mildred"><span>Mildred</span></label><br>
+    <input name="sim_game_3" type="radio" id="Conti" value="Conti" required><label for="Conti"><span>Conti</label>
+    <input name="sim_game_3" type="radio" id="Samik" value="Samik"><label for="Samik"><span>Samik</span></label><br>
+    <input name="sim_game_4" type="radio" id="Frank" value="Frank" required><label for="Frank"><span>Frank</span></label>
+    <input name="sim_game_4" type="radio" id="Fonti" value="Fonti"><label for="Fonti"><span>Fonti</span></label><br>
+    <input name="sim_game_5" type="radio" id="mballen" value="mballen" required><label for="mballen"><span>mballen</span></label>
+    <input name="sim_game_5" type="radio" id="Sendzik" value="Sendzik"><label for="Sendzik"><span>Sendzik</span></label><br>
+    <input name="sim_game_6" type="radio" id="Jake" value="Jake" required><label for="Jake"><span>Jake</span></label>
+    <input name="sim_game_6" type="radio" id="Kindy" value="Kindy"><label for="Kindy"><span>Kindy</span></label><br>
+    <input name="sim_game_7" type="radio" id="Brad" value="Brad" required><label for="Brad"><span>Brad</span></label>
+    <input name="sim_game_7" type="radio" id="Tommy" value="Tommy"><label for="Tommy"><span>Tommy</span></label><br>
+    </section>
+
+    <input type="submit" value="Simulate!">
+</form>
+
+{% if sim %}
+The standings below assume the following week 14 winners:<br>
+{% for winner in winners %}
+{{ winner }}<br>
+{% endfor %}
+<div style="overflow-x:auto;">
+{{ table.to_html(sparsify=True, index=False, justify='center', border=0, float_format='{:.0f}'.format) | safe }}
+</div>
+{% endif %}
+{% endblock %}
