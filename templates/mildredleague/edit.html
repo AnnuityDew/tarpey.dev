@@ -19,7 +19,7 @@ mildredleague edit game {{ doc_data['_id'] }}
     {{ message }}
     {% endif %}
 </p>
-<form action="{{ url_for('mildredleague.edit_game', game_id=doc_data['_id']) }}" method="POST">
+<form id="game-info" action="{{ url_for('mildredleague.edit_game', game_id=doc_data['_id']) }}" method="POST">
     <section class="game_data">
         <label for="_id"><span class="add-game">Game ID</span></label>
         <input name="_id" type="number" id="_id" value="{{ doc_data['_id'] }}" required><br>
@@ -80,7 +80,16 @@ mildredleague edit game {{ doc_data['_id'] }}
         </select><br>
     </section>
 
-    <input type="submit" value="Edit game">
+    <button id="edit-button">Edit game</button>
+    <script>
+        document.getElementById("edit-button").addEventListener("click", convertForm);
+        function convertForm() {
+            var gameInfo = new FormData(document.querySelector("form"));
+            var request = new XMLHttpRequest();
+            request.open("UPDATE", "{{ url_for('mildredleague.edit_game', game_id=300) }}");
+            request.send(gameInfo);
+        }
+    </script>
 </form>
 
 <p>

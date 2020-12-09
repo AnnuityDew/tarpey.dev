@@ -2,7 +2,7 @@
 from itertools import permutations
 
 # import third party packages
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, render_template, request
 import pandas
 import plotly
 import plotly.express as px
@@ -250,7 +250,7 @@ def add_game():
             )
 
 
-@ml_bp.route('/edit/<int:game_id>', methods=['GET', 'POST'])
+@ml_bp.route('/edit/<int:game_id>', methods=['GET', 'UPDATE'])
 @login_required
 def edit_game(game_id):
     client = get_dbm()
@@ -266,8 +266,8 @@ def edit_game(game_id):
             doc_data=doc,
             message=None,
         )
-    elif request.method == 'POST':
-        doc = request.form.to_dict()
+    elif request.method == 'UPDATE':
+        doc = request.json
         float_list = ['a_score', 'h_score']
         int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
         for field in float_list:
