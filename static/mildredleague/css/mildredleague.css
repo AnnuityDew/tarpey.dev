@@ -21,3 +21,8 @@ span {
   display: inline-block;
   width: 5em;
 }
+
+.add-game {
+  display: inline-block;
+  width: 10em;
+}

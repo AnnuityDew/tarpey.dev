@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+  
+{% block title %}mildredleague admin{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
+{% endblock %}
+
+{% block java %}
+{% endblock %}
+
+{% block header %}
+mildredleague new game
+{% endblock %}
+
+{% block content %}
+<p>
+    {% if message %}
+    {{ message }}
+    {% endif %}
+</p>
+<form action="{{ url_for('mildredleague.add_game') }}" method="POST">
+    <section class="game_data">
+        <label for="_id"><span class="add-game">Game ID</span></label>
+        <input name="_id" type="number" id="_id" value="{{ next_id }}" required><br>
+        <label for="away"><span class="add-game">Away Team</span></label>
+        <input name="away" type="text" id="away"><br>
+        <label for="a_name"><span class="add-game">Away Name</span></label>
+        <input name="a_name" type="text" id="a_name"><br>
+        <label for="a_nick"><span class="add-game">Away Nickname</span></label>
+        <input name="a_nick" type="text" id="a_nick"><br>
+        <label for="a_division"><span class="add-game">Away Division</span></label>
+        <input name="a_division" type="text" id="a_division"><br>
+        <label for="a_score"><span class="add-game">Away Score</span></label>
+        <input name="a_score" type="number" step="0.01" id="a_score"><br>
+        <label for="home"><span class="add-game">Home Team</span></label>
+        <input name="home" type="text" id="home"><br>
+        <label for="h_name"><span class="add-game">Home Name</span></label>
+        <input name="h_name" type="text" id="h_name"><br>
+        <label for="h_nick"><span class="add-game">Home Nickname</span></label>
+        <input name="h_nick" type="text" id="h_nick"><br>
+        <label for="h_division"><span class="add-game">Home Division</span></label>
+        <input name="h_division" type="text" id="h_division"><br>
+        <label for="h_score"><span class="add-game">Home Score</span></label>
+        <input name="h_score" type="number" step="0.01" id="h_score"><br>
+        <label for="week_s"><span class="add-game">Week Start</span></label>
+        <select name="week_s" id="week_s">
+            {% for i in range(1, 18) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="week_e"><span class="add-game">Week End</span></label>
+        <select name="week_e" id="week_e">
+            {% for i in range(1, 18) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="season"><span class="add-game">Season</span></label>
+        <select name="season" id="season">
+            {% for i in range(2013, 2022) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="playoff"><span class="add-game">Playoff</span></label>
+        <select name="playoff" id="playoff">
+            <option value="0">0</option>
+            <option value="1">1</option>
+        </select><br>
+    </section>
+
+    <input type="submit" value="Add game">
+</form>
+
+{% endblock %}

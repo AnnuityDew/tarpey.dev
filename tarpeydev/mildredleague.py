@@ -2,13 +2,16 @@
 from itertools import permutations
 
 # import third party packages
-from flask import Blueprint, render_template, request
+from flask import Blueprint, redirect, render_template, request, url_for
 import pandas
 import plotly
 import plotly.express as px
+import pymongo
 
 # import custom local stuff
 from tarpeydev import api
+from tarpeydev.db import get_dbm
+from tarpeydev.users import login_required
 
 
 ml_bp = Blueprint('mildredleague', __name__, url_prefix='/mildredleague')
@@ -192,7 +195,13 @@ def seed_sim(season):
         sim_df = pandas.concat([games_df, sim_df], ignore_index=True)
 
         table = season_table_active(season, sim_df)[[
-            'division', 'nick_name', 'win_total', 'loss_total', 'division_rank', 'playoff_seed',
+            'division',
+            'nick_name',
+            'win_total',
+            'loss_total',
+            'tie_total',
+            'division_rank',
+            'playoff_seed',
         ]]
 
         return render_template(
@@ -201,6 +210,93 @@ def seed_sim(season):
             table=table,
             sim=True,
         )
+
+
+@ml_bp.route('/add', methods=['GET', 'POST'])
+@login_required
+def add_game():
+    if request.method == 'GET':
+        next_id = api.auto_increment_mongo('mildredleague', 'games')
+        return render_template(
+            'mildredleague/add.html',
+            next_id=next_id,
+            message=None,
+        )
+    elif request.method == 'POST':
+        client = get_dbm()
+        db = client.mildredleague
+        collection = db.games
+        doc = request.form.to_dict()
+        float_list = ['a_score', 'h_score']
+        int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
+        for field in float_list:
+            doc[field] = float(doc[field])
+        for field in int_list:
+            doc[field] = int(doc[field])
+        try:
+            collection.insert_one(doc)
+            next_id = api.auto_increment_mongo('mildredleague', 'games')
+            return render_template(
+                'mildredleague/add.html',
+                next_id=next_id,
+                message="Success! Added game " + str(doc['_id']) + ".",
+            )
+        except pymongo.errors.DuplicateKeyError:
+            next_id = api.auto_increment_mongo('mildredleague', 'games')
+            return render_template(
+                'mildredleague/add.html',
+                next_id=next_id,
+                message="There was an error adding game " + str(doc['_id']) + ".",
+            )
+
+
+@ml_bp.route('/edit/<int:game_id>', methods=['GET', 'POST'])
+@login_required
+def edit_game(game_id):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.games
+    if request.method == 'GET':
+        try:
+            doc = list(collection.find({'_id': game_id}))[0]
+        except IndexError:
+            return "No data for this game!", 404
+        return render_template(
+            'mildredleague/edit.html',
+            doc_data=doc,
+            message=None,
+        )
+    elif request.method == 'POST':
+        doc = request.form.to_dict()
+        float_list = ['a_score', 'h_score']
+        int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
+        for field in float_list:
+            doc[field] = float(doc[field])
+        for field in int_list:
+            doc[field] = int(doc[field])
+        collection.replace_one({'_id': doc['_id']}, doc)
+        return render_template(
+            'mildredleague/edit.html',
+            doc_data=doc,
+            message="Success! Edited game " + str(doc['_id']) + ".",
+        )
+
+
+@ml_bp.route('/delete/<int:game_id>', methods=['GET'])
+@login_required
+def delete_game(game_id):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.games
+
+    collection.delete_one({'_id': game_id})
+    last_id = api.auto_increment_mongo('mildredleague', 'games') - 1
+    doc = list(collection.find({'_id': last_id}))[0]
+    return render_template(
+        'mildredleague/edit.html',
+        doc_data=doc,
+        message="Success! Deleted game " + str(game_id) + ".",
+    )
 
 
 def matchup_heatmap_fig(games_df):

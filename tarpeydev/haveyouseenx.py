@@ -36,7 +36,7 @@ def home():
     backlog_data, response_code = api.backlog()
     backlog_df = pandas.DataFrame(backlog_data.json)
     treemap = system_treemap(backlog_df.copy())
-    
+
     (
         x_data_counts,
         y_data_dist,
