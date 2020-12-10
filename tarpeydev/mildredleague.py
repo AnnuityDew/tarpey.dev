@@ -250,20 +250,28 @@ def add_game():
             )
 
 
-@ml_bp.route('/edit/<int:game_id>', methods=['GET', 'UPDATE'])
+@ml_bp.route('/get-game/<int:game_id>', methods=['GET'])
 @login_required
-def edit_game(game_id):
+def get_game(game_id):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.games
+    doc = list(collection.find({'_id': game_id}))
+    if doc:
+        return jsonify(doc[0]), 200
+    else:
+        return "No document found!", 400
+
+
+@ml_bp.route('/edit', methods=['GET', 'UPDATE'])
+@login_required
+def edit_game():
     client = get_dbm()
     db = client.mildredleague
     collection = db.games
     if request.method == 'GET':
-        try:
-            doc = list(collection.find({'_id': game_id}))[0]
-        except IndexError:
-            return "No data for this game!", 404
         return render_template(
             'mildredleague/edit.html',
-            doc_data=doc,
             message=None,
         )
     elif request.method == 'UPDATE':
@@ -282,14 +290,14 @@ def edit_game(game_id):
         )
 
 
-@ml_bp.route('/delete/<int:game_id>', methods=['GET'])
+@ml_bp.route('/delete', methods=['GET'])
 @login_required
-def delete_game(game_id):
+def delete_game():
     client = get_dbm()
     db = client.mildredleague
     collection = db.games
-
-    collection.delete_one({'_id': game_id})
+    doc = request.json
+    collection.delete_one({'_id': doc})
     last_id = api.auto_increment_mongo('mildredleague', 'games') - 1
     doc = list(collection.find({'_id': last_id}))[0]
     return render_template(

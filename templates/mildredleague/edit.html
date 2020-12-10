@@ -10,71 +10,89 @@
 {% endblock %}
 
 {% block header %}
-mildredleague edit game {{ doc_data['_id'] }}
+mildredleague edit game
 {% endblock %}
 
 {% block content %}
 <p>
     {% if message %}
     {{ message }}
+    <span id="js-message"></span>
     {% endif %}
 </p>
-<form id="game-info" action="{{ url_for('mildredleague.edit_game', game_id=doc_data['_id']) }}" method="POST">
+
+<button id="get-button">Retrieve game</button><br>
+
+<script>
+    document.getElementById("get-button").addEventListener("click", retrieveData);
+    function retrieveData() {
+        var request = new Request(
+            "{{ url_for('mildredleague.get_game', game_id=" +
+            String(document.getElementById("_id").value) +
+            ") }}",
+            {
+                method: 'GET',
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status === 200) {
+                    gameInfo = response.json();
+                    document.getElementById("away").value = gameInfo["away"]; 
+                    document.getElementById("js-message").innerHTML = "Success!"; 
+                } else {
+                    throw new Error('API error!');
+                    document.getElementById("js-message").innerHTML = "API error!"; 
+                }
+            }
+        )
+    }
+</script>
+
+<form id="game-info">
     <section class="game_data">
         <label for="_id"><span class="add-game">Game ID</span></label>
-        <input name="_id" type="number" id="_id" value="{{ doc_data['_id'] }}" required><br>
+        <input name="_id" type="number" id="_id" required><br>
         <label for="away"><span class="add-game">Away Team</span></label>
-        <input name="away" type="text" id="away" value="{{ doc_data['away'] }}"><br>
+        <input name="away" type="text" id="away"><br>
         <label for="a_name"><span class="add-game">Away Name</span></label>
-        <input name="a_name" type="text" id="a_name" value="{{ doc_data['a_name'] }}"><br>
+        <input name="a_name" type="text" id="a_name"><br>
         <label for="a_nick"><span class="add-game">Away Nickname</span></label>
-        <input name="a_nick" type="text" id="a_nick" value="{{ doc_data['a_nick'] }}"><br>
+        <input name="a_nick" type="text" id="a_nick"><br>
         <label for="a_division"><span class="add-game">Away Division</span></label>
-        <input name="a_division" type="text" id="a_division" value="{{ doc_data['a_division'] }}"><br>
+        <input name="a_division" type="text" id="a_division"><br>
         <label for="a_score"><span class="add-game">Away Score</span></label>
-        <input name="a_score" type="number" step="0.01" id="a_score" value="{{ doc_data['a_score'] }}"><br>
+        <input name="a_score" type="number" step="0.01" id="a_score"><br>
         <label for="home"><span class="add-game">Home Team</span></label>
-        <input name="home" type="text" id="home" value="{{ doc_data['home'] }}"><br>
+        <input name="home" type="text" id="home"><br>
         <label for="h_name"><span class="add-game">Home Name</span></label>
-        <input name="h_name" type="text" id="h_name" value="{{ doc_data['h_name'] }}"><br>
+        <input name="h_name" type="text" id="h_name"><br>
         <label for="h_nick"><span class="add-game">Home Nickname</span></label>
-        <input name="h_nick" type="text" id="h_nick" value="{{ doc_data['h_nick'] }}"><br>
+        <input name="h_nick" type="text" id="h_nick"><br>
         <label for="h_division"><span class="add-game">Home Division</span></label>
-        <input name="h_division" type="text" id="h_division" value="{{ doc_data['h_division'] }}"><br>
+        <input name="h_division" type="text" id="h_division"><br>
         <label for="h_score"><span class="add-game">Home Score</span></label>
-        <input name="h_score" type="number" step="0.01" id="h_score" value="{{ doc_data['h_score'] }}"><br>
+        <input name="h_score" type="number" step="0.01" id="h_score"><br>
         <label for="week_s"><span class="add-game">Week Start</span></label>
-        <select name="week_s" id="week_s" value="{{ doc_data['week_s'] }}">
+        <select name="week_s" id="week_s">
             {% for i in range(1, 18) %}
-            {% if i == doc_data['week_s'] %}
-            <option value="{{ i }}" selected>{{ i }}</option>
-            {% else %}
             <option value="{{ i }}">{{ i }}</option>
-            {% endif %}
             {% endfor %}
         </select><br>
         <label for="week_e"><span class="add-game">Week End</span></label>
-        <select name="week_e" id="week_e" value="{{ doc_data['week_e'] }}">
+        <select name="week_e" id="week_e">
             {% for i in range(1, 18) %}
-            {% if i == doc_data['week_e'] %}
-            <option value="{{ i }}" selected>{{ i }}</option>
-            {% else %}
             <option value="{{ i }}">{{ i }}</option>
-            {% endif %}
             {% endfor %}
         </select><br>
         <label for="season"><span class="add-game">Season</span></label>
-        <select name="season" id="season" value="{{ doc_data['season'] }}">
+        <select name="season" id="season">
             {% for i in range(2013, 2022) %}
-            {% if i == doc_data['season'] %}
-            <option value="{{ i }}" selected>{{ i }}</option>
-            {% else %}
             <option value="{{ i }}">{{ i }}</option>
-            {% endif %}
             {% endfor %}
         </select><br>
         <label for="playoff"><span class="add-game">Playoff</span></label>
-        <select name="playoff" id="playoff" value="{{ doc_data['playoff'] }}">
+        <select name="playoff" id="playoff">
             <option value="0">0</option>
             <option value="1">1</option>
         </select><br>
@@ -97,7 +115,7 @@ mildredleague edit game {{ doc_data['_id'] }}
 </p>
 
 <p>
-    <a href="{{ url_for('mildredleague.delete_game', game_id=doc_data['_id']) }}">DELETE!</a>
+    <a href="{{ url_for('mildredleague.delete_game') }}">DELETE!</a>
 </p>
 
 {% endblock %}
