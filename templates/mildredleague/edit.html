@@ -14,38 +14,37 @@ mildredleague edit game
 {% endblock %}
 
 {% block content %}
-<p>
-    {% if message %}
-    {{ message }}
-    <span id="js-message"></span>
-    {% endif %}
-</p>
 
 <button id="get-button">Retrieve game</button><br>
 
 <script>
     document.getElementById("get-button").addEventListener("click", retrieveData);
     function retrieveData() {
-        var request = new Request(
-            "{{ url_for('mildredleague.get_game', game_id=" +
-            String(document.getElementById("_id").value) +
-            ") }}",
-            {
-                method: 'GET',
-            }
+        var requestURL = (
+            "get-game/" +
+            String(document.getElementById("_id").value)
         );
+        var request = new Request(requestURL);
         fetch(request).then(
             response => {
-                if (response.status === 200) {
-                    gameInfo = response.json();
-                    document.getElementById("away").value = gameInfo["away"]; 
-                    document.getElementById("js-message").innerHTML = "Success!"; 
-                } else {
-                    throw new Error('API error!');
-                    document.getElementById("js-message").innerHTML = "API error!"; 
-                }
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("away").value = "API error!";
+                    return;
+                } 
+                response.json().then(
+                    data => {
+                        for (let key in data) {
+                            document.getElementById(key).value = data[key]; 
+                        }
+                    }
+                );
             }
-        )
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
     }
 </script>
 
@@ -97,25 +96,75 @@ mildredleague edit game
             <option value="1">1</option>
         </select><br>
     </section>
-
-    <button id="edit-button">Edit game</button>
-    <script>
-        document.getElementById("edit-button").addEventListener("click", convertForm);
-        function convertForm() {
-            var gameInfo = new FormData(document.querySelector("form"));
-            var request = new XMLHttpRequest();
-            request.open("UPDATE", "{{ url_for('mildredleague.edit_game', game_id=300) }}");
-            request.send(gameInfo);
-        }
-    </script>
 </form>
 
-<p>
-    If you want to DELETE this game, click DELETE!
-</p>
+<button id="edit-button">Edit game</button>
+<button id="delete-button">Delete game</button>
+<script>
+    document.getElementById("edit-button").addEventListener("click", editData);
+    document.getElementById("delete-button").addEventListener("click", deleteData);
+    function editData() {
+        var formData = new FormData(document.getElementById("game-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "edit-game",
+            {
+                method: 'UPDATE',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("confirm").innerHTML = "API error!";
+                    return;
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function deleteData() {
+        var requestURL = (
+            "delete-game/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(
+            requestURL,
+            {
+                method: 'DELETE'
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                } 
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
 
-<p>
-    <a href="{{ url_for('mildredleague.delete_game') }}">DELETE!</a>
-</p>
+<p id="confirm"></p>
 
 {% endblock %}

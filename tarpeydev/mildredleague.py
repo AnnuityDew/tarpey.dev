@@ -1,8 +1,9 @@
 # import native Python packages
 from itertools import permutations
+import json
 
 # import third party packages
-from flask import Blueprint, render_template, request
+from flask import Blueprint, jsonify, render_template, request
 import pandas
 import plotly
 import plotly.express as px
@@ -212,7 +213,7 @@ def seed_sim(season):
         )
 
 
-@ml_bp.route('/add', methods=['GET', 'POST'])
+@ml_bp.route('/add-game', methods=['GET', 'POST'])
 @login_required
 def add_game():
     if request.method == 'GET':
@@ -220,13 +221,12 @@ def add_game():
         return render_template(
             'mildredleague/add.html',
             next_id=next_id,
-            message=None,
         )
     elif request.method == 'POST':
         client = get_dbm()
         db = client.mildredleague
         collection = db.games
-        doc = request.form.to_dict()
+        doc = json.loads(request.data)
         float_list = ['a_score', 'h_score']
         int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
         for field in float_list:
@@ -235,19 +235,9 @@ def add_game():
             doc[field] = int(doc[field])
         try:
             collection.insert_one(doc)
-            next_id = api.auto_increment_mongo('mildredleague', 'games')
-            return render_template(
-                'mildredleague/add.html',
-                next_id=next_id,
-                message="Success! Added game " + str(doc['_id']) + ".",
-            )
+            return "Success! Added game " + str(doc['_id']) + ".", 200
         except pymongo.errors.DuplicateKeyError:
-            next_id = api.auto_increment_mongo('mildredleague', 'games')
-            return render_template(
-                'mildredleague/add.html',
-                next_id=next_id,
-                message="There was an error adding game " + str(doc['_id']) + ".",
-            )
+            return "Game " + str(doc['_id']) + " already exists!", 400
 
 
 @ml_bp.route('/get-game/<int:game_id>', methods=['GET'])
@@ -263,19 +253,16 @@ def get_game(game_id):
         return "No document found!", 400
 
 
-@ml_bp.route('/edit', methods=['GET', 'UPDATE'])
+@ml_bp.route('/edit-game', methods=['GET', 'UPDATE'])
 @login_required
 def edit_game():
     client = get_dbm()
     db = client.mildredleague
     collection = db.games
     if request.method == 'GET':
-        return render_template(
-            'mildredleague/edit.html',
-            message=None,
-        )
+        return render_template('mildredleague/edit.html')
     elif request.method == 'UPDATE':
-        doc = request.json
+        doc = json.loads(request.data)
         float_list = ['a_score', 'h_score']
         int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
         for field in float_list:
@@ -283,28 +270,24 @@ def edit_game():
         for field in int_list:
             doc[field] = int(doc[field])
         collection.replace_one({'_id': doc['_id']}, doc)
-        return render_template(
-            'mildredleague/edit.html',
-            doc_data=doc,
-            message="Success! Edited game " + str(doc['_id']) + ".",
-        )
+        return "Success! Edited game " + str(doc['_id']) + ".", 200
 
 
-@ml_bp.route('/delete', methods=['GET'])
+@ml_bp.route('/delete-game/<int:game_id>', methods=['DELETE'])
 @login_required
-def delete_game():
+def delete_game(game_id):
     client = get_dbm()
     db = client.mildredleague
     collection = db.games
-    doc = request.json
-    collection.delete_one({'_id': doc})
-    last_id = api.auto_increment_mongo('mildredleague', 'games') - 1
-    doc = list(collection.find({'_id': last_id}))[0]
-    return render_template(
-        'mildredleague/edit.html',
-        doc_data=doc,
-        message="Success! Deleted game " + str(game_id) + ".",
-    )
+    result = collection.delete_one({'_id': game_id})
+    if result.deleted_count > 1:
+        return "You deleted more than one document...", 400
+    elif result.deleted_count < 1:
+        return "You didn't delete anything!", 400
+    elif result.deleted_count == 1:
+        return "Success! Deleted game " + str(game_id) + ".", 200
+    else:
+        return "Something weird happened...", 400
 
 
 def matchup_heatmap_fig(games_df):

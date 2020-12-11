@@ -14,15 +14,11 @@ mildredleague new game
 {% endblock %}
 
 {% block content %}
-<p>
-    {% if message %}
-    {{ message }}
-    {% endif %}
-</p>
-<form action="{{ url_for('mildredleague.add_game') }}" method="POST">
+
+<form id="game-info">
     <section class="game_data">
         <label for="_id"><span class="add-game">Game ID</span></label>
-        <input name="_id" type="number" id="_id" value="{{ next_id }}" required><br>
+        <input name="_id" type="number" id="_id" value="{{ next_id }}"required><br>
         <label for="away"><span class="add-game">Away Team</span></label>
         <input name="away" type="text" id="away"><br>
         <label for="a_name"><span class="add-game">Away Name</span></label>
@@ -67,8 +63,43 @@ mildredleague new game
             <option value="1">1</option>
         </select><br>
     </section>
-
-    <input type="submit" value="Add game">
 </form>
+
+<button id="add-button">Add game</button>
+<script>
+    document.getElementById("add-button").addEventListener("click", addData);
+    function addData() {
+        var formData = new FormData(document.getElementById("game-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "add-game",
+            {
+                method: 'POST',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
+<p id="confirm"></p>
 
 {% endblock %}
