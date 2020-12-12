@@ -20,6 +20,7 @@ mildredleague edit game
 <script>
     document.getElementById("get-button").addEventListener("click", retrieveData);
     function retrieveData() {
+        document.getElementById("away").value = "Retrieving data...";
         var requestURL = (
             "get-game/" +
             String(document.getElementById("_id").value)
@@ -104,6 +105,7 @@ mildredleague edit game
     document.getElementById("edit-button").addEventListener("click", editData);
     document.getElementById("delete-button").addEventListener("click", deleteData);
     function editData() {
+        document.getElementById("confirm").innerHTML = "Editing data...";
         var formData = new FormData(document.getElementById("game-info"));
         var formDict = {};
         formData.forEach(function(value, key) {
@@ -112,7 +114,7 @@ mildredleague edit game
         var request = new Request(
             "edit-game",
             {
-                method: 'UPDATE',
+                method: 'PUT',
                 body: JSON.stringify(formDict)
             }
         );
@@ -136,6 +138,7 @@ mildredleague edit game
         );
     }
     function deleteData() {
+        document.getElementById("confirm").innerHTML = "Deleting data...";
         var requestURL = (
             "delete-game/" +
             String(document.getElementById("_id").value)

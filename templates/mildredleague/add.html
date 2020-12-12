@@ -69,6 +69,7 @@ mildredleague new game
 <script>
     document.getElementById("add-button").addEventListener("click", addData);
     function addData() {
+        document.getElementById("confirm").innerHTML = "Adding data...";
         var formData = new FormData(document.getElementById("game-info"));
         var formDict = {};
         formData.forEach(function(value, key) {

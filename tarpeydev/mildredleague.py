@@ -1,6 +1,5 @@
 # import native Python packages
 from itertools import permutations
-import json
 
 # import third party packages
 from flask import Blueprint, jsonify, render_template, request
@@ -11,7 +10,7 @@ import pymongo
 
 # import custom local stuff
 from tarpeydev import api
-from tarpeydev.db import get_dbm
+from tarpeydev.db import MLGame, get_dbm
 from tarpeydev.users import login_required
 
 
@@ -226,13 +225,7 @@ def add_game():
         client = get_dbm()
         db = client.mildredleague
         collection = db.games
-        doc = json.loads(request.data)
-        float_list = ['a_score', 'h_score']
-        int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
-        for field in float_list:
-            doc[field] = float(doc[field])
-        for field in int_list:
-            doc[field] = int(doc[field])
+        doc = MLGame(request.data).__dict__
         try:
             collection.insert_one(doc)
             return "Success! Added game " + str(doc['_id']) + ".", 200
@@ -253,7 +246,7 @@ def get_game(game_id):
         return "No document found!", 400
 
 
-@ml_bp.route('/edit-game', methods=['GET', 'UPDATE'])
+@ml_bp.route('/edit-game', methods=['GET', 'PUT'])
 @login_required
 def edit_game():
     client = get_dbm()
@@ -261,14 +254,8 @@ def edit_game():
     collection = db.games
     if request.method == 'GET':
         return render_template('mildredleague/edit.html')
-    elif request.method == 'UPDATE':
-        doc = json.loads(request.data)
-        float_list = ['a_score', 'h_score']
-        int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
-        for field in float_list:
-            doc[field] = float(doc[field])
-        for field in int_list:
-            doc[field] = int(doc[field])
+    elif request.method == 'PUT':
+        doc = MLGame(request.data).__dict__
         collection.replace_one({'_id': doc['_id']}, doc)
         return "Success! Edited game " + str(doc['_id']) + ".", 200
 

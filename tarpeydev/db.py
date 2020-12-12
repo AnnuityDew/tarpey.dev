@@ -2,6 +2,7 @@
 import click
 import csv
 import datetime
+import json
 import os
 
 # import third party packages
@@ -470,6 +471,19 @@ class MildredLeagueSeason:
         print(f'Season(season={self.season})')
         for _id, ml_game in self.games_dict.items():
             print(f'{_id}')
+
+
+class MLGame:
+    def __init__(self, json_data):
+        doc = json.loads(json_data)
+        float_list = ['a_score', 'h_score']
+        int_list = ['_id', 'week_s', 'week_e', 'season', 'playoff']
+        for field in float_list:
+            doc[field] = float(doc[field])
+        for field in int_list:
+            doc[field] = int(doc[field])
+        for k, v in doc.items():
+            setattr(self, k, v)
 
 
 class MildredLeagueGame:

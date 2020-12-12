@@ -65,6 +65,76 @@
                 }
             }
         },
+        "/mildredleague/add-game":{
+            "post":{
+                "tags":["mildredleague"],
+                "summary":"Add new game data.",
+                "responses":{
+                    "200":{
+                        "description":"Success!"
+                    },
+                    "400":{
+                        "description":"Game already exists!"
+                    }
+                }
+            }
+        },
+        "/mildredleague/get-game/{game_id}":{
+            "get":{
+                "tags":["mildredleague"],
+                "summary":"Get game data.",
+                "parameters":[
+                    {
+                        "name":"game_id",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"successful operation"
+                    }
+                }
+            }
+        },
+        "/mildredleague/edit-game":{
+            "put":{
+                "tags":["mildredleague"],
+                "summary":"Edit game data.",
+                "responses":{
+                    "200":{
+                        "description":"Success!"
+                    }
+                }
+            }
+        },
+        "/mildredleague/delete-game/{game_id}":{
+            "delete":{
+                "tags":["mildredleague"],
+                "summary":"Delete game data.",
+                "parameters":[
+                    {
+                        "name":"game_id",
+                        "in":"path",
+                        "required":true,
+                        "schema":{
+                            "type":"integer"
+                        }
+                    }
+                ],
+                "responses":{
+                    "200":{
+                        "description":"Success!"
+                    },
+                    "400":{
+                        "description":"Deletion error..."
+                    }
+                }
+            }
+        },
         "/api/mildredleague/all-teams":{
             "get":{
                 "tags":["mildredleague"],
