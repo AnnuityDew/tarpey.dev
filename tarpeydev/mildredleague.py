@@ -1,5 +1,6 @@
 # import native Python packages
 from itertools import permutations
+import json
 
 # import third party packages
 from flask import Blueprint, jsonify, render_template, request
@@ -10,7 +11,7 @@ import pymongo
 
 # import custom local stuff
 from tarpeydev import api
-from tarpeydev.db import MLGame, get_dbm
+from tarpeydev.db import MLGame, MLNote, get_dbm
 from tarpeydev.users import login_required
 
 
@@ -28,11 +29,11 @@ def home():
 @ml_bp.route('/alltime', methods=['GET'])
 def alltime():
     # grab teams data from API
-    teams_data, response_code = api.all_teams_data(api=True)
+    teams_data, response_code = get_all_teams()
     ranking_df = pandas.DataFrame(teams_data.json)
 
     # grab games data from API
-    games_data, response_code = api.all_games_data(api=True)
+    games_data, response_code = get_all_games()
     games_df = pandas.DataFrame(games_data.json)
 
     # use data to make charts
@@ -71,16 +72,16 @@ def rules():
 @ml_bp.route('/<int:season>', methods=['GET'])
 def season_page(season):
     # grab games data from API
-    games_data, response_code = api.all_games_data(api=True)
+    games_data, response_code = get_season_games(season=season)
     games_df = pandas.DataFrame(games_data.json)
 
     # grab notes data from API
-    notes = api.read_season_notes(season)
+    notes, response_code = get_season_notes(season)
 
     # pull boxplot score data for the season
     x_data_for, y_data_for, color_data_for = season_boxplot(season, 'for')
     x_data_against, y_data_against, color_data_against = season_boxplot(season, 'against')
-    notes = api.read_season_notes(season)
+
     if season == 2020:
         table = season_table_active(season, games_df)
     else:
@@ -88,7 +89,7 @@ def season_page(season):
 
     return render_template(
         'mildredleague/season.html',
-        notes=notes,
+        notes=notes.json,
         table=table,
         season=season,
         x_data_for=x_data_for,
@@ -111,7 +112,7 @@ def seed_sim(season):
         )
     elif request.method == 'POST':
         # grab games data from API
-        games_data, response_code = api.all_games_data(api=True)
+        games_data, response_code = get_season_games(season=season)
         games_df = pandas.DataFrame(games_data.json).set_index('_id')
 
         # we're going to concatenate the API data with simulated data
@@ -228,6 +229,12 @@ def add_game():
         doc = MLGame(request.data).__dict__
         try:
             collection.insert_one(doc)
+            # recalculate boxplot data for points for and against
+            for boxplot in ['for', 'against']:
+                season_boxplot_transform(
+                    season=doc['season'],
+                    against=boxplot,
+                )
             return "Success! Added game " + str(doc['_id']) + ".", 200
         except pymongo.errors.DuplicateKeyError:
             return "Game " + str(doc['_id']) + " already exists!", 400
@@ -249,14 +256,20 @@ def get_game(game_id):
 @ml_bp.route('/edit-game', methods=['GET', 'PUT'])
 @login_required
 def edit_game():
-    client = get_dbm()
-    db = client.mildredleague
-    collection = db.games
     if request.method == 'GET':
         return render_template('mildredleague/edit.html')
     elif request.method == 'PUT':
+        client = get_dbm()
+        db = client.mildredleague
+        collection = db.games
         doc = MLGame(request.data).__dict__
         collection.replace_one({'_id': doc['_id']}, doc)
+        # recalculate boxplot data, points for and against
+        for boxplot in ['for', 'against']:
+            season_boxplot_transform(
+                season=doc['season'],
+                against=boxplot,
+            )
         return "Success! Edited game " + str(doc['_id']) + ".", 200
 
 
@@ -266,15 +279,224 @@ def delete_game(game_id):
     client = get_dbm()
     db = client.mildredleague
     collection = db.games
-    result = collection.delete_one({'_id': game_id})
+    doc = collection.find_one_and_delete({'_id': game_id})
+    # recalculate boxplot data, points for and against
+    for boxplot in ['for', 'against']:
+        season_boxplot_transform(
+            season=doc['season'],
+            against=boxplot,
+        )
+    if doc:
+        return "Success! Deleted game " + str(game_id) + ".", 200
+    else:
+        return "Something weird happened...", 400
+
+
+@ml_bp.route('/teams/all', methods=['GET'])
+@login_required
+def get_all_teams():
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.teams
+    # return full history of mildredleague teams
+    data = list(collection.find())
+    if not data:
+        return "No data found!", 400
+    else:
+        return jsonify(data), 200
+
+
+@ml_bp.route('/games/all', methods=['GET'])
+@login_required
+def get_all_games():
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.games
+    # return full history of mildredleague games
+    data = list(collection.find())
+    if not data:
+        return "No data found!", 400
+    else:
+        return jsonify(data), 200
+
+
+@ml_bp.route('/games/<int:season>', methods=['GET'])
+def get_season_games(season):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.games
+    # return all results if no search_term
+    data = list(collection.find({"season": season}))
+    if not data:
+        return "No data found!", 400
+    else:
+        return jsonify(data), 200
+
+
+@ml_bp.route('/add-note', methods=['GET', 'POST'])
+def add_note():
+    if request.method == 'GET':
+        next_id = api.auto_increment_mongo('mildredleague', 'notes')
+        return render_template(
+            'mildredleague/notes.html',
+            next_id=next_id,
+        )
+    elif request.method == 'POST':
+        client = get_dbm()
+        db = client.mildredleague
+        collection = db.notes
+        doc = MLNote(request.data).__dict__
+        try:
+            collection.insert_one(doc)
+            return "Success! Added note " + str(doc['_id']) + ".", 200
+        except pymongo.errors.DuplicateKeyError:
+            return "Note " + str(doc['_id']) + " already exists!", 400
+
+
+@ml_bp.route('/get-note/<int:note_id>', methods=['GET'])
+def get_note(note_id):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.notes
+    doc = list(collection.find({'_id': note_id}))
+    if doc:
+        return jsonify(doc[0]), 200
+    else:
+        return "No document found!", 400
+
+
+@ml_bp.route('/notes/<int:season>', methods=['GET'])
+def get_season_notes(season):
+    # fetch data from MongoDB
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.notes
+    # return all results if no search_term
+    doc_list = list(collection.find({"season": season}))
+    if doc_list:
+        return jsonify(doc_list), 200
+    else:
+        return "No documents found!", 400
+
+
+@ml_bp.route('/edit-note', methods=['GET', 'PUT'])
+def edit_note():
+    if request.method == 'GET':
+        return render_template('mildredleague/notes.html')
+    elif request.method == 'PUT':
+        client = get_dbm()
+        db = client.mildredleague
+        collection = db.notes
+        doc = MLNote(request.data).__dict__
+        collection.replace_one({'_id': doc['_id']}, doc)
+        return "Success! Edited note " + str(doc['_id']) + ".", 200
+
+
+@ml_bp.route('/delete-note/<int:note_id>', methods=['DELETE'])
+@login_required
+def delete_note(note_id):
+    client = get_dbm()
+    db = client.mildredleague
+    collection = db.notes
+    result = collection.delete_one({'_id': note_id})
     if result.deleted_count > 1:
         return "You deleted more than one document...", 400
     elif result.deleted_count < 1:
         return "You didn't delete anything!", 400
     elif result.deleted_count == 1:
-        return "Success! Deleted game " + str(game_id) + ".", 200
+        return "Success! Deleted note " + str(note_id) + ".", 200
     else:
         return "Something weird happened...", 400
+
+
+@ml_bp.route('/boxplot/<int:season>/<against>', methods=['GET'])
+def season_boxplot_retrieve(season, against):
+    # fetch data from MongoDB
+    client = get_dbm()
+    db = client.mildredleague
+    collection = getattr(db, against + str(season))
+    data = list(collection.find({"name": {'$ne': 'Bye'}}))
+    if data:
+        return jsonify(data), 200
+    else:
+        return "No data found!", 400
+
+
+def season_boxplot_transform(season, against):
+    '''Call this function when games are added/edited/deleted.
+
+    Boxplot data is transformed and cached so boxplots can
+    be rendered more efficiently by end users.
+
+    '''
+    # read season and teams data from api
+    games_data, response_code = get_season_games(season=season)
+    teams_data, response_code = get_all_teams()
+    season_df = pandas.DataFrame(games_data.json)
+    # normalized score columns for two-week playoff games
+    season_df['a_score_norm'] = (
+        season_df['a_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    season_df['h_score_norm'] = (
+        season_df['h_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    # we just want unique scores. so let's stack away and home.
+    # this code runs to analyze Points For.
+    if against == 'for':
+        score_df = season_df[['a_nick', 'a_score_norm']].rename(
+            columns={'a_nick': 'name', 'a_score_norm': 'score'},
+        ).append(
+            season_df[['h_nick', 'h_score_norm']].rename(
+                columns={'h_nick': 'name', 'h_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+    # this code runs to analyze Points Against.
+    if against == 'against':
+        score_df = season_df[['a_nick', 'h_score_norm']].rename(
+            columns={'a_nick': 'name', 'h_score_norm': 'score'},
+        ).append(
+            season_df[['h_nick', 'a_score_norm']].rename(
+                columns={'h_nick': 'name', 'a_score_norm': 'score'},
+            ),
+            ignore_index=True,
+        )
+    # let's sort by playoff rank instead
+    # read season file, but we only need nick_name, season, and playoff_rank
+    ranking_df = pandas.DataFrame(teams_data.json)[['nick_name', 'season', 'playoff_rank']]
+    # merge this (filtered by season) into score_df so we can sort values
+    score_df = score_df.merge(
+        ranking_df.loc[ranking_df.season == int(season), ['nick_name', 'playoff_rank']],
+        left_on=['name'],
+        right_on=['nick_name'],
+        how='left',
+    ).sort_values(
+        by='playoff_rank', ascending=True,
+    )
+
+    # add a unique _id for Mongo
+    score_df['_id'] = range(1, len(score_df) + 1)
+
+    # convert back to json for writing to Mongo
+    doc_list = json.loads(score_df.to_json(orient='records'))
+
+    # write data to MongoDB
+    client = get_dbm()
+    db = client.mildredleague
+    collection = getattr(db, against + str(season))
+    if list(collection.find()) == doc_list:
+        message, response_code = str(season) + against + " boxplot chart is already synced!", 200
+    else:
+        # if boxplots need to be recalculated, just wipe the collection and reinsert
+        collection.delete_many({})
+        collection.insert_many(doc_list)
+        message, response_code = "Bulk delete and insert complete!", 200
+
+    return message, response_code
 
 
 def matchup_heatmap_fig(games_df):
@@ -285,7 +507,7 @@ def matchup_heatmap_fig(games_df):
         games_df
     ).reset_index()
     # pull all-time file to filter active teams
-    teams_data, response_code = api.all_teams_data(api=True)
+    teams_data, response_code = get_all_teams()
     ranking_df = pandas.DataFrame(teams_data.json)
 
     # inner joins are just to keep active teams
@@ -391,7 +613,7 @@ def all_time_wins_fig(games_df):
     ).sort_values('win_total', ascending=True)
 
     # create list of x_data and y_data
-    x_data = record_df.win_total.values.tolist()
+    x_data = list(record_df.win_total.values)
     y_data = record_df.index.tolist()
     # color data needs to be tripled to have enough
     # colors for every bar!
@@ -406,10 +628,9 @@ def all_time_wins_fig(games_df):
 
 def season_boxplot(season, against):
     # grab data from API
-    boxplot_data, response_code = api.season_boxplot_retrieve(
+    boxplot_data, response_code = season_boxplot_retrieve(
         season,
         against,
-        api=True,
     )
     score_df = pandas.DataFrame(boxplot_data.json)
 
@@ -591,7 +812,7 @@ def season_table(season, games_df):
         games_df
     ).reset_index()
     # pull all rankings and filter for the season
-    teams_data, response_code = api.all_teams_data(api=True)
+    teams_data, response_code = get_all_teams()
     season_ranking_df = pandas.DataFrame(teams_data.json)
     season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
     # merge playoff ranking and active status

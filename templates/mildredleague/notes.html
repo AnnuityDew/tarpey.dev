@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+  
+{% block title %}mildredleague admin{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
+{% endblock %}
+
+{% block java %}
+{% endblock %}
+
+{% block header %}
+mildredleague notes
+{% endblock %}
+
+{% block content %}
+
+<button id="get-button">Retrieve note</button><br>
+
+<script>
+    document.getElementById("get-button").addEventListener("click", retrieveData);
+    function retrieveData() {
+        document.getElementById("note").value = "Retrieving data...";
+        var requestURL = (
+            "get-note/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(requestURL);
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("note").value = "API error!";
+                    return;
+                } 
+                response.json().then(
+                    data => {
+                        for (let key in data) {
+                            document.getElementById(key).value = data[key]; 
+                        }
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
+<form id="note-info">
+    <section class="note_data">
+        <label for="_id"><span class="add-note">Note ID</span></label>
+        <input name="_id" type="number" id="_id" value="{{ next_id }}" required><br>
+        <label for="season"><span class="add-note">Season</span></label>
+        <select name="season" id="season">
+            {% for i in range(2013, 2022) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="note"><span class="add-note">Note</span></label>
+        <textarea name="note" rows="7" id="note" required></textarea><br>
+    </section>
+</form>
+
+<button id="add-button">Add note</button>
+<button id="edit-button">Edit note</button>
+<button id="delete-button">Delete note</button>
+<script>
+    document.getElementById("add-button").addEventListener("click", addData);
+    document.getElementById("edit-button").addEventListener("click", editData);
+    document.getElementById("delete-button").addEventListener("click", deleteData);
+    function addData() {
+        document.getElementById("confirm").innerHTML = "Adding data...";
+        var formData = new FormData(document.getElementById("note-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "add-note",
+            {
+                method: 'POST',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function editData() {
+        document.getElementById("confirm").innerHTML = "Editing data...";
+        var formData = new FormData(document.getElementById("note-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "edit-note",
+            {
+                method: 'PUT',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("confirm").innerHTML = "API error!";
+                    return;
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function deleteData() {
+        document.getElementById("confirm").innerHTML = "Deleting data...";
+        var requestURL = (
+            "delete-note/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(
+            requestURL,
+            {
+                method: 'DELETE'
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                } 
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
+<p id="confirm"></p>
+
+{% endblock %}

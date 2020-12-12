@@ -486,6 +486,16 @@ class MLGame:
             setattr(self, k, v)
 
 
+class MLNote:
+    def __init__(self, json_data):
+        doc = json.loads(json_data)
+        int_list = ['_id', 'season']
+        for field in int_list:
+            doc[field] = int(doc[field])
+        for k, v in doc.items():
+            setattr(self, k, v)
+
+
 class MildredLeagueGame:
     def __init__(self, _id, away, a_name, a_nick, a_division,
                  a_score, home, h_name, h_nick, h_division,
