@@ -8,7 +8,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 if os.environ.get('FLASK_ENV') == 'development':
     json_path = 'http://127.0.0.1:5000/static/swagger.json'
-elif os.environ.get('FLASK_ENV') == 'production':
+else:
     json_path = 'https://tarpey.dev/static/swagger.json'
 
 swag_bp = get_swaggerui_blueprint(

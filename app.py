@@ -2,7 +2,12 @@
 import os
 
 # import third party packages
+from fastapi import FastAPI, APIRouter, Request
+from fastapi.middleware.wsgi import WSGIMiddleware
 from flask import Flask
+
+# import API
+from api.mildredleague import ml_api
 
 
 def create_app(test_config=None):
@@ -56,12 +61,40 @@ def create_app(test_config=None):
     return app
 
 
-app = create_app()
+# create the main FastAPI and Flask apps
+fastapi_app = FastAPI()
+flask_app = create_app()
 
-if __name__ == '__main__':
-    if os.environ['FLASK_ENV'] == 'development':
-        app.run(debug=True)
-    # this else should never trigger if the Dockerfile is working =]
-    else:
-        server_port = os.environ.get('PORT', '8080')
-        app.run(debug=False, port=server_port, host='0.0.0.0')
+# super meta stuff at the fastapi_app root
+@fastapi_app.get("/app")
+def read_main(request: Request):
+    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
+
+
+# API root. this should help us avoid conflicts with Flask
+main_api_route = APIRouter(
+    prefix="/api",
+)
+
+# meta stuff at the API root
+@main_api_route.get('/url-list')
+def get_all_urls():
+    url_list = [
+        {'path': route.path, 'name': route.name}
+        for route in fastapi_app.routes
+    ]
+    return url_list
+
+
+# extended API paths
+main_api_route.include_router(ml_api)
+
+# include routers on the FastAPI app
+fastapi_app.include_router(main_api_route)
+
+# mount the flask app on FastAPI app
+fastapi_app.mount(
+    path="",
+    app=WSGIMiddleware(flask_app),
+    name='flask_app',
+    )
