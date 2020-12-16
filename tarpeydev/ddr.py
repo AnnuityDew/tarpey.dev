@@ -1,11 +1,8 @@
 # import native Python packages
-import functools
-import io
 import os
-import base64
 
 # import third party packages
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 import pandas
 
 

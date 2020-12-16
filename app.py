@@ -2,7 +2,7 @@
 import os
 
 # import third party packages
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.wsgi import WSGIMiddleware
 from flask import Flask
 
@@ -61,40 +61,50 @@ def create_app(test_config=None):
     return app
 
 
-# create the main FastAPI and Flask apps
-fastapi_app = FastAPI()
-flask_app = create_app()
-
-# super meta stuff at the fastapi_app root
-@fastapi_app.get("/app")
-def read_main(request: Request):
-    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
-
-
-# API root. this should help us avoid conflicts with Flask
-main_api_route = APIRouter(
-    prefix="/api",
-)
-
-# meta stuff at the API root
-@main_api_route.get('/url-list')
-def get_all_urls():
-    url_list = [
-        {'path': route.path, 'name': route.name}
-        for route in fastapi_app.routes
-    ]
-    return url_list
-
-
-# extended API paths
-main_api_route.include_router(ml_api)
-
-# include routers on the FastAPI app
-fastapi_app.include_router(main_api_route)
-
-# mount the flask app on FastAPI app
-fastapi_app.mount(
-    path="",
-    app=WSGIMiddleware(flask_app),
-    name='flask_app',
+# GCP debugger
+try:
+    import googleclouddebugger
+    googleclouddebugger.enable(
+        breakpoint_enable_canary=True
     )
+except ImportError:
+    pass
+
+use_fastapi = False
+
+# turn on FastAPI and mount flask at the hip
+if use_fastapi is True:
+    # create the main FastAPI and Flask apps
+    fastapi_app = FastAPI()
+    flask_app = create_app()
+
+    # super meta stuff at the fastapi_app root
+    @fastapi_app.get("/app")
+    def read_main(request: Request):
+        return {"message": "Hello World", "root_path": request.scope.get("root_path")}
+
+    # meta stuff at the API root
+    @fastapi_app.get('/url-list')
+    def get_all_urls():
+        url_list = [
+            {'path': route.path, 'name': route.name}
+            for route in fastapi_app.routes
+        ]
+        return url_list
+
+    # include routers on the FastAPI app
+    fastapi_app.include_router(ml_api)
+
+    # mount the flask app on FastAPI app
+    fastapi_app.mount(
+        path="/flask",  # can't do empty string here =]
+        app=WSGIMiddleware(flask_app),
+        name='flask_app',
+        )
+
+# ...or just use Flask
+app = create_app()
+
+if __name__ == '__main__':
+    if os.environ['FLASK_ENV'] == 'development':
+        app.run(debug=True)
