@@ -2,16 +2,31 @@
 import os
 
 # import third party packages
-from fastapi import FastAPI, APIRouter, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.wsgi import WSGIMiddleware
 from flask import Flask
+from starlette.applications import Starlette
+from starlette.routing import Route, Mount
+from starlette.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
 
 # import custom local stuff
 from api.mildredleague import ml_api
 from instance.config import GCP_FILE
 
 
-def create_app(test_config=None):
+# GCP debugger
+try:
+    import googleclouddebugger
+    googleclouddebugger.enable(
+        breakpoint_enable_canary=True,
+        service_account_json_file=GCP_FILE,
+    )
+except ImportError:
+    pass
+
+
+def create_flask_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
@@ -62,24 +77,9 @@ def create_app(test_config=None):
     return app
 
 
-# GCP debugger
-try:
-    import googleclouddebugger
-    googleclouddebugger.enable(
-        breakpoint_enable_canary=True,
-        service_account_json_file=GCP_FILE,
-    )
-except ImportError:
-    pass
-
-# flag to determine whether FastAPI or Flask is the main app
-use_fastapi = True
-
-# turn on FastAPI and mount flask at the hip
-if use_fastapi is True:
-    # create the main FastAPI and Flask apps
+def create_starlette_app():
+    # create the main FastAPI app
     fastapi_app = FastAPI()
-    flask_app = create_app()
 
     # super meta stuff at the fastapi_app root
     @fastapi_app.get("/app")
@@ -95,27 +95,40 @@ if use_fastapi is True:
         ]
         return url_list
 
-    # api path router
-    api_path = APIRouter(
-        prefix="/api",
-    )
+    # include subrouters on the FastAPI app
+    fastapi_app.include_router(ml_api)
 
-    # include subrouters on the api_path
-    api_path.include_router(ml_api)
-
-    # include api_path on the FastAPI app
-    fastapi_app.include_router(api_path)
-
-    # mount the flask app on FastAPI app
+    # mount the flask app on FastAPI app for now
+    flask_app = create_flask_app()
     fastapi_app.mount(
-        path="",
+        path="/flask",
         app=WSGIMiddleware(flask_app),
         name='flask_app',
         )
 
+    # home page
+    async def index(request):
+        return templates.TemplateResponse('index/index.html')
+
+    # starlette config
+    templates = Jinja2Templates(directory='templates')
+    routes = [
+        Route("/", endpoint=index),
+        Route("/api", endpoint=fastapi_app),
+        Mount('/static', StaticFiles(directory='static'), name='static')
+    ]
+
+    return Starlette(debug=True, routes=routes)
+
+
+# flag to determine whether FastAPI or Flask is the main app
+use_starlette = True
+# turn on FastAPI and mount flask at the hip
+if use_starlette is True:
+    app = create_starlette_app()
 else:
     # ...or just use Flask
-    app = create_app()
+    app = create_flask_app()
 
     if __name__ == '__main__':
         if os.environ['FLASK_ENV'] == 'development':
