@@ -2,12 +2,13 @@
 import os
 
 # import third party packages
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, APIRouter, Request
 from fastapi.middleware.wsgi import WSGIMiddleware
 from flask import Flask
 
-# import API
+# import custom local stuff
 from api.mildredleague import ml_api
+from instance.config import GCP_FILE
 
 
 def create_app(test_config=None):
@@ -65,12 +66,14 @@ def create_app(test_config=None):
 try:
     import googleclouddebugger
     googleclouddebugger.enable(
-        breakpoint_enable_canary=True
+        breakpoint_enable_canary=True,
+        service_account_json_file=GCP_FILE,
     )
 except ImportError:
     pass
 
-use_fastapi = False
+# flag to determine whether FastAPI or Flask is the main app
+use_fastapi = True
 
 # turn on FastAPI and mount flask at the hip
 if use_fastapi is True:
@@ -92,19 +95,28 @@ if use_fastapi is True:
         ]
         return url_list
 
-    # include routers on the FastAPI app
-    fastapi_app.include_router(ml_api)
+    # api path router
+    api_path = APIRouter(
+        prefix="/api",
+    )
+
+    # include subrouters on the api_path
+    api_path.include_router(ml_api)
+
+    # include api_path on the FastAPI app
+    fastapi_app.include_router(api_path)
 
     # mount the flask app on FastAPI app
     fastapi_app.mount(
-        path="/flask",  # can't do empty string here =]
+        path="",
         app=WSGIMiddleware(flask_app),
         name='flask_app',
         )
 
-# ...or just use Flask
-app = create_app()
+else:
+    # ...or just use Flask
+    app = create_app()
 
-if __name__ == '__main__':
-    if os.environ['FLASK_ENV'] == 'development':
-        app.run(debug=True)
+    if __name__ == '__main__':
+        if os.environ['FLASK_ENV'] == 'development':
+            app.run(debug=True)

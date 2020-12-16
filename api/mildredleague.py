@@ -7,7 +7,7 @@ from api.db import get_dbm
 
 
 ml_api = APIRouter(
-    prefix="/api/mildredleague",
+    prefix="/mildredleague",
     tags=["mildredleague"],
 )
 
