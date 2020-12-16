@@ -3,7 +3,9 @@ from itertools import permutations
 import json
 
 # import third party packages
-from flask import Blueprint, jsonify, render_template, request
+from flask import (
+    Blueprint, jsonify, redirect, render_template, request, url_for
+)
 import pandas
 import plotly
 import plotly.express as px
@@ -103,7 +105,9 @@ def season_page(season):
 
 @ml_bp.route('/<int:season>/sim', methods=['GET', 'POST'])
 def seed_sim(season):
-    if season != 2020:
+    if True:
+        return redirect(url_for('mildredleague.season_page', season=season))
+    elif season != 2020:
         return "You can't simulate this season.", 404
     elif request.method == 'GET':
         return render_template(
@@ -873,12 +877,8 @@ def season_table_active(season, games_df):
             # if the length of the df is longer than 1 for any rank, there's a tie...
             tied_df = div_df.loc[div_df.division_rank == rank]
             if len(tied_df) > 1:
-                print(div_df)
-                print(tied_df)
                 untied_df = division_tiebreaker_one(tied_df, games_df, matchup_df)
                 div_df.update(untied_df)
-                print(untied_df)
-                print(div_df)
         season_records_df.update(div_df)
 
     # begin to determine playoff seed. first, separate the three division winners.
@@ -899,9 +899,7 @@ def season_table_active(season, games_df):
         # if the length of the df is longer than 1 for any rank, there's a tie...
         tied_df = div_winners_df.loc[div_winners_df.playoff_seed == seed]
         if len(tied_df) > 1:
-            print(tied_df)
             untied_df = wild_card_tiebreaker_one(tied_df, games_df, matchup_df)
-            print(untied_df)
             div_winners_df.update(untied_df)
 
     # break the rest of the ties for division losers.
@@ -909,9 +907,7 @@ def season_table_active(season, games_df):
         # if the length of the df is longer than 1 for any rank, there's a tie...
         tied_df = div_losers_df.loc[div_losers_df.playoff_seed == seed]
         if len(tied_df) > 1:
-            print(tied_df)
             untied_df = wild_card_tiebreaker_one(tied_df, games_df, matchup_df)
-            print(untied_df)
             div_losers_df.update(untied_df)
 
     season_table = pandas.concat(
