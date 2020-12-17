@@ -1,5 +1,6 @@
 # import third party packages
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from pymongo import MongoClient
 
 # import custom local stuff
@@ -10,6 +11,30 @@ ml_api = APIRouter(
     prefix="/mildredleague",
     tags=["mildredleague"],
 )
+
+
+class MLGame(BaseModel):
+    _id: int
+    away: str
+    a_name: str
+    a_nick: str
+    a_division: str
+    a_score: float
+    home: str
+    h_name: str
+    h_nick: str
+    h_division: str
+    h_score: float
+    week_s: int
+    week_e: int
+    season: int
+    playoff: int
+
+
+class MLNote(BaseModel):
+    _id: int
+    season: int
+    note: str
 
 
 # declaring type of the client just helps with autocompletion.

@@ -1,7 +1,6 @@
 # import native Python packages
 
 # import third party packages
-import pandas
 import seaborn
 from starlette.routing import Route
 from starlette.templating import Jinja2Templates
@@ -20,6 +19,7 @@ async def homepage(request):
         'index/index.html',
         context={
             'request': request,
+            'colors': app_colors,
         }
     )
 
