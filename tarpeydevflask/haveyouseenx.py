@@ -9,7 +9,7 @@ import plotly
 import plotly.express as px
 
 # import local stuff
-from tarpeydev import api
+from tarpeydevflask import api
 
 
 hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')

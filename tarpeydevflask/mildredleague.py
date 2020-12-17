@@ -12,9 +12,9 @@ import plotly.express as px
 import pymongo
 
 # import custom local stuff
-from tarpeydev import api
-from tarpeydev.db import MLGame, MLNote, get_dbm
-from tarpeydev.users import login_required
+from tarpeydevflask import api
+from tarpeydevflask.db import MLGame, MLNote, get_dbm
+from tarpeydevflask.users import login_required
 
 
 ml_bp = Blueprint('mildredleague', __name__, url_prefix='/mildredleague')

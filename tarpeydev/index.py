@@ -1,28 +1,53 @@
 # import native Python packages
 
 # import third party packages
-from flask import Blueprint, render_template
 import pandas
 import seaborn
-
-# import local stuff
-from tarpeydev import api
-
-index_bp = Blueprint('index', __name__, url_prefix='')
+from starlette.routing import Route
+from starlette.templating import Jinja2Templates
 
 
-@index_bp.route('/')
-def index():
-    # read quote file and pick a random one to show
-    quote = api.random_quote()
+# templates
+templates = Jinja2Templates(directory='templates')
 
+
+# home page
+async def homepage(request):
     # generate color palette using Seaborn for the main site buttons
     app_colors = main_color_palette()
 
-    return render_template(
+    return templates.TemplateResponse(
         'index/index.html',
-        quote=quote,
-        colors=app_colors,
+        context={
+            'request': request,
+        }
+    )
+
+
+def colors(request):
+    return templates.TemplateResponse(
+        'index/colors.html',
+        context={
+            'request': request,
+        }
+    )
+
+
+def links(request):
+    return templates.TemplateResponse(
+        'index/links.html',
+        context={
+            'request': request,
+        }
+    )
+
+
+def games(request):
+    return templates.TemplateResponse(
+        'index/games.html',
+        context={
+            'request': request,
+        }
     )
 
 
@@ -39,30 +64,8 @@ def main_color_palette():
     return hex_color_list
 
 
-@index_bp.route('/colors')
-def colors():
-    return render_template('index/colors.html')
-
-
-@index_bp.route('/links')
-def links():
-    return render_template('index/links.html')
-
-
-@index_bp.route('/apps')
-def apps():
-    return render_template('index/apps.html')
-
-
-@index_bp.route('/games')
-def games():
-    return render_template('index/games.html')
-
-
-def read_quotes():
-    quotes = pandas.read_csv(
-        'data/index/index_quotes.csv',
-        index_col='_id',
-    ).convert_dtypes()
-
-    return quotes
+routes = [
+    Route("/colors", colors, name="colors"),
+    Route("/links", links, name="links"),
+    Route("/games", games, name="games"),
+]

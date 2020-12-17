@@ -6,7 +6,7 @@ from flask import (
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from tarpeydev.db import get_dbm
+from tarpeydevflask.db import get_dbm
 
 bp = Blueprint('users', __name__, url_prefix='/users')
 

@@ -3,7 +3,7 @@
 {% block title %} - links{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index/css/links.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/index/css/links.css') }}">
 {% endblock %}
 
 {% block header %}links{% endblock %}
@@ -63,6 +63,6 @@
 </nav> 
 <h3>other</h3>
 <nav>
-  <a class="games" href="{{ url_for('index.games') }}">games</a>
+  <a class="games" href="{{ url_for('games') }}">games</a>
 </nav>   
 {% endblock %}

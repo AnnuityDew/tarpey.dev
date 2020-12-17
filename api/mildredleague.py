@@ -14,7 +14,7 @@ ml_api = APIRouter(
 
 # declaring type of the client just helps with autocompletion.
 @ml_api.get('/get-game/{game_id}')
-def get_game(game_id: int, client: MongoClient = Depends(get_dbm)):
+async def get_game(game_id: int, client: MongoClient = Depends(get_dbm)):
     db = client.mildredleague
     collection = db.games
     doc = list(collection.find({'_id': game_id}))

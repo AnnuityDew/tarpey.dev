@@ -5,21 +5,14 @@ import random
 from flask import Blueprint, jsonify, request
 
 # import local stuff
-from tarpeydev.db import get_dbm
-from tarpeydev.users import login_required
+from tarpeydevflask.db import get_dbm
+from tarpeydevflask.users import login_required
 
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
-@api_bp.route('/index/random-quote', methods=['GET'])
-def random_quote():
-    client = get_dbm()
-    db = client.quotes
-    quote_count = db.quotes.estimated_document_count()
-    quote_id = str(random.randint(1, quote_count))
-    quote = db.quotes.find_one({"_id": quote_id})
-    return quote
+
 
 
 @api_bp.route('/haveyouseenx/all-games', methods=['GET'])

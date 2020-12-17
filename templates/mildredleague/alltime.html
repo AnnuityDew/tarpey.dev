@@ -3,12 +3,12 @@
 {% block title %} - mildredleague stats{% endblock %}
 
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='mildredleague/css/mildredleague.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/mildredleague/css/mildredleague.css') }}">
 {% endblock %}
 
 {% block java %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="{{ url_for('static', filename='index/js/tarpeydevlayout.js') }}"></script>
+<script src="{{ url_for('static', path='/index/js/tarpeydevlayout.js') }}"></script>
 {% endblock %}
 
 {% block header %}mildredleague stats{% endblock %}
