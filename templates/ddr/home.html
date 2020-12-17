@@ -10,15 +10,15 @@
 {% block content %}
   <b>Select a style! (These are all PS2 games.)</b><br>
   <ul>
-    <li><a href="{{ url_for('ddr.game_info', game='max_jp') }}">DDRMAX JP</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='ex_jp') }}">Extreme JP</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='max_us') }}">DDRMAX US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='max2_us') }}">DDRMAX2 US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='ex_us') }}">Extreme US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='ex2_us') }}">Extreme 2 US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='sn_us') }}">SuperNova US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
-    <li><a href="{{ url_for('ddr.game_info', game='x_us') }}">X US</a></li>
+    <li><a href="{{ url_for('game_info', game='max_jp') }}">DDRMAX JP</a></li>
+    <li><a href="{{ url_for('game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
+    <li><a href="{{ url_for('game_info', game='ex_jp') }}">Extreme JP</a></li>
+    <li><a href="{{ url_for('game_info', game='max_us') }}">DDRMAX US</a></li>
+    <li><a href="{{ url_for('game_info', game='max2_us') }}">DDRMAX2 US</a></li>
+    <li><a href="{{ url_for('game_info', game='ex_us') }}">Extreme US</a></li>
+    <li><a href="{{ url_for('game_info', game='ex2_us') }}">Extreme 2 US</a></li>
+    <li><a href="{{ url_for('game_info', game='sn_us') }}">SuperNova US</a></li>
+    <li><a href="{{ url_for('game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
+    <li><a href="{{ url_for('game_info', game='x_us') }}">X US</a></li>
   </ul>
 {% endblock %}

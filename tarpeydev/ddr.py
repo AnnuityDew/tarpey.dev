@@ -4,27 +4,32 @@ import os
 # import third party packages
 from flask import Blueprint, render_template
 import pandas
+from starlette.routing import Route
+from starlette.templating import Jinja2Templates
 
 
-ddr_bp = Blueprint('ddr', __name__, url_prefix='/ddr')
+# templates
+templates = Jinja2Templates(directory='templates')
 
 
-@ddr_bp.route('/', methods=['GET', 'POST'])
-@ddr_bp.route('/home', methods=['GET', 'POST'])
-def home():
-    return render_template(
+async def home(request):
+    return templates.TemplateResponse(
         'ddr/home.html',
+        context={'request': request}
     )
 
 
-@ddr_bp.route('/<game>', methods=['GET', 'POST'])
-def game_info(game):
+async def game_info(request):
+    game = request.path_params['game']
     game_data = which_save_file(game)
     game_df = game_data.byte_builder()
-    return render_template(
+    return templates.TemplateResponse(
         'ddr/game.html',
-        df=game_df,
-        game=game,
+        context={
+            'request': request,
+            'df': game_df,
+            'game': game,
+        }
     )
 
 
@@ -442,3 +447,9 @@ class DDRX(GenericSavePS2):
     def __init__(self):
         self.save_id = 'BASLUS-21767system'
         super().__init__(self.save_id)
+
+
+routes = [
+    Route("/", endpoint=home, name="ddr"),
+    Route("/{game}", endpoint=game_info, name="game_info"),
+]

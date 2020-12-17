@@ -1,9 +1,10 @@
 # import Python packages
 import random
+from typing import Optional
 
 # import third party packages
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseConfig, BaseModel, Field
 import pymongo
 from pymongo import MongoClient
 
@@ -18,18 +19,18 @@ index_api = APIRouter(
 
 
 class RandomQuote(BaseModel):
-    quote_id: int = Field(None, alias='_id')
+    doc_id: int = Field(alias="_id")
     quote_text: str
     quote_origin: str
 
 
-@index_api.get('/random-quote')
+@index_api.get('/random-quote', response_model=RandomQuote)
 async def random_quote(client: MongoClient = Depends(get_dbm)):
     db = client.quotes
     collection = db.quotes
     quote_count = collection.estimated_document_count()
-    quote_id = str(random.randint(1, quote_count))
-    quote = collection.find_one({"_id": quote_id})
+    doc_id = str(random.randint(1, quote_count))
+    quote = collection.find_one({"_id": doc_id})
     return quote
 
 
@@ -38,8 +39,8 @@ async def add_quote(quote: RandomQuote, client: MongoClient = Depends(get_dbm)):
     db = client.quotes
     collection = db.quotes
     try:
-        collection.insert_one(quote.__dict__)
+        collection.insert_one(quote.dict(by_alias=True))
         # recalculate boxplot data for points for and against
-        return "Success! Added quote " + str(quote.quote_id) + ".", 200
+        return "Success! Added quote " + str(quote.doc_id) + "."
     except pymongo.errors.DuplicateKeyError:
-        return "Quote " + str(quote.quote_id) + " already exists!", 400
+        return "Quote " + str(quote.doc_id) + " already exists!"

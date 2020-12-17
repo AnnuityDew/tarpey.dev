@@ -3,39 +3,41 @@ import random
 import datetime
 
 # import third party packages
-from flask import Blueprint, render_template, request
 import pandas
 import numpy
 import scipy
+from starlette.routing import Route
+from starlette.templating import Jinja2Templates
 
 
-bp = Blueprint('autobracket', __name__, url_prefix='/autobracket')
+# templates
+templates = Jinja2Templates(directory='templates')
 
 
-@bp.route('/generate', methods=['GET', 'POST'])
-def generate():
-    return render_template('autobracket/generate.html')
+async def generate(request):
+    return templates.TemplateResponse(
+        'autobracket/generate.html',
+        context={'request': request}
+    )
 
 
-@bp.route('/bracket', methods=['GET', 'POST'])
-def bracket():
+async def bracket(request):
     # If you go straight to the bracket page, you'll get a 400 error!
-    if request.form == {}:
-        return 'You should go through the front page!', 400
+    form = await request.form()
 
     # If you try to input non-string objects, you'll get an error!
     # if isinstance(request.form['model_choice'], type('anystring')):
-    model_choice = request.form['model_choice']
+    model_choice = form['model_choice']
     # else:
     #     return 'You didn\'t fill out the form correctly!', 400
 
     # if isinstance(request.form['chaos_choice'], type('anystring')):
-    chaos_choice = int(request.form['chaos_choice'])
+    chaos_choice = int(form['chaos_choice'])
     # else:
     #     return 'You didn\'t fill out the form correctly!', 400
 
     # if isinstance(request.form['model_current'], type('anystring')):
-    model_current = request.form['model_current']
+    model_current = form['model_current']
     # else:
     #     return 'You didn\'t fill out the form correctly!', 400
 
@@ -50,10 +52,13 @@ def bracket():
             model_current,
         )
     # the only thing this is missing is passing through the results...
-    return render_template(
+    return templates.TemplateResponse(
         'autobracket/bracket.html',
-        simulated_df=simulated_df,
-        actual_df=actual_df,
+        context={
+            'request': request,
+            'simulated_df': simulated_df,
+            'actual_df': actual_df,
+        }
     )
 
 
@@ -171,3 +176,9 @@ def run_tournament(model_choice, chaos_choice, model_current):
     # step removed
 
     return(bracket_19, actual_19)
+
+
+routes = [
+    Route("/generate", generate, name="generate"),
+    Route("/bracket", bracket, name="bracket", methods=['POST']),
+]

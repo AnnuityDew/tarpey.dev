@@ -40,8 +40,10 @@
       {% if False %}
       <a class="haveyouseenx" href="{{ url_for('haveyouseenx:home') }}">haveyouseenx</a>
       <a class="mildredleague" href="{{ url_for('mildredleague:home') }}">mildredleague</a>
-      <a class="ddr" href="{{ url_for('ddr:home') }}">DDR</a>
-      <a class="autobracket" href="{{ url_for('autobracket:generate') }}">autobracket</a>
+      {% endif %}
+      <a class="ddr" href="{{ url_for('ddr') }}">DDR</a>
+      <a class="autobracket" href="{{ url_for('generate') }}">autobracket</a>
+      {% if False %}
       <a class="timecapsule" href="{{ url_for('timecapsule:timecapsule') }}">timecapsule</a>
       {% endif %}
       <a class="links" href="{{ url_for('links') }}">links</a>

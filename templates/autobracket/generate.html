@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}autobracket{% endblock %}
+{% block title %} - autobracket{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/autobracket/css/autobracket.css') }}">
 {% endblock %}
 
-{% block header %} - autobracket{% endblock %}
+{% block header %}autobracket{% endblock %}
 
 {% block content %}
   <p>
@@ -31,7 +31,7 @@
     The model is updated with Round of 32 results. Do a Partial (Yes) model to start the model at the RO16, or a Full (No) model to re-run all 67 games.
   </p>
 
-  <form action="{{ url_for('autobracket.bracket') }}" method="POST">
+  <form action="{{ url_for('bracket') }}" method="POST">
     
     <section class="ro32">
     Use RO32 results?<br>
