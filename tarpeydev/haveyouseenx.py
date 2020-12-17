@@ -2,29 +2,29 @@
 import json
 
 # import third party packages
-from flask import Blueprint, render_template, request
 import numpy
 import pandas
 import plotly
 import plotly.express as px
+from starlette.routing import Route
+from starlette.templating import Jinja2Templates
 
 # import local stuff
-from tarpeydevflask import api
+from api import haveyouseenx as hysx
 
 
-hysx_bp = Blueprint('haveyouseenx', __name__, url_prefix='/haveyouseenx')
+# templates
+templates = Jinja2Templates(directory='templates')
 
 
-@hysx_bp.route('/', methods=['GET'])
-@hysx_bp.route('/home', methods=['GET'])
-def home():
+async def home(request):
     # read backlog counts
-    stats_data, response_code = api.count_by_status()
+    stats_data = hysx.count_by_status()
     stats = stats_data.json
     stats = {result.get('_id'): result.get('count') for result in stats}
 
     # read backlog total playtime
-    playtime_data, response_code = api.playtime()
+    playtime_data = hysx.playtime()
     playtime = playtime_data.json
     playtime = int(
         playtime[0].get('total_hours')
@@ -33,7 +33,7 @@ def home():
     # create visualizations.
     # pass copies to the function because they each
     # do a different manipulation
-    backlog_data, response_code = api.backlog()
+    backlog_data = hysx.backlog()
     backlog_df = pandas.DataFrame(backlog_data.json)
     treemap = system_treemap(backlog_df.copy())
 
@@ -50,34 +50,39 @@ def home():
         y_data_c, y_data_b, y_data_s, y_data_ns, x_data_dates, area_colors
     ) = timeline(backlog_df.copy(), stats)
 
-    return render_template(
+    return templates.TemplateResponse(
         'haveyouseenx/home.html',
-        stats=stats,
-        playtime=playtime,
-        treemap=treemap,
-        x_data_counts=x_data_counts,
-        y_data_dist=y_data_dist,
-        z_data_hours=z_data_hours,
-        bubble_names=bubble_names,
-        label_text=label_text,
-        color_data=color_data,
-        y_data_c=y_data_c,
-        y_data_b=y_data_b,
-        y_data_s=y_data_s,
-        y_data_ns=y_data_ns,
-        x_data_dates=x_data_dates,
-        area_colors=area_colors,
+        context={
+            'response': response,
+            'stats': stats,
+            'playtime': playtime,
+            'treemap': treemap,
+            'x_data_counts': x_data_counts,
+            'y_data_dist': y_data_dist,
+            'z_data_hours': z_data_hours,
+            'bubble_names': bubble_names,
+            'label_text': label_text,
+            'color_data': color_data,
+            'y_data_c': y_data_c,
+            'y_data_b': y_data_b,
+            'y_data_s': y_data_s,
+            'y_data_ns': y_data_ns,
+            'x_data_dates': x_data_dates,
+            'area_colors': area_colors,
+        }
     )
 
 
-@hysx_bp.route('/search', methods=['GET'])
-def results():
+def results(request):
     # run search
-    results = api.search(request.args.get('query'))
-    return render_template(
+    results = hysx.search(request.query_params['query'])
+    return templates.TemplateResponse(
         'haveyouseenx/results.html',
-        search_term=request.args.get('query'),
-        results=results,
+        context={
+            'request': request,
+            'search_term': request.query_params['query'],
+            'results': results,
+        }
     )
 
 
@@ -312,3 +317,9 @@ def timeline(backlog, stats):
     area_colors = px.colors.sequential.Agsunset[::2]
 
     return y_data_c, y_data_b, y_data_s, y_data_ns, x_data_dates, area_colors
+
+
+routes = [
+    Route("/", endpoint=home, name="haveyouseenx"),
+    Route("/results", endpoint=results, name="search_results"),
+]

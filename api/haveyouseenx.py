@@ -1,8 +1,9 @@
 # import Python packages
-from typing import Optional
+from typing import List, Optional
 
 # import third party packages
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel, Field
 from pymongo import MongoClient
 
 # import custom local stuff
@@ -15,6 +16,11 @@ hysx_api = APIRouter(
 )
 
 
+class StatusCount(BaseModel):
+    doc_id: str = Field(..., alias='_id')
+    count: int
+
+
 @hysx_api.get('/all-games')
 def backlog(client: MongoClient = Depends(get_dbm)):
     db = client.backlogs
@@ -23,7 +29,7 @@ def backlog(client: MongoClient = Depends(get_dbm)):
     return results
 
 
-@hysx_api.get('/count-by-status')
+@hysx_api.get('/count-by-status', response_model=List[StatusCount])
 def count_by_status(client: MongoClient = Depends(get_dbm)):
     db = client.backlogs
     collection = db.annuitydew

@@ -10,7 +10,7 @@ from starlette.staticfiles import StaticFiles
 # import custom local stuff
 from instance.config import GCP_FILE
 from tarpeydev import (
-    index, autobracket, ddr
+    index, autobracket, ddr, haveyouseenx
 )
 from api.index import index_api
 from api.haveyouseenx import hysx_api
@@ -45,7 +45,7 @@ def create_starlette_app():
         Mount("/autobracket", routes=autobracket.routes),
         # Mount("/db", routes=db.routes),
         Mount("/ddr", routes=ddr.routes),
-        # Mount("/haveyouseenx", routes=haveyouseenx.routes),
+        Mount("/haveyouseenx", routes=haveyouseenx.routes),
         # Mount("/mildredleague", routes=mildredleague.routes),
         # Mount("/timecapsule", routes=timecapsule.routes),
         Mount("/api", app=fastapi_app, name='fastapi_app'),
