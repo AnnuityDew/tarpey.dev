@@ -16,6 +16,6 @@ pymongo==3.11.0
 requests==2.23.0
 seaborn
 scipy==1.4.1
-starlette==0.14.1
+starlette==0.13.6
 uvicorn==0.13.1  # part of FastAPI Docker image
 Werkzeug==1.0.1
