@@ -18,22 +18,18 @@
   Type the name of a video game to see if I've played it before. (Or you can leave it blank to show all games.)
 </p>
 
-<form action="{{ url_for('haveyouseenx.results', query=query) }}" method="GET">
+<form action="{{ url_for('search_results') }}" method="GET">
   <input id="searchbox" name="query" type="text" placeholder="Search for a game">
   <button>Go!</button>
 </form>
 
 <p>
 <b>Stats by Category</b>
-{% for category, count in stats.items() %}
-  <ul>
-    <li>{{ category }}: {{ count }}</a></li>
-  </ul>
-{% endfor %}
+Need to fix this, charts, and playtime with JS =]
 </p>
 
 <p>
-  I haven't logged a playtime for every game yet, but so far there's over {{ playtime }} hours of gameplay in the database.
+  I haven't logged a playtime for every game yet, but so far there's over ?????????? hours of gameplay in the database.
 </p>
 
 <div class="hysx" id="timeline">
