@@ -1,6 +1,7 @@
 # import Python packages
 from datetime import date
 from enum import Enum
+import json
 from typing import List, Optional
 
 # import third party packages
@@ -264,7 +265,7 @@ def system_bubbles(backlog: List[BacklogGame] = Depends(backlog)):
 
 
 @hysx_api.get('/timeline')
-def timeline(backlog: List[BacklogGame] = Depends(backlog), stats = Depends(count_by_status)):
+def timeline(backlog: List[BacklogGame] = Depends(backlog), stats=Depends(count_by_status)):
     # convert to pandas dataframe
     backlog = pandas.DataFrame(backlog)
     # drop unused columns, move dates to x axis to create timeline

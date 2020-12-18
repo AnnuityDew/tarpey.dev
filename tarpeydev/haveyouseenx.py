@@ -23,14 +23,11 @@ async def home(request):
 
 
 async def results(request):
-    # run search
-    results = hysx.search(request.query_params['query'])
     return templates.TemplateResponse(
         'haveyouseenx/results.html',
         context={
             'request': request,
             'search_term': request.query_params['query'],
-            'results': results,
         }
     )
 

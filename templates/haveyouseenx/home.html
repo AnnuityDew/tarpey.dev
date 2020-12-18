@@ -25,7 +25,7 @@
 
 <p>
 <b>Stats by Category</b>
-Need to fix this, charts, and playtime with JS =]
+Need to fix this and playtime with JS =]
 </p>
 
 <p>
@@ -34,36 +34,41 @@ Need to fix this, charts, and playtime with JS =]
 
 <div class="hysx" id="timeline">
   <script>
-    // pull x_data, y_data from Python
-    var yDataC = {{y_data_c | safe}};
-    var yDataB = {{y_data_b | safe}};
-    var yDataS = {{y_data_s | safe}};
-    var yDataNS = {{y_data_ns | safe}};
-    var xData = {{x_data_dates | safe}};
-    var xDataClean = [];
-    var colorData = {{area_colors | safe}};
-    // we just need a loop over the x data to convert
-    // to datetime
-    for ( var i = 0; i < xData.length; i ++ ) {
-      xDataClean[i] = new Date(xData[i])
-    };
-    var plotData = [
-      {x: xDataClean, y: yDataC, name: 'Completed', hovertext: yDataC, stackgroup: 'one', groupnorm: 'percent'},
-      {x: xDataClean, y: yDataB, name: 'Beaten', hovertext: yDataB, stackgroup: 'one'},
-      {x: xDataClean, y: yDataS, name: 'Started', hovertext: yDataS, stackgroup: 'one'},
-      {x: xDataClean, y: yDataNS, name: 'Not Started', hovertext: yDataNS, stackgroup: 'one'},
-    ];
-    var layout = {
-      template: tarpeydevDefault,
-      title: 'Backlog Timeline',
-      showlegend: true,
-      yaxis: {
-        title: '% in Category',
-      },
-      colorway: colorData,
-    };
-    var config = {responsive: true};
-    Plotly.newPlot('timeline', plotData, layout, config);
+    const fetchTimelineData = async () => {
+      let rawData = await fetch("/api/haveyouseenx/timeline")
+      //use string literals
+      let chartData = await rawData.json();
+      return chartData;
+    }
+
+    var timelineChart = async () => {
+      let chartData = await fetchTimelineData();
+      var xDataClean = [];
+      // we just need a loop over the x data to convert
+      // to datetime
+      for ( var i = 0; i < chartData['x_data_dates'].length; i ++ ) {
+        xDataClean[i] = new Date(chartData['x_data_dates'][i])
+      };
+      var plotData = [
+        {x: xDataClean, y: chartData['y_data_c'], name: 'Completed', hovertext: chartData['y_data_c'], stackgroup: 'one', groupnorm: 'percent'},
+        {x: xDataClean, y: chartData['y_data_b'], name: 'Beaten', hovertext: chartData['y_data_b'], stackgroup: 'one'},
+        {x: xDataClean, y: chartData['y_data_s'], name: 'Started', hovertext: chartData['y_data_s'], stackgroup: 'one'},
+        {x: xDataClean, y: chartData['y_data_ns'], name: 'Not Started', hovertext: chartData['y_data_ns'], stackgroup: 'one'},
+      ];
+      var layout = {
+        template: tarpeydevDefault,
+        title: 'Backlog Timeline',
+        showlegend: true,
+        yaxis: {
+          title: '% in Category',
+        },
+        colorway: chartData['area_colors'],
+      };
+      var config = {responsive: true};
+      Plotly.newPlot('timeline', plotData, layout, config);
+    }
+
+    timelineChart();
   </script>
 </div>
 
@@ -73,47 +78,52 @@ Need to fix this, charts, and playtime with JS =]
 
 <div class="hysx" id="bubbles">
   <script>
-    // pull x_data, y_data, z_data, and label data from Python
-    var xData = {{x_data_counts | safe}};
-    var yData = {{y_data_dist | safe}};
-    var zData = {{z_data_hours | safe}};
-    var bubbleNames = {{bubble_names | safe}}
-    var labelText = {{label_text | safe}}
-    var colorData = {{color_data | safe}}
-    // plotData needs to be an array of valid traces, so
-    // here's a loop that constructs the traces from
-    // x_data and y_data, then pushes it into plotData
-    var plotData = [];
-    for ( var i = 0; i < xData.length; i ++ ) {
-      var trace = {
-        x: xData[i],
-        y: yData[i],
-        name: bubbleNames[i],
-        mode: 'markers',
-        type: 'scatter',
-        text: labelText[i],
-        marker: {
-          size: zData[i],
-          sizemode: 'area',
-          sizeref: 0.5,
-        }
+    const fetchBubblesData = async () => {
+      let rawData = await fetch("/api/haveyouseenx/bubbles")
+      //use string literals
+      let chartData = await rawData.json();
+      return chartData;
+    }
+
+    var bubblesChart = async () => {
+      let chartData = await fetchBubblesData();
+      // plotData needs to be an array of valid traces, so
+      // here's a loop that constructs the traces from
+      // x_data and y_data, then pushes it into plotData
+      var plotData = [];
+      for ( var i = 0; i < chartData['x_data_counts'].length; i ++ ) {
+        var trace = {
+          x: chartData['x_data_counts'][i],
+          y: chartData['y_data_dist'][i],
+          name: chartData['bubble_names'][i],
+          mode: 'markers',
+          type: 'scatter',
+          text: chartData['label_data'][i],
+          marker: {
+            size: chartData['z_data_hours'][i],
+            sizemode: 'area',
+            sizeref: 0.5,
+          }
+        };
+        plotData.push(trace);
       };
-      plotData.push(trace);
-    };
-    var layout = {
-      template: tarpeydevDefault,
-      title: 'Backlog Distribution',
-      showlegend: true,
-      xaxis: {
-        title: 'Game Count',
-      },
-      yaxis: {
-        title: '% in Category',
-      },
-      colorway: colorData,
-    };
-    var config = {responsive: true};
-    Plotly.newPlot('bubbles', plotData, layout, config);
+      var layout = {
+        template: tarpeydevDefault,
+        title: 'Backlog Distribution',
+        showlegend: true,
+        xaxis: {
+          title: 'Game Count',
+        },
+        yaxis: {
+          title: '% in Category',
+        },
+        colorway: chartData['color_data'],
+      };
+      var config = {responsive: true};
+      Plotly.newPlot('bubbles', plotData, layout, config);
+    }
+
+    bubblesChart();
   </script>
 </div>
 {% endblock %}

@@ -6,73 +6,38 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/haveyouseenx/css/haveyouseenx.css') }}">
 {% endblock %}
 
+{% block java %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+{% endblock %}
+
 {% block header %}haveyouseenx search results{% endblock %}
 {% block content %}
-  <p>
+<p>
   {% if search_term == '' %}
     You didn't search for a game, so here's the full table.
   {% else %}
     The game you searched for is called {{ search_term }}. Matches are shown below.
   {% endif %}
-  </p>
-  <div style="overflow-x:auto;"><table>
-  {% if results %}
-    <thead>
-      {% for field, value in results[0].items() %}
-      <th class="hysx_header">{{ field }}</th>
-      {% endfor %}
-    </thead>
-    <tbody>
-      {% for result in results %}
-      <tr class="hysx_row">
-        <td class="_id">
-          {{ result.get('_id') }}
-        </td>
-        <td class="game_title">
-          {{ result.get('game_title') }}
-        </td>
-        <td class="sub_title">
-          {{ result.get('sub_title') }}
-        </td>
-        <td class="game_system">
-          {{ result.get('game_system') }}
-        </td>
-        <td class="genre">
-          {{ result.get('genre') }}
-        </td>
-        <td class="now_playing">
-          {{ result.get('now_playing') }}
-        </td>
-        <td class="game_status">
-          {{ result.get('game_status') }}
-        </td>
-        <td class="game_hours">
-          {{ result.get('game_hours') }}
-        </td>
-        <td class="game_minutes">
-          {{ result.get('game_minutes') }}
-        </td>
-        <td class="playtime_calc">
-          {{ result.get('playtime_calc') }}
-        </td>
-        <td class="add_date">
-          {{ result.get('add_date') }}
-        </td>
-        <td class="start_date">
-          {{ result.get('start_date') }}
-        </td>
-        <td class="beat_date">
-          {{ result.get('beat_date') }}
-        </td>
-        <td class="complete_date">
-          {{ result.get('complete_date') }}
-        </td>
-        <td class="game_notes">
-          {{ result.get('game_notes') }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  {% endif %}
-  </table></div>
+</p>
+
+<script>
+  const fetchSearchData = async () => {
+    var searchURL = "/api/haveyouseenx/search?q={{ search_term|safe }}";
+    let rawData = await fetch(searchURL);
+    //use string literals
+    let searchData = await rawData.json();
+    return searchData;
+  }
+
+  var search = async () => {
+    let searchData = await fetchSearchData();
+    document.getElementById("search-results").innerHTML = searchData[1]["game_title"];
+  }
+
+  search();
+</script>
+
+
+<span id="search-results">
+</span>
 {% endblock %}
