@@ -1,42 +1,57 @@
+# import native Python packages
+from enum import Enum
+import json
+from typing import List
+
+# import third party packages
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordBearer
+import pandas
+import plotly
+import plotly.express as px
+from pydantic import BaseModel, Field, validator
+import pymongo
+from pymongo import MongoClient
+
+# import custom local stuff
+from api.db import get_dbm
 
 
+users_api = APIRouter(
+    prefix="/users",
+    tags=["users"],
+)
 
-@api_bp.route('/users', methods=['POST'])
-@login_required
-def create_user():
-    return
-
-
-@api_bp.route('/users/<username>', methods=['GET'])
-@login_required
-def read(username):
-    client = get_dbm()
-    db = client.users
-    user = db.users.find_one({"_id": username})
-    if user is not None:
-        return user.get("_id")
-    else:
-        return "Error!"
+# auth scheme
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@api_bp.route('/users', methods=['POST', 'PUT'])
-@login_required
-def update():
-    return
+class ApprovedUsers(str, Enum):
+    TARPEY = "annuitydew"
+    MATT = "matt"
 
 
-@api_bp.route('/users', methods=['GET', 'DELETE'])
-@login_required
-def delete():
-    return
+class UserBase(BaseModel):
+    username: ApprovedUsers
+
+    @validator('username')
+    def username_alphanumeric(cls, name):
+        assert name.isalnum(), 'Username must be alphanumeric.'
+        return name
 
 
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('users.login'))
+class UserIn(UserBase):
+    password: str
 
-        return view(**kwargs)
 
-    return wrapped_view
+class UserOut(BaseModel):
+    pass
+
+
+class UserDB(BaseModel):
+    hashed_password: str
+
+
+@users_api.get('/test-token')
+async def read_items(token: str = Depends(oauth2_scheme)):
+    return {"token": token}

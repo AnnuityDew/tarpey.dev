@@ -1,17 +1,22 @@
 # import native Python packages
 
 # import third party packages
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 import seaborn
-from starlette.routing import Route
-from starlette.templating import Jinja2Templates
+
+# import custom local stuff
+from api.index import RandomQuote, random_quote
 
 
-# templates
+# router and templates
+index_views = APIRouter(prefix="")
 templates = Jinja2Templates(directory='templates')
 
 
-# home page
-async def homepage(request):
+@index_views.get("/", response_class=HTMLResponse)
+async def homepage(request: Request, quote: RandomQuote = Depends(random_quote)):
     # generate color palette using Seaborn for the main site buttons
     app_colors = main_color_palette()
 
@@ -20,34 +25,38 @@ async def homepage(request):
         context={
             'request': request,
             'colors': app_colors,
-        }
+            'quote': quote,
+        },
     )
 
 
-def colors(request):
+@index_views.get("/colors", response_class=HTMLResponse)
+def colors(request: Request):
     return templates.TemplateResponse(
         'index/colors.html',
         context={
             'request': request,
-        }
+        },
     )
 
 
-def links(request):
+@index_views.get("/links", response_class=HTMLResponse)
+def links(request: Request):
     return templates.TemplateResponse(
         'index/links.html',
         context={
             'request': request,
-        }
+        },
     )
 
 
-def games(request):
+@index_views.get("/games", response_class=HTMLResponse)
+def games(request: Request):
     return templates.TemplateResponse(
         'index/games.html',
         context={
             'request': request,
-        }
+        },
     )
 
 
@@ -62,10 +71,3 @@ def main_color_palette():
     # add the rest of the html style formatting string to each
     hex_color_list = ["color:ffffff; background-color:" + color for color in hex_color_list]
     return hex_color_list
-
-
-routes = [
-    Route("/colors", colors, name="colors"),
-    Route("/links", links, name="links"),
-    Route("/games", games, name="games"),
-]

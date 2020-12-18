@@ -3,25 +3,29 @@ import random
 import datetime
 
 # import third party packages
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 import pandas
 import numpy
 import scipy
-from starlette.routing import Route
-from starlette.templating import Jinja2Templates
 
 
-# templates
-templates = Jinja2Templates(directory='templates')
+# router and templates
+autobracket_views = APIRouter(prefix="/autobracket")
+templates = Jinja2Templates(directory="templates")
 
 
-async def generate(request):
+@autobracket_views.get("/generate", response_class=HTMLResponse)
+async def generate(request: Request):
     return templates.TemplateResponse(
         'autobracket/generate.html',
         context={'request': request}
     )
 
 
-async def bracket(request):
+@autobracket_views.post("/bracket", response_class=HTMLResponse)
+async def bracket(request: Request):
     # If you go straight to the bracket page, you'll get a 400 error!
     form = await request.form()
 
@@ -176,9 +180,3 @@ def run_tournament(model_choice, chaos_choice, model_current):
     # step removed
 
     return(bracket_19, actual_19)
-
-
-routes = [
-    Route("/generate", generate, name="generate"),
-    Route("/bracket", bracket, name="bracket", methods=['POST']),
-]

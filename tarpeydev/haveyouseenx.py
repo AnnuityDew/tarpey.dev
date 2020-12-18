@@ -2,37 +2,40 @@
 import json
 
 # import third party packages
-from starlette.routing import Route
-from starlette.templating import Jinja2Templates
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 # import local stuff
-from api import haveyouseenx as hysx
+from api.haveyouseenx import (
+    count_by_status, playtime, search
+)
 
 
-# templates
+# router and templates
+hysx_views = APIRouter(prefix="/haveyouseenx")
 templates = Jinja2Templates(directory='templates')
 
 
-async def home(request):
+@hysx_views.get("/", response_class=HTMLResponse, name="haveyouseenx")
+async def home(request: Request, stats=Depends(count_by_status), hours=Depends(playtime)):
     return templates.TemplateResponse(
         'haveyouseenx/home.html',
         context={
             'request': request,
+            'stats': stats,
+            'playtime': hours,
         }
     )
 
 
-async def results(request):
+@hysx_views.get("/results", response_class=HTMLResponse)
+async def search_results(request: Request, q: str, results=Depends(search)):
     return templates.TemplateResponse(
         'haveyouseenx/results.html',
         context={
             'request': request,
-            'search_term': request.query_params['query'],
+            'search_term': request.query_params['q'],
+            'results': results,
         }
     )
-
-
-routes = [
-    Route("/", endpoint=home, name="haveyouseenx"),
-    Route("/results", endpoint=results, name="search_results"),
-]

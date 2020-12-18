@@ -44,7 +44,7 @@ class PlaytimeCalc(str, Enum):
 
 
 class BacklogGame(BaseModel):
-    doc_id: int = Field(..., alias='_id')
+    doc_id: str = Field(..., alias='_id')
     game_title: str
     sub_title: Optional[str]
     game_system: str
@@ -53,7 +53,7 @@ class BacklogGame(BaseModel):
     game_status: GameStatus
     game_hours: Optional[int]
     game_minutes: Optional[int]
-    playtime_calc: PlaytimeCalc
+    playtime_calc: Optional[PlaytimeCalc]
     add_date: Optional[date]
     start_date: Optional[date]
     beat_date: Optional[date]
@@ -84,7 +84,8 @@ def count_by_status(client: MongoClient = Depends(get_dbm)):
         }])
     )
     stats = {result.get('_id'): result.get('count') for result in results}
-    return stats
+    sorted_stats = dict(sorted(stats.items(), key=lambda item: item[1], reverse=True))
+    return sorted_stats
 
 
 @hysx_api.get('/playtime')
@@ -107,23 +108,24 @@ def playtime(client: MongoClient = Depends(get_dbm)):
     # move chunks of 60 minutes into the hours count
     leftover_minutes = results[0].get('total_minutes') % 60
     hours_to_move = (results[0].get('total_minutes') - leftover_minutes) / 60
-    results[0]['total_hours'] = results[0]['total_hours'] + hours_to_move
-    results[0]['total_minutes'] = leftover_minutes
+    results[0]['total_hours'] = int(results[0]['total_hours'] + hours_to_move)
+    results[0]['total_minutes'] = int(leftover_minutes)
 
     return results[0]
 
 
-@hysx_api.get('/search')
-def search(client: MongoClient = Depends(get_dbm), q: Optional[str] = None):
+@hysx_api.get('/search', response_model=List[BacklogGame])
+def search(client: MongoClient = Depends(get_dbm), q: str = None):
     db = client.backlogs
     collection = db.annuitydew
-    if q is None:
+    # change to plain q for OR results. f"\"{q}\"" is an AND search.
+    if q == '':
         results = list(collection.find())
     else:
         results = list(collection.find(
             {
                 '$text': {
-                    '$search': q
+                    '$search': f"\"{q}\""
                 }
             }
         ))

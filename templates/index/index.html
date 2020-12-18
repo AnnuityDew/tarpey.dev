@@ -6,29 +6,6 @@ of planet Earth. I'm doing my best to relentlessly develop as a credentialed
 actuary, aspiring programmer, casual charity Twitch streamer, and friend.">
 {% endblock %}
 
-{% block java %}
-<script>
-    var request = new Request("/api/random-quote");
-    fetch(request).then(
-        response => {
-            if (response.status !== 200) {
-                console.log('There was a problem! Code: ' + response.status);
-            }
-            response.json().then(
-                data => {
-                    document.getElementById("quote-text").innerHTML = data['quote_text'];
-                    document.getElementById("quote-origin").innerHTML = "-" + data['quote_origin'];
-                }
-            );
-        }
-    ).catch(
-        e => {
-            console.log('Fetch error =[', e)
-        }
-    );
-</script>
-{% endblock %}
-
 {% block special %}
 <div id="banner">
   <h1 class="intro">mike tarpey</h1>
@@ -38,7 +15,7 @@ actuary, aspiring programmer, casual charity Twitch streamer, and friend.">
 {% block content %}
 <h2 class="center">Thanks for visiting.</h2>
 <p class="center">
-  <span id="quote-text"></span><br>
-  <i><span id="quote-origin"></span></i>
+  <span id="quote-text">{{ quote.get('quote_text') }}</span><br>
+  <i><span id="quote-origin">{{ quote.get('quote_origin') }}</span></i>
 </p>
 {% endblock %}

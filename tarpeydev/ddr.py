@@ -1,26 +1,43 @@
 # import native Python packages
+from enum import Enum
 import os
 
 # import third party packages
-from flask import Blueprint, render_template
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 import pandas
-from starlette.routing import Route
-from starlette.templating import Jinja2Templates
+from pydantic import BaseModel
 
 
-# templates
+# router and templates
+ddr_views = APIRouter(prefix="/ddr")
 templates = Jinja2Templates(directory='templates')
 
 
-async def home(request):
+class PS2DDR(str, Enum):
+    MAX_JP = "max_jp"
+    MAX2_JP = "max2_jp"
+    EX_JP = "ex_jp"
+    MAX_US = "max_us"
+    MAX2_US = "max2_us"
+    EX_US = "ex_us"
+    EX2_US = "ex2_us"
+    SN_US = "sn_us"
+    SN2_US = "sn2_us"
+    X_US = "x_us"
+
+
+@ddr_views.get("/", response_class=HTMLResponse, name="ddr")
+async def home(request: Request):
     return templates.TemplateResponse(
         'ddr/home.html',
-        context={'request': request}
+        context={'request': request},
     )
 
 
-async def game_info(request):
-    game = request.path_params['game']
+@ddr_views.get("/{game}", response_class=HTMLResponse)
+async def game_info(request: Request, game: PS2DDR):
     game_data = which_save_file(game)
     game_df = game_data.byte_builder()
     return templates.TemplateResponse(
@@ -29,7 +46,7 @@ async def game_info(request):
             'request': request,
             'df': game_df,
             'game': game,
-        }
+        },
     )
 
 
@@ -447,9 +464,3 @@ class DDRX(GenericSavePS2):
     def __init__(self):
         self.save_id = 'BASLUS-21767system'
         super().__init__(self.save_id)
-
-
-routes = [
-    Route("/", endpoint=home, name="ddr"),
-    Route("/{game}", endpoint=game_info, name="game_info"),
-]
