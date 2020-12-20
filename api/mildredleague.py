@@ -94,7 +94,7 @@ class MLNote(BaseModel):
 
 # declaring type of the client just helps with autocompletion.
 @ml_api.post('/add-game')
-def add_game(
+async def add_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
     token: str = Depends(oauth2_scheme),
@@ -104,11 +104,6 @@ def add_game(
     try:
         collection.insert_one(doc.dict(by_alias=True))
         # recalculate boxplot data for points for and against
-        for boxplot in ['for', 'against']:
-            season_boxplot_transform(
-                season=doc.season,
-                against=boxplot,
-            )
         return "Success! Added game " + str(doc.doc_id) + "."
     except pymongo.errors.DuplicateKeyError:
         return "Game " + str(doc.doc_id) + " already exists!"
@@ -129,7 +124,7 @@ async def get_game(
 
 
 @ml_api.put('/edit-game')
-def edit_game(
+async def edit_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
     token: str = Depends(oauth2_scheme),
@@ -138,16 +133,11 @@ def edit_game(
     collection = db.games
     collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
     # recalculate boxplot data, points for and against
-    for boxplot in ['for', 'against']:
-        season_boxplot_transform(
-            season=doc.season,
-            against=boxplot,
-        )
     return "Success! Edited game " + str(doc.doc_id) + "."
 
 
 @ml_api.delete('/delete-game/{doc_id}')
-def delete_game(
+async def delete_game(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
     token: str = Depends(oauth2_scheme),
@@ -156,11 +146,6 @@ def delete_game(
     collection = db.games
     doc = collection.find_one_and_delete({'_id': doc_id})
     # recalculate boxplot data, points for and against
-    for boxplot in ['for', 'against']:
-        season_boxplot_transform(
-            season=doc.season,
-            against=boxplot,
-        )
     if doc:
         return "Success! Deleted game " + str(doc_id) + "."
     else:
@@ -355,32 +340,122 @@ def win_total_fig(playoff: bool = False, games_data: List[MLGame] = Depends(get_
     }
 
 
-@ml_api.get('/boxplot/{season}/{against}')
-def season_boxplot_fig(season: int, against: Against, client: MongoClient = Depends(get_dbm)):
+@ml_api.get('/boxplot/{season}')
+def season_boxplot_fig(
+    season: int,
+    client: MongoClient = Depends(get_dbm),
+    games_data: List[MLGame] = Depends(get_season_games),
+    teams_data: List[MLTeam] = Depends(get_all_teams)
+):
+    '''Ideally something like this would go back to being cached, but
+    we still need to figure that out wtih FastAPI!
+
+    '''
+    # convert to DataFrame
+    season_df = pandas.DataFrame(games_data)
+    # normalized score columns for two-week playoff games
+    season_df['a_score_norm'] = (
+        season_df['a_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    season_df['h_score_norm'] = (
+        season_df['h_score'] / (
+            season_df['week_e'] - season_df['week_s'] + 1
+        )
+    )
+    # we just want unique scores. so let's stack away and home.
+    # this code runs to analyze Points For.
+    score_df_for = season_df[['a_nick', 'a_score_norm']].rename(
+        columns={'a_nick': 'name', 'a_score_norm': 'score'},
+    ).append(
+        season_df[['h_nick', 'h_score_norm']].rename(
+            columns={'h_nick': 'name', 'h_score_norm': 'score'},
+        ),
+        ignore_index=True,
+    )
+    score_df_for['side'] = 'for'
+    # this code runs to analyze Points Against.
+    score_df_against = season_df[['a_nick', 'h_score_norm']].rename(
+        columns={'a_nick': 'name', 'h_score_norm': 'score'},
+    ).append(
+        season_df[['h_nick', 'a_score_norm']].rename(
+            columns={'h_nick': 'name', 'a_score_norm': 'score'},
+        ),
+        ignore_index=True,
+    )
+    score_df_against['side'] = 'against'
+    score_df = pandas.concat([score_df_for, score_df_against])
+    # let's sort by playoff rank instead
+    # read season file, but we only need nick_name, season, and playoff_rank
+    ranking_df = pandas.DataFrame(teams_data)[['nick_name', 'season', 'playoff_rank']]
+    # merge this (filtered by season) into score_df so we can sort values
+    score_df = score_df.merge(
+        ranking_df.loc[ranking_df.season == int(season), ['nick_name', 'playoff_rank']],
+        left_on=['name'],
+        right_on=['nick_name'],
+        how='left',
+    ).sort_values(
+        by='playoff_rank', ascending=True,
+    )
+
+    # add a unique _id for Mongo
+    score_df['_id'] = range(1, len(score_df) + 1)
+
+    # convert back to json for writing to Mongo
+    doc_list = json.loads(score_df.to_json(orient='records'))
+
+    # write data to MongoDB
     db = client.mildredleague
-    collection = getattr(db, against + str(season))
+    collection = getattr(db, 'boxplot' + str(season))
+    if list(collection.find()) == doc_list:
+        message = str(season) + " boxplot chart is already synced!"
+    else:
+        # if boxplots need to be recalculated, just wipe the collection and reinsert
+        collection.delete_many({})
+        collection.insert_many(doc_list)
+        message = "Bulk delete and insert complete!"
+
     data = list(collection.find({"name": {'$ne': 'Bye'}}))
 
     # convert to pandas DataFrame
     score_df = pandas.DataFrame(data)
 
+    # for and against split
+    score_df_for = score_df.loc[score_df.side == 'for']
+    score_df_against = score_df.loc[score_df.side == 'against']
+
     # names on the X axis
-    x_data = score_df.nick_name.unique().tolist()
+    x_data_for = score_df_for.nick_name.unique().tolist()
+    x_data_against = score_df_against.nick_name.unique().tolist()
 
     # Y axis is scores. need 2D array
-    y_data = [
-        score_df.loc[
-            score_df.nick_name == name, 'score'
-        ].tolist() for name in x_data
+    y_data_for = [
+        score_df_for.loc[
+            score_df_for.nick_name == name, 'score'
+        ].tolist() for name in x_data_for
+    ]
+    y_data_against = [
+        score_df_against.loc[
+            score_df_against.nick_name == name, 'score'
+        ].tolist() for name in x_data_against
     ]
 
     # list of hex color codes
     color_data = px.colors.qualitative.Light24
 
     return {
-        'x_data': x_data,
-        'y_data': y_data,
-        'color_data': color_data,
+        'message': message,
+        'for_data': {
+            'x_data': x_data_for,
+            'y_data': y_data_for,
+            'color_data': color_data,
+        },
+        'against_data': {
+            'x_data': x_data_against,
+            'y_data': y_data_against,
+            'color_data': color_data,
+        },
     }
 
 
@@ -468,19 +543,19 @@ def season_table(
         # run calc records for the season
         season_records_df = calc_records(
             games_df
-        ).reset_index()
+        )
         # pull all rankings and filter for the season
-        season_ranking_df = pandas.DataFrame(teams_data)
+        season_ranking_df = pandas.DataFrame(teams_data).set_index('_id')
         season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
         # merge playoff ranking and active status
-        season_records_df = season_records_df.merge(
+        season_table = season_records_df.merge(
             season_ranking_df[['nick_name', 'playoff_rank', 'active']],
             on='nick_name',
             how='left',
         ).sort_values(
             by=['playoff_rank', 'loss_total'], ascending=True
         )
-        return json.loads(season_records_df.to_json())
+        return json.loads(season_table.to_json(orient='table', index=False))
     else:
         # to resolve tiebreakers, need records for the season
         season_records_df = calc_records(
@@ -560,7 +635,7 @@ def season_table(
             by='playoff_seed'
         )
 
-        return json.loads(season_table.reset_index().to_json())
+        return json.loads(season_table.reset_index().to_json(orient='table', index=False))
 
 
 @ml_api.get("/{season}/sim")
@@ -657,83 +732,6 @@ def seed_sim(
     # ]]
 
     return None
-
-
-def season_boxplot_transform(season, against):
-    '''Call this function when games are added/edited/deleted.
-
-    Boxplot data is transformed and cached so boxplots can
-    be rendered more efficiently by end users.
-
-    '''
-    # read season and teams data from api
-    games_data, response_code = get_season_games(season=season)
-    teams_data, response_code = get_all_teams()
-    season_df = pandas.DataFrame(games_data.json)
-    # normalized score columns for two-week playoff games
-    season_df['a_score_norm'] = (
-        season_df['a_score'] / (
-            season_df['week_e'] - season_df['week_s'] + 1
-        )
-    )
-    season_df['h_score_norm'] = (
-        season_df['h_score'] / (
-            season_df['week_e'] - season_df['week_s'] + 1
-        )
-    )
-    # we just want unique scores. so let's stack away and home.
-    # this code runs to analyze Points For.
-    if against == 'for':
-        score_df = season_df[['a_nick', 'a_score_norm']].rename(
-            columns={'a_nick': 'name', 'a_score_norm': 'score'},
-        ).append(
-            season_df[['h_nick', 'h_score_norm']].rename(
-                columns={'h_nick': 'name', 'h_score_norm': 'score'},
-            ),
-            ignore_index=True,
-        )
-    # this code runs to analyze Points Against.
-    if against == 'against':
-        score_df = season_df[['a_nick', 'h_score_norm']].rename(
-            columns={'a_nick': 'name', 'h_score_norm': 'score'},
-        ).append(
-            season_df[['h_nick', 'a_score_norm']].rename(
-                columns={'h_nick': 'name', 'a_score_norm': 'score'},
-            ),
-            ignore_index=True,
-        )
-    # let's sort by playoff rank instead
-    # read season file, but we only need nick_name, season, and playoff_rank
-    ranking_df = pandas.DataFrame(teams_data.json)[['nick_name', 'season', 'playoff_rank']]
-    # merge this (filtered by season) into score_df so we can sort values
-    score_df = score_df.merge(
-        ranking_df.loc[ranking_df.season == int(season), ['nick_name', 'playoff_rank']],
-        left_on=['name'],
-        right_on=['nick_name'],
-        how='left',
-    ).sort_values(
-        by='playoff_rank', ascending=True,
-    )
-
-    # add a unique _id for Mongo
-    score_df['_id'] = range(1, len(score_df) + 1)
-
-    # convert back to json for writing to Mongo
-    doc_list = json.loads(score_df.to_json(orient='records'))
-
-    # write data to MongoDB
-    client = get_dbm()
-    db = client.mildredleague
-    collection = getattr(db, against + str(season))
-    if list(collection.find()) == doc_list:
-        message = str(season) + against + " boxplot chart is already synced!"
-    else:
-        # if boxplots need to be recalculated, just wipe the collection and reinsert
-        collection.delete_many({})
-        collection.insert_many(doc_list)
-        message = "Bulk delete and insert complete!"
-
-    return message
 
 
 def normalize_games(all_games_df):

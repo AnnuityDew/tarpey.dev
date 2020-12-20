@@ -19,7 +19,7 @@ mildredleague {{ season }}
 <p>
   <b>Notes</b><br>
   <ul>
-    {% for note in notes %}
+    {% for note in notes_data %}
     <li>{{ note.get('note') }}</li>
     {% endfor %}
   </ul>
@@ -33,61 +33,63 @@ mildredleague {{ season }}
   </ul>
   <div style="overflow-x:auto;"><table>
     <thead>
-      {% for header in table.columns %}
-      <th class="season_header">{{ header }}</th>
+      {% for header in season_table.get('schema').get('fields') %}
+      <th class="season_header">{{ header.get('name') }}</th>
       {% endfor %}
     </thead>
     <tbody>
-      {% for index, row in table.iterrows() %}
+    {% for data in season_table.get('data') %}
       <tr class="season_row">
+        {% if data.get('division') %}
         <td class="division">
-          {{ row.division }}
+          {{ data.get('division') }}
         </td>
+        {% endif %}
         <td class="nick_name">
-          {{ row.nick_name }}
+          {{ data.get('nick_name') }}
         </td>
         <td class="win_total">
-          {{ '{:.0f}'.format(row.win_total) }}
+          {{ '{:.0f}'.format(data.get('win_total')) }}
         </td>
         <td class="loss_total">
-          {{ '{:.0f}'.format(row.loss_total) }}
+          {{ '{:.0f}'.format(data.get('loss_total')) }}
         </td>
         <td class="tie_total">
-          {{ '{:.0f}'.format(row.tie_total) }}
+          {{ '{:.0f}'.format(data.get('tie_total')) }}
         </td>
         <td class="games_played">
-          {{ '{:.0f}'.format(row.games_played) }}
+          {{ '{:.0f}'.format(data.get('games_played')) }}
         </td>
         <td class="win_pct">
-          {{ '{:03.3f}'.format(row.win_pct) }}
+          {{ '{:03.3f}'.format(data.get('win_pct')) }}
         </td>
         <td class="points_for">
-          {{ '{:06.2f}'.format(row.points_for) }}
+          {{ '{:06.2f}'.format(data.get('points_for')) }}
         </td>
         <td class="points_against">
-          {{ '{:06.2f}'.format(row.points_against) }}
+          {{ '{:06.2f}'.format(data.get('points_against')) }}
         </td>
         <td class="avg_margin">
-          {{ '{:04.2f}'.format(row.avg_margin) }}
+          {{ '{:04.2f}'.format(data.get('avg_margin')) }}
         </td>
-        {% if row.division_rank %}
+        {% if data.get('division_rank') %}
         <td class="division_rank">
-          {{ '{:.0f}'.format(row.division_rank) }}
+          {{ '{:.0f}'.format(data.get('division_rank')) }}
         </td>
         {% endif %}
-        {% if row.playoff_seed %}
+        {% if data.get('playoff_seed') %}
         <td class="playoff_seed">
-          {{ '{:.0f}'.format(row.playoff_seed) }}
+          {{ '{:.0f}'.format(data.get('playoff_seed')) }}
         </td>
         {% endif %}
-        {% if row.playoff_rank %}
+        {% if data.get('playoff_rank') %}
         <td class="playoff_rank">
-          {{ '{:.0f}'.format(row.playoff_rank) }}
+          {{ '{:.0f}'.format(data.get('playoff_rank')) }}
         </td>
         {% endif %}
-        {% if row.active %}
+        {% if data.get('active') %}
         <td class="active">
-          {{ row.active }}
+          {{ data.get('active') }}
         </td>
         {% endif %}
       </tr>
@@ -102,79 +104,88 @@ mildredleague {{ season }}
 
 <div class="boxplots">
   <div class="boxplot" id="boxplot_for">
-    <script>
-      // boxplot for object
-      BOXPLOTFOR = document.getElementById('boxplot_for');
-      // pull x_data and y_data from Python
-      var xData = {{ x_data_for | safe }};
-      var yData = {{ y_data_for | safe }};
-      // plotData needs to be an array of valid traces, so
-      // here's a loop that constructs the traces from
-      // x_data and y_data, then pushes it into plotData
-      var plotData = [];
-      for ( var i = 0; i < xData.length; i ++ ) {
-        var trace = {
-          type: 'box',
-          y: yData[i],
-          name: xData[i],
-          boxpoints: 'all',
-        };
-        plotData.push(trace);
-      };
-      var layout = { 
-        template: tarpeydevDefault,
-        title: {{ season }} + ' Points For',
-        margin: {l:70, r:50, t:60, b:30},
-        legend: {orientation:'h', y:0, xanchor:'left', x:0},
-        xaxis: {
-          title: null,
-          showticklabels: false,
-        },
-        colorway: {{ color_data_for | safe }},
-      };
-      var config = { 
-        responsive: true
-      };
-      Plotly.newPlot(BOXPLOTFOR, plotData, layout, config)
-    </script>
   </div>
 
   <div class="boxplot" id="boxplot_against">
-    <script>
-      // boxplot against object
-      BOXPLOTAGAINST = document.getElementById('boxplot_against');
-      // pull x_data and y_data from Python
-      var xData = {{ x_data_against | safe }};
-      var yData = {{ y_data_against | safe }};
-      // plotData needs to be an array of valid traces, so
-      // here's a loop that constructs the traces from
-      // x_data and y_data, then pushes it into plotData
-      var plotData = [];
-      for ( var i = 0; i < xData.length; i ++ ) {
-        var trace = {
-          type: 'box',
-          y: yData[i],
-          name: xData[i],
-          boxpoints: 'all',
-        };
-        plotData.push(trace);
-      };
-      var layout = { 
-        template: tarpeydevDefault,
-        title: {{ season }} + ' Points Against',
-        margin: {l:70, r:50, t:60, b:30},
-        legend: {orientation:'h', y:0, xanchor:'left', x:0},
-        xaxis: {
-          title: null,
-          showticklabels: false,
-        },
-        colorway: {{ color_data_against | safe }},
-      };
-      var config = { 
-        responsive: true
-      };
-      Plotly.newPlot(BOXPLOTAGAINST, plotData, layout, config)
-    </script>
   </div>
 </div>
+
+<script>
+  var boxplotFor = () => {
+    // boxplot for object
+    BOXPLOTFOR = document.getElementById('boxplot_for');
+    // pull x_data and y_data from Python
+    chartData = {{boxplot_data | safe}}['for_data'];
+    var xData = chartData['x_data'];
+    var yData = chartData['y_data'];
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        type: 'box',
+        y: yData[i],
+        name: xData[i],
+        boxpoints: 'all',
+      };
+      plotData.push(trace);
+    };
+    var layout = { 
+      template: tarpeydevDefault,
+      title: {{ season }} + ' Points For',
+      margin: {l:70, r:50, t:60, b:30},
+      legend: {orientation:'h', y:0, xanchor:'left', x:0},
+      xaxis: {
+        title: null,
+        showticklabels: false,
+      },
+      colorway: chartData['color_data'],
+    };
+    var config = { 
+      responsive: true
+    };
+    Plotly.newPlot(BOXPLOTFOR, plotData, layout, config)
+  }
+
+  var boxplotAgainst = () => {
+    // boxplot against object
+    BOXPLOTAGAINST = document.getElementById('boxplot_against');
+    // pull x_data and y_data from Python
+    chartData = {{boxplot_data | safe}}['against_data'];
+    var xData = chartData['x_data'];
+    var yData = chartData['y_data'];
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        type: 'box',
+        y: yData[i],
+        name: xData[i],
+        boxpoints: 'all',
+      };
+      plotData.push(trace);
+    };
+    var layout = { 
+      template: tarpeydevDefault,
+      title: {{ season }} + ' Points Against',
+      margin: {l:70, r:50, t:60, b:30},
+      legend: {orientation:'h', y:0, xanchor:'left', x:0},
+      xaxis: {
+        title: null,
+        showticklabels: false,
+      },
+      colorway: chartData['color_data'],
+    };
+    var config = { 
+      responsive: true
+    };
+    Plotly.newPlot(BOXPLOTAGAINST, plotData, layout, config)
+  }
+
+  boxplotFor();
+  boxplotAgainst();
+</script>
 {% endblock %}

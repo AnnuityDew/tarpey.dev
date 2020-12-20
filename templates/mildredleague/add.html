@@ -76,7 +76,7 @@ mildredleague new game
             formDict[key] = value;
         });
         var request = new Request(
-            "add-game",
+            "/api/mildredleague/add-game",
             {
                 method: 'POST',
                 body: JSON.stringify(formDict)

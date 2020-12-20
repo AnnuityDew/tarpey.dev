@@ -22,7 +22,7 @@ mildredleague edit game
     function retrieveData() {
         document.getElementById("away").value = "Retrieving data...";
         var requestURL = (
-            "get-game/" +
+            "/api/mildredleague/get-game/" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(requestURL);
@@ -112,7 +112,7 @@ mildredleague edit game
             formDict[key] = value;
         });
         var request = new Request(
-            "edit-game",
+            "/api/mildredleague/edit-game/",
             {
                 method: 'PUT',
                 body: JSON.stringify(formDict)
@@ -140,7 +140,7 @@ mildredleague edit game
     function deleteData() {
         document.getElementById("confirm").innerHTML = "Deleting data...";
         var requestURL = (
-            "delete-game/" +
+            "/api/mildredleague/delete-game/" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(

@@ -91,18 +91,18 @@ def season_page(
     season: int,
     games_data=Depends(get_season_games),
     notes_data=Depends(get_season_notes),
-    boxplot_for=Depends(season_boxplot_fig),
-    boxplot_against=Depends(season_boxplot_fig),
+    boxplot_data=Depends(season_boxplot_fig),
     season_table=Depends(season_table),
 ):
 
     return templates.TemplateResponse(
         'mildredleague/season.html',
         context={
+            'request': request,
+            'season': season,
             'games_data': games_data,
             'notes_data': notes_data,
-            'boxplot_for': boxplot_for,
-            'boxplot_against': boxplot_against,
+            'boxplot_data': boxplot_data,
             'season_table': season_table,
         }
     )
