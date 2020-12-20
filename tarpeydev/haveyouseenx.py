@@ -1,5 +1,4 @@
 # import native Python packages
-import json
 
 # import third party packages
 from fastapi import APIRouter, Request, Depends

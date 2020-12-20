@@ -1,10 +1,9 @@
 # import Python packages
 import random
-from typing import Optional
 
 # import third party packages
 from fastapi import APIRouter, Depends
-from pydantic import BaseConfig, BaseModel, Field
+from pydantic import BaseModel, Field
 import pymongo
 from pymongo import MongoClient
 

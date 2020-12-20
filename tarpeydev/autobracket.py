@@ -1,6 +1,5 @@
 # import native Python packages
 import random
-import datetime
 
 # import third party packages
 from fastapi import APIRouter, Request
@@ -90,7 +89,11 @@ def run_tournament(model_choice, chaos_choice, model_current):
 
     # core of the model. this is the field that will be distributed
     kenpom_19['teamsim'] = kenpom_19['KenTeamAdjO'] / kenpom_19['KenTeamAdjD'] + (kenpom_19['KenTeamOppAdjEM'] / 100)
-    kenpom_19_full['teamsim'] = kenpom_19_full['KenTeamAdjO'] / kenpom_19_full['KenTeamAdjD'] + (kenpom_19_full['KenTeamOppAdjEM'] / 100)
+    kenpom_19_full['teamsim'] = (
+        kenpom_19_full['KenTeamAdjO'] /
+        kenpom_19_full['KenTeamAdjD'] +
+        (kenpom_19_full['KenTeamOppAdjEM'] / 100)
+    )
 
     # classic version
     if (model_choice == 'Classic'):
@@ -161,20 +164,20 @@ def run_tournament(model_choice, chaos_choice, model_current):
     # output modeled bracket to database.
     # step removed
 
-    if(str(bracket_19.loc[x-1, 'team1']) == str(w_team)):
-        winner = 'team1'
-    else:
-        winner = 'team2'
+    # if(str(bracket_19.loc[x-1, 'team1']) == str(w_team)):
+    #     winner = 'team1'
+    # else:
+    #     winner = 'team2'
 
-    champion_19 = pandas.DataFrame(
-        {
-            'champion': [bracket_19.loc[x-1, winner]],
-            'timestamp': datetime.datetime.now(),
-            'model_choice': model_choice,
-            'modelChaos': chaos_choice,
-            'modelSize': model_current,
-        }
-    )
+    # champion_19 = pandas.DataFrame(
+    #     {
+    #         'champion': [bracket_19.loc[x-1, winner]],
+    #         'timestamp': datetime.datetime.now(),
+    #         'model_choice': model_choice,
+    #         'modelChaos': chaos_choice,
+    #         'modelSize': model_current,
+    #     }
+    # )
 
     # output champion to champion table in database
     # step removed

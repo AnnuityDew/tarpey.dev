@@ -1,5 +1,6 @@
 # import native Python packages
 from enum import Enum
+from itertools import permutations
 import json
 from typing import List
 
@@ -458,7 +459,7 @@ def season_table(
     season: int,
     games_data: List[MLGame] = Depends(get_season_games),
     teams_data: List[MLTeam] = Depends(get_all_teams),
-    ):
+):
     '''Only use the else statement for the active season, to
     resolve tiebreakers.'''
     games_df = pandas.DataFrame(games_data)
@@ -560,6 +561,102 @@ def season_table(
         )
 
         return json.loads(season_table.reset_index().to_json())
+
+
+@ml_api.get("/{season}/sim")
+def seed_sim(
+    season: int,
+    games_data: List[MLGame] = Depends(get_season_games),
+    winners_array=['t1', 't2', 't3', 't4', 't5', 't6', 't7'],
+):
+    # this function will need to be reimplemented next year!
+    # return garbage for now.
+    return winners_array
+    # convert to dataframe
+    games_df = pandas.DataFrame(games_data).set_index('_id')
+
+    # we're going to concatenate the API data with simulated data
+    # that the user has chosen, so we can rerun tiebreakers
+    sim_df = pandas.DataFrame(
+        data=[
+            [
+                'Division 6',
+                'Referees',
+                'AFC East',
+                'Division 6',
+                'Referees',
+                'AFC East',
+                'Referees',
+            ],
+            ['sim' for i in range(0, 7)],
+            [
+                'Tarpey',
+                'Charles',
+                'Conti',
+                'Frank',
+                'mballen',
+                'Jake',
+                'Brad',
+            ],
+            [
+                winners_array.count('Tarpey')*20 + 80,
+                winners_array.count('Charles')*20 + 80,
+                winners_array.count('Conti')*20 + 80,
+                winners_array.count('Frank')*20 + 80,
+                winners_array.count('mballen')*20 + 80,
+                winners_array.count('Jake')*20 + 80,
+                winners_array.count('Brad')*20 + 80,
+            ],
+            ['sim' for i in range(0, 7)],
+            [
+                'Division 6',
+                'Referees',
+                'AFC East',
+                'Division 6',
+                'AFC East',
+                'AFC East',
+                'Referees',
+            ],
+            ['sim' for i in range(0, 7)],
+            [
+                'Brando',
+                'Mildred',
+                'Samik',
+                'Fonti',
+                'Sendzik',
+                'Kindy',
+                'Tommy',
+            ],
+            [
+                winners_array.count('Brando')*20 + 80,
+                winners_array.count('Mildred')*20 + 80,
+                winners_array.count('Samik')*20 + 80,
+                winners_array.count('Fonti')*20 + 80,
+                winners_array.count('Sendzik')*20 + 80,
+                winners_array.count('Kindy')*20 + 80,
+                winners_array.count('Tommy')*20 + 80,
+            ],
+            ['sim' for i in range(0, 7)],
+            [0 for i in range(0, 7)],
+            [2020 for i in range(0, 7)],
+            [14 for i in range(0, 7)],
+            [14 for i in range(0, 7)],
+        ]
+    ).transpose()
+    sim_df.columns = games_df.columns.tolist()
+    sim_df = pandas.concat([games_df, sim_df], ignore_index=True)
+
+    # table = season_table_active(season, sim_df)[[
+    #     'division',
+    #     'nick_name',
+    #     'win_total',
+    #     'loss_total',
+    #     'tie_total',
+    #     'division_rank',
+    #     'playoff_seed',
+    # ]]
+
+    return None
 
 
 def season_boxplot_transform(season, against):

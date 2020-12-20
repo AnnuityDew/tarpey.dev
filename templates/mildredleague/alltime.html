@@ -23,19 +23,29 @@
 </p>
 
 <div class="plots" id="matchup_heatmap">
-  <script>
+</div>
+
+<div class="plots" id="ranking_heatmap">
+</div>
+
+<div class="plots" id="win_bars">
+</div>
+
+<script>
+  var matchupHeatmap = () => {
     MATCHUPS = document.getElementById('matchup_heatmap')
     // pull x_data, y_data, z_data, and color data from Python
-    var xData = {{x_opponents | safe}};
-    var yData = {{y_winners | safe}};
-    var zData = {{z_matchup_data | safe}};
+    var chartData = {{matchup_data|safe}};
+    var xData = chartData['x_opponents'];
+    var yData = chartData['y_winners'];
+    var zData = chartData['z_matchup_data'];
     // replace z data -1s with nulls
     for (var i = 0; i < zData.length; i++)
       for (var j = 0; j < zData[i].length; j++)
         if (zData[i][j] == -1)
           zData[i][j] = null;
-    var colorData = {{matchup_colors | safe}};
-    var hoverData = {{hover_data | safe}};
+    var colorData = chartData['matchup_colors'];
+    var hoverData = chartData['hover_data'];
     var plotData = [{
       x: xData,
       y: yData,
@@ -92,18 +102,17 @@
     }
     var config = {responsive: true};
     Plotly.newPlot(MATCHUPS, plotData, layout, config);
-  </script>
-</div>
+  }
 
-<div class="plots" id="ranking_heatmap">
-  <script>
+  var rankingHeatmap = () => {
     // ranking heatmap object
     RANKINGS = document.getElementById('ranking_heatmap')
     // pull x_data, y_data, z_data, and color data from Python
-    var xData = {{x_seasons | safe}};
-    var yData = {{y_ranking_names | safe}};
-    var zData = {{z_rankings | safe}};
-    var colorData = {{heatmap_colors | safe}};
+    var chartData = {{ranking_data | safe}}
+    var xData = chartData['x_seasons'];
+    var yData = chartData['y_ranking_names'];
+    var zData = chartData['z_rankings'];
+    var colorData = chartData['heatmap_colors'];
     // replace z data 0s with nulls
     for (var i = 0; i < zData.length; i++)
       for (var j = 0; j < zData[i].length; j++)
@@ -166,17 +175,16 @@
     }
     var config = {responsive: true};
     Plotly.newPlot(RANKINGS, plotData, layout, config);
-  </script>
-</div>
+  }
 
-<div class="plots" id="win_bars">
-  <script>
+  var winBars = () => {
     // win bars object
     TOTALWINS = document.getElementById('win_bars')
+    var chartData = {{win_data | safe}}
     // pull x_data, y_data, and color data from Python
-    var xData = {{ x_data_bars | safe }};
-    var yData = {{ y_data_bars | safe }};
-    var barColors = {{ bar_colors | safe }};
+    var xData = chartData['x_data'];
+    var yData = chartData['y_data'];
+    var barColors = chartData['color_data'];
     // plotData needs to be an array of valid traces, so
     // here's a loop that constructs the traces from
     // x_data and y_data, then pushes it into plotData
@@ -207,6 +215,10 @@
     };
     var config = {responsive: true};
     Plotly.newPlot(TOTALWINS, plotData, layout, config);
-  </script>
-</div>
+  }
+
+  matchupHeatmap();
+  rankingHeatmap();
+  winBars();
+</script>
 {% endblock %}

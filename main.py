@@ -2,10 +2,7 @@
 
 # import third party packages
 from fastapi import FastAPI
-from starlette.applications import Starlette
-from starlette.routing import Route, Mount
-from starlette.staticfiles import StaticFiles
-
+from fastapi.staticfiles import StaticFiles
 
 # import custom local stuff
 from instance.config import GCP_FILE
