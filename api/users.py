@@ -73,6 +73,10 @@ class UserOut(UserBase):
     pass
 
 
+class CredentialTester(UserBase):
+    pass
+
+
 class UserDB(UserBase):
     hashed_password: str
 
