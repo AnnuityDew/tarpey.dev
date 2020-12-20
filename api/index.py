@@ -10,6 +10,7 @@ from pymongo import MongoClient
 
 # import custom local stuff
 from api.db import get_dbm
+from api.users import oauth2_scheme
 
 
 index_api = APIRouter(
@@ -35,7 +36,11 @@ async def random_quote(client: MongoClient = Depends(get_dbm)):
 
 
 @index_api.post('/add-quote')
-async def add_quote(quote: RandomQuote, client: MongoClient = Depends(get_dbm)):
+async def add_quote(
+    quote: RandomQuote,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.quotes
     collection = db.quotes
     try:

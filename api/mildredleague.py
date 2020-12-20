@@ -14,6 +14,7 @@ from pymongo import MongoClient
 
 # import custom local stuff
 from api.db import get_dbm
+from api.users import oauth2_scheme
 
 
 ml_api = APIRouter(
@@ -92,7 +93,11 @@ class MLNote(BaseModel):
 
 # declaring type of the client just helps with autocompletion.
 @ml_api.post('/add-game')
-def add_game(doc: MLGame, client: MongoClient = Depends(get_dbm)):
+def add_game(
+    doc: MLGame,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.games
     try:
@@ -109,7 +114,10 @@ def add_game(doc: MLGame, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.get('/get-game/{doc_id}', response_model=MLGame)
-async def get_game(doc_id: int, client: MongoClient = Depends(get_dbm)):
+async def get_game(
+    doc_id: int,
+    client: MongoClient = Depends(get_dbm),
+):
     db = client.mildredleague
     collection = db.games
     doc = list(collection.find({'_id': doc_id}))
@@ -120,7 +128,11 @@ async def get_game(doc_id: int, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.put('/edit-game')
-def edit_game(doc: MLGame, client: MongoClient = Depends(get_dbm)):
+def edit_game(
+    doc: MLGame,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.games
     collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
@@ -134,7 +146,11 @@ def edit_game(doc: MLGame, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.delete('/delete-game/{doc_id}')
-def delete_game(doc_id: int, client: MongoClient = Depends(get_dbm)):
+def delete_game(
+    doc_id: int,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.games
     doc = collection.find_one_and_delete({'_id': doc_id})
@@ -187,7 +203,11 @@ def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.post('/add-note')
-def add_note(doc: MLNote, client: MongoClient = Depends(get_dbm)):
+def add_note(
+    doc: MLNote,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.notes
     try:
@@ -221,7 +241,11 @@ def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.put('/edit-note')
-def edit_note(doc: MLNote, client: MongoClient = Depends(get_dbm)):
+def edit_note(
+    doc: MLNote,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.notes
     collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
@@ -229,7 +253,11 @@ def edit_note(doc: MLNote, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.delete('/delete-note/{doc_id}')
-def delete_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
+def delete_note(
+    doc_id: int,
+    client: MongoClient = Depends(get_dbm),
+    token: str = Depends(oauth2_scheme),
+):
     db = client.mildredleague
     collection = db.notes
     doc = collection.find_one_and_delete({'_id': doc_id})
@@ -359,7 +387,7 @@ def season_boxplot_fig(season: int, against: Against, client: MongoClient = Depe
 def matchup_heatmap_fig(
     games_data: List[MLGame] = Depends(get_all_games),
     teams_data: List[MLTeam] = Depends(get_all_teams),
-    ):
+):
     # convert to pandas DataFrame
     games_df = pandas.DataFrame(games_data)
     # normalize games

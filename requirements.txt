@@ -20,4 +20,7 @@ seaborn==0.10.1
 scipy==1.4.1
 starlette==0.13.6
 uvicorn==0.13.1  # part of FastAPI Docker image
-Werkzeug==1.0.1
+python-jose==3.2.0
+cryptography==3.3.1
+passlib==1.7.4
+bcrypt==3.2.0
