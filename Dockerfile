@@ -1,9 +1,12 @@
 # FastAPI optimized
 # https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8-2020-06-06
-COPY requirements.txt /app
+FROM python:3.8
+ENV APP_HOME /app
+WORKDIR ${APP_HOME}
+COPY requirements.txt ./
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
-COPY . /app
+COPY . ./
+CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker --threads 8 main:app
 
 # need to add code for FastAPI generic
 # insert code here

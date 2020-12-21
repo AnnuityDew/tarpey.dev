@@ -1,5 +1,4 @@
 # import native Python packages
-import os
 
 # import third party packages
 from fastapi import FastAPI
@@ -34,10 +33,16 @@ def create_fastapi_app():
         docs_url=None,
         redoc_url=None,
     )
+
     api_app = FastAPI(
         title="tarpey.dev API",
         description="API for Mike Tarpey's app sandbox.",
     )
+
+    # config stuff
+    view_app.mount("/static", app=StaticFiles(directory='static'), name="static")
+    # if os.getenv('PRODUCTION') == 'prod':
+        # view_app.add_middleware(HTTPSRedirectMiddleware)
 
     # include subrouters of views
     view_app.include_router(index.index_views)
@@ -55,10 +60,6 @@ def create_fastapi_app():
 
     # stitch it all together
     view_app.mount("/api", app=api_app, name="api_app")
-    if os.getenv('PRODUCTION') is True:
-        view_app.mount("/static", app=StaticFiles(directory='app/static'), name="static")
-    else:
-        view_app.mount("/static", app=StaticFiles(directory='static'), name="static")
 
     return view_app
 
