@@ -2,8 +2,6 @@ aiofiles==0.6.0
 click==7.1.1
 dnspython==1.16.0
 FastAPI==0.62.0  # part of FastAPI Docker image
-Flask==1.1.2
-flask_swagger_ui==3.36.0
 google-cloud-firestore==1.9.0
 google-python-cloud-debugger  # Required for GCP debugging.
 gunicorn==20.0.4  # part of FastAPI Docker image

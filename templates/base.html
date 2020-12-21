@@ -31,11 +31,7 @@
     {% if True %}
     <nav>
       Hello!
-      {% if False %}
-      <a href="{{ url_for('users:logout') }}">logout</a>
-      <a href="{{ url_for('swagger_ui:show') }}">swagger</a>
-      <a href="{{ url_for('users:login') }}">login</a>
-      {% endif %}
+      <a href="{{ url_for('login') }}">login</a>
       <a class="index" href="{{ url_for('homepage') }}">home</a>
       <a class="haveyouseenx" href="{{ url_for('haveyouseenx') }}">haveyouseenx</a>
       <a class="mildredleague" href="{{ url_for('mildredleague') }}">mildredleague</a>

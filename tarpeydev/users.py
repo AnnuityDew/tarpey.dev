@@ -1,134 +1,109 @@
+# import native Python packages
 import functools
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+# import third party packages
+from fastapi import APIRouter, Request, Depends, Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+
+
+# import custom local stuff
+from api.users import (
+    login_for_access_token, create_user, UserOut, Token
 )
 
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from tarpeydevflask.db import get_dbm
-
-bp = Blueprint('users', __name__, url_prefix='/users')
-
-
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        client = get_dbm()
-        db = client.users
-        error = None
-
-        if not username:
-            error = 'Username is required.'
-        elif not password:
-            error = 'Password is required.'
-        elif not username.isalnum():
-            error = 'Username must be alphanumeric.'
-        elif not password.isalnum():
-            error = 'Password must be alphanumeric.'
-        elif (username != 'matt') & (username != 'annuitydew'):
-            error = 'Registration is currently closed!'
-        else:
-            user = db.users.find_one({"_id": username})
-            if user is not None:
-                error = f'User {username} is already registered.'
-
-        if error is None:
-            db.users.insert_one({
-                "_id": username,
-                "password": generate_password_hash(password)
-            })
-            return redirect(url_for('users.login'))
-
-        flash(error)
-
-    return render_template('users/register.html')
+# router and templates
+user_views = APIRouter(prefix="/users")
+templates = Jinja2Templates(directory='templates')
 
 
-@bp.route('/', methods=('GET', 'POST'))
-@bp.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        client = get_dbm()
-        db = client.users
-        error = None
-        user = db.users.find_one({"_id": username})
-
-        if not username.isalnum():
-            error = 'Username must be alphanumeric.'
-        elif not password.isalnum():
-            error = 'Password must be alphanumeric.'
-        elif user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user.get('password'), password):
-            error = 'Incorrect password.'
-
-        if error is None:
-            session.clear()
-            session['user_id'] = user.get('_id')
-            return redirect(url_for('index.index'))
-
-        flash(error)
-
-    return render_template('users/login.html')
+@user_views.get('/register', response_class=HTMLResponse)
+def register(request: Request):
+    return templates.TemplateResponse(
+        'users/register.html',
+        context={'request': request},
+    )
 
 
-@bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
+@user_views.post('/register-result', response_class=HTMLResponse)
+def register_result(
+    request: Request,
+    user: UserOut = Depends(create_user),
+):
+    if user:
+        return templates.TemplateResponse(
+            'users/login.html',
+            context={
+                'request': request,
+                'message': 'Registration successful! Please login.'
+            },
+        )
     else:
-        client = get_dbm()
-        db = client.users
-        g.user = db.users.find_one({"_id": user_id})
+        return templates.TemplateResponse(
+            'users/register.html',
+            context={
+                'request': request,
+                'message': 'Registration failed!'
+            },
+        )
 
 
-@bp.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('index.index'))
+@user_views.get('/login', response_class=HTMLResponse)
+def login(request: Request):
+    return templates.TemplateResponse(
+        'users/login.html',
+        context={'request': request},
+    )
 
 
-@users_api.post('/add-user', response_model=UserOut)
-def create_user(user: UserIn):
-    return user
-
-
-@api_bp.route('/users/<username>', methods=['GET'])
-@login_required
-def read(username):
-    client = get_dbm()
-    db = client.users
-    user = db.users.find_one({"_id": username})
-    if user is not None:
-        return user.get("_id")
+@user_views.post('/login-result', response_class=HTMLResponse)
+def login_result(
+    request: Request,
+    response: Response,
+    token: Token = Depends(login_for_access_token),
+):
+    if token:
+        token = jsonable_encoder(token)
+        response = templates.TemplateResponse(
+            'users/login.html',
+            context={
+                'request': request,
+                'message': 'Login successful!',
+            },
+        )
+        response.set_cookie(
+            key="Authorization",
+            value=f"Bearer {token['access_token']}",
+            max_age=1234,
+            expires=1234,
+            secure=True,
+            httponly=True,
+        )
+        return response
     else:
-        return "Error!"
+        return templates.TemplateResponse(
+            'users/login.html',
+            context={
+                'request': request,
+                'message': 'Login error!',
+            },
+        )
 
 
-@api_bp.route('/users', methods=['POST', 'PUT'])
-@login_required
-def update():
-    return
-
-
-@api_bp.route('/users', methods=['GET', 'DELETE'])
-@login_required
-def delete():
-    return
+@user_views.get('/logout', response_class=HTMLResponse)
+def logout(request: Request):
+    response = RedirectResponse(request.url_for('homepage'))
+    response.delete_cookie("Authorization")
+    return response
 
 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('users.login'))
+        if user is None:
+            return RedirectResponse(request.url_for('login'))
 
         return view(**kwargs)
 

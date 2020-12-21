@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 # import custom local stuff
 from instance.config import GCP_FILE
 from tarpeydev import (
-    index, autobracket, ddr, haveyouseenx, mildredleague
+    index, autobracket, ddr, haveyouseenx, mildredleague, users
 )
 from api.index import index_api
 from api.haveyouseenx import hysx_api
@@ -44,6 +44,7 @@ def create_fastapi_app():
     view_app.include_router(ddr.ddr_views)
     view_app.include_router(haveyouseenx.hysx_views)
     view_app.include_router(mildredleague.ml_views)
+    view_app.include_router(users.user_views)
 
     # include subrouters of the FastAPI app
     api_app.include_router(index_api)
