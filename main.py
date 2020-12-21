@@ -1,4 +1,5 @@
 # import native Python packages
+import os
 
 # import third party packages
 from fastapi import FastAPI
@@ -53,7 +54,10 @@ def create_fastapi_app():
 
     # stitch it all together
     view_app.mount("/api", app=api_app, name="api_app")
-    view_app.mount("/static", app=StaticFiles(directory="static"), name="static")
+    if os.getenv('PRODUCTION') is True:
+        view_app.mount("/static", app=StaticFiles(directory='app/static'), name="static")
+    else:
+        view_app.mount("/static", app=StaticFiles(directory='static'), name="static")
 
     return view_app
 
