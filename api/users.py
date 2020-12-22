@@ -1,21 +1,19 @@
 # import native Python packages
-from datetime import datetime, timedelta
+from datetime import timedelta
 from enum import Enum
 from typing import Optional
 
 # import third party packages
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import (
-    OAuth2PasswordBearer, OAuth2PasswordRequestForm
-)
-from jose import JWTError, jwt
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_login import LoginManager
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, validator
 import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
-from api.db import get_dbm
+from api.db import get_dbm, get_dbm_no_close
 from instance.config import (
     SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 )
@@ -27,11 +25,17 @@ users_api = APIRouter(
 )
 
 # security schemes
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/token")
+oauth2_scheme = LoginManager(
+    SECRET_KEY,
+    tokenUrl='users/token',
+    algorithm=ALGORITHM,
+    use_cookie=True,
+)
+oauth2_scheme.cookie_name = 'Authorization'
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class ApprovedUsers(str, Enum):
+class ApprovedUsers(str, Enum): 
     TARPEY = "annuitydew"
     MATT = "matt"
 
@@ -99,48 +103,14 @@ async def login_for_access_token(
     # sub should be unique across entire application, and it
     # should be a string. user.username could instead have a
     # bot prefix for "bot:x" access to do something.
-    access_token = create_access_token(
-        data={"sub": user.username}, expire_delta=access_token_expires,
+    access_token = oauth2_scheme.create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-async def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    client: MongoClient = Depends(get_dbm),
-):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid authentication credentials!",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
-
-    user = get_user(token_data.username, client)
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-async def get_current_active_user(current_user: UserOut = Depends(get_current_user)):
-    if current_user.disabled:
-        raise HTTPException(
-            status_code=400,
-            detail="Inactive user!"
-        )
-    return current_user
-
-
 @users_api.get("/me", response_model=UserOut)
-async def read_self(current_user: UserOut = Depends(get_current_active_user)):
+async def read_self(current_user: UserOut = Depends(oauth2_scheme.get_current_user)):
     return current_user
 
 
@@ -177,29 +147,30 @@ def get_password_hash(password):
 def authenticate_user(username: str, password: str, client: MongoClient):
     user = get_user(username, client)
     if not user:
-        return False
+        return None
     if not verify_password(password, user.hashed_password):
-        return False
+        return None
     return user
 
 
-def get_user(username: str, client: MongoClient):
+@oauth2_scheme.user_loader
+def get_user(username: str, client: MongoClient = None):
+    # this is where rubber meets the road between tiangolo's tutorial
+    # and the fastapi_login docs. the mongo client is passed through
+    # when FastAPI calls it. for fastapi_login's decorator, which only
+    # passes in the username value of the decoded token, we go out and
+    # get the client separately.
+    # we could move the FastAPI code to authenticate_user to keep
+    # these two more separate, but it doesn't seem necessary since
+    # the password gets chopped off by the UserOut model in the /me
+    # endpoint.
+    if client is None:
+        client = get_dbm_no_close()
     db = client.users
     collection = db.users
     user_dict = collection.find_one({"_id": username})
+    # since we're not calling this with yield, need to
+    # manually close mongo here
+    client.close()
     if user_dict:
         return UserDB(**user_dict)
-
-
-def create_access_token(
-    data: dict,
-    expire_delta: Optional[timedelta] = None,
-):
-    to_encode = data.copy()
-    if expire_delta:
-        expire = datetime.utcnow() + expire_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt

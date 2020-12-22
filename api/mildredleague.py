@@ -15,7 +15,7 @@ from pymongo import MongoClient
 
 # import custom local stuff
 from api.db import get_dbm
-from api.users import oauth2_scheme
+from api.users import oauth2_scheme, UserOut
 
 
 ml_api = APIRouter(
@@ -97,7 +97,7 @@ class MLNote(BaseModel):
 async def add_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.games
@@ -127,7 +127,7 @@ async def get_game(
 async def edit_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.games
@@ -140,7 +140,7 @@ async def edit_game(
 async def delete_game(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.games
@@ -192,7 +192,7 @@ def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
 def add_note(
     doc: MLNote,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.notes
@@ -230,7 +230,7 @@ def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
 def edit_note(
     doc: MLNote,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.notes
@@ -242,7 +242,7 @@ def edit_note(
 def delete_note(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
-    token: str = Depends(oauth2_scheme),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.notes

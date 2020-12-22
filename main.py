@@ -42,7 +42,7 @@ def create_fastapi_app():
     # config stuff
     view_app.mount("/static", app=StaticFiles(directory='static'), name="static")
     # if os.getenv('PRODUCTION') == 'prod':
-        # view_app.add_middleware(HTTPSRedirectMiddleware)
+    # view_app.add_middleware(HTTPSRedirectMiddleware)
 
     # include subrouters of views
     view_app.include_router(index.index_views)

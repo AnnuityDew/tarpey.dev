@@ -5,12 +5,19 @@ from pymongo import MongoClient
 from instance.config import MONGO_CONNECT
 
 
+# async client
 async def get_dbm():
     client = MongoClient(MONGO_CONNECT)
     try:
         yield client
     finally:
         client.close()
+
+
+# regular client WITHOUT CLOSE
+def get_dbm_no_close():
+    client = MongoClient(MONGO_CONNECT)
+    return client
 
 
 async def auto_increment_mongo(database, collection):

@@ -22,7 +22,7 @@ mildredleague notes
     function retrieveData() {
         document.getElementById("note").value = "Retrieving data...";
         var requestURL = (
-            "get-note/" +
+            "/api/mildredleague/get-note/" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(requestURL);
@@ -79,7 +79,7 @@ mildredleague notes
             formDict[key] = value;
         });
         var request = new Request(
-            "add-note",
+            "/api/mildredleague/add-note",
             {
                 method: 'POST',
                 body: JSON.stringify(formDict)
@@ -110,10 +110,10 @@ mildredleague notes
             formDict[key] = value;
         });
         var request = new Request(
-            "edit-note",
+            "/api/mildredleague/edit-note",
             {
                 method: 'PUT',
-                body: JSON.stringify(formDict)
+                body: JSON.stringify(formDict),
             }
         );
         fetch(request).then(
@@ -138,7 +138,7 @@ mildredleague notes
     function deleteData() {
         document.getElementById("confirm").innerHTML = "Deleting data...";
         var requestURL = (
-            "delete-note/" +
+            "/api/mildredleague/delete-note" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(
