@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Optional
 
 # import third party packages
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
 from passlib.context import CryptContext
@@ -24,8 +24,37 @@ users_api = APIRouter(
     tags=["users"],
 )
 
-# security schemes
-oauth2_scheme = LoginManager(
+
+# security scheme.
+# we're overwriting the __call__ method of LoginManager
+# from fastapi_login to check for headers first, and only
+# check for cookie if no headers exist. it's the opposite
+# order of fastapi_login essentially, so the docs will work
+# correctly.
+class LoginManagerReversed(LoginManager):
+    async def __call__(self, request: Request):
+        """
+        Provides the functionality to act as a Dependency
+        :param Request request: The incoming request, this is
+            set automatically by FastAPI
+        :return: The user object or None
+        :raises: The not_authenticated_exception if set by the user
+        """
+        token = None
+        if self.use_header:
+            token = await super(LoginManager, self).__call__(request)
+
+        if token is None and self.use_cookie:
+            token = self._token_from_cookie(request)
+
+        if token is not None:
+            return await self.get_current_user(token)
+
+        # No token is present in the request and no Exception has been raised (auto_error=False)
+        raise self.not_authenticated_exception
+
+
+oauth2_scheme = LoginManagerReversed(
     SECRET_KEY,
     tokenUrl='users/token',
     algorithm=ALGORITHM,
@@ -35,7 +64,7 @@ oauth2_scheme.cookie_name = 'Authorization'
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-class ApprovedUsers(str, Enum): 
+class ApprovedUsers(str, Enum):
     TARPEY = "annuitydew"
     MATT = "matt"
 
@@ -51,7 +80,6 @@ class TokenData(BaseModel):
 
 class UserBase(BaseModel):
     username: ApprovedUsers = Field(..., alias='_id')
-    disabled: Optional[bool] = False
 
     @validator('username')
     def username_alphanumeric(cls, name):
@@ -79,6 +107,28 @@ class UserOut(UserBase):
 
 class UserDB(UserBase):
     hashed_password: str
+
+
+@users_api.post("/", response_model=UserOut)
+async def create_user(
+    new_user: UserIn,
+    client: MongoClient = Depends(get_dbm),
+):
+    db = client.users
+    collection = db.users
+
+    try:
+        collection.insert_one({
+            "_id": new_user.username,
+            "hashed_password": get_password_hash(new_user.password)
+        })
+    except pymongo.errors.DuplicateKeyError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"{new_user.username} is already registered!"
+        )
+
+    return new_user
 
 
 @users_api.post("/token", response_model=Token)
@@ -110,30 +160,38 @@ async def login_for_access_token(
 
 
 @users_api.get("/me", response_model=UserOut)
-async def read_self(current_user: UserOut = Depends(oauth2_scheme.get_current_user)):
+async def read_self(current_user: UserOut = Depends(oauth2_scheme)):
     return current_user
 
 
-@users_api.post("/", response_model=UserOut)
-async def create_user(
-    new_user: UserIn,
+@users_api.delete("/me")
+async def delete_self(
+    client: MongoClient = Depends(get_dbm),
+    current_user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.users
+    collection = db.users
+    doc = collection.find_one_and_delete({'_id': current_user.username})
+    if doc:
+        return "Success! Deleted user " + str(current_user.username) + "."
+    else:
+        return "Something weird happened..."
+
+
+@users_api.patch("/password", response_model=UserOut)
+async def change_password(
+    updated_user: UserIn,
+    current_user: UserOut = Depends(oauth2_scheme),
     client: MongoClient = Depends(get_dbm),
 ):
     db = client.users
     collection = db.users
+    collection.update_one(
+        {"_id": current_user.username},
+        {'$set': {"hashed_password": get_password_hash(updated_user.password)}},
+    )
 
-    try:
-        collection.insert_one({
-            "_id": new_user.username,
-            "hashed_password": get_password_hash(new_user.password)
-        })
-    except pymongo.errors.DuplicateKeyError:
-        raise HTTPException(
-            status_code=400,
-            detail=f"{new_user.username} is already registered!"
-        )
-
-    return new_user
+    return updated_user
 
 
 def verify_password(plain_password, hashed_password):

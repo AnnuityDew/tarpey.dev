@@ -1,5 +1,4 @@
 # import native Python packages
-import functools
 import os
 
 # import third party packages
@@ -9,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 # import custom local stuff
 from api.users import (
-    oauth2_scheme, login_for_access_token, create_user, UserOut, Token
+    login_for_access_token, create_user, UserOut, Token
 )
 
 
@@ -104,14 +103,3 @@ def logout(request: Request):
     response = RedirectResponse(request.url_for('homepage'))
     response.delete_cookie("Authorization")
     return response
-
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if user is None:
-            return RedirectResponse(request.url_for('login'))
-
-        return view(**kwargs)
-
-    return wrapped_view

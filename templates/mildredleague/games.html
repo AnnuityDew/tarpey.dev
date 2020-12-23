@@ -10,15 +10,49 @@
 {% endblock %}
 
 {% block header %}
-mildredleague new game
+mildredleague edit game
 {% endblock %}
 
 {% block content %}
 
+<button id="get-button">Retrieve game</button><br>
+
+<script>
+    document.getElementById("get-button").addEventListener("click", retrieveData);
+    function retrieveData() {
+        document.getElementById("away").value = "Retrieving data...";
+        var requestURL = (
+            "/api/mildredleague/get-game/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(requestURL);
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("away").value = "API error!";
+                    return;
+                } 
+                response.json().then(
+                    data => {
+                        for (let key in data) {
+                            document.getElementById(key).value = data[key]; 
+                        }
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
 <form id="game-info">
     <section class="game_data">
         <label for="_id"><span class="add-game">Game ID</span></label>
-        <input name="_id" type="number" id="_id" value="{{ next_id }}"required><br>
+        <input name="_id" type="number" id="_id" required><br>
         <label for="away"><span class="add-game">Away Team</span></label>
         <input name="away" type="text" id="away"><br>
         <label for="a_name"><span class="add-game">Away Name</span></label>
@@ -66,8 +100,12 @@ mildredleague new game
 </form>
 
 <button id="add-button">Add game</button>
+<button id="edit-button">Edit game</button>
+<button id="delete-button">Delete game</button>
 <script>
     document.getElementById("add-button").addEventListener("click", addData);
+    document.getElementById("edit-button").addEventListener("click", editData);
+    document.getElementById("delete-button").addEventListener("click", deleteData);
     function addData() {
         document.getElementById("confirm").innerHTML = "Adding data...";
         var formData = new FormData(document.getElementById("game-info"));
@@ -87,6 +125,68 @@ mildredleague new game
                 if (response.status !== 200) {
                     console.log('There was a problem! Code: ' + response.status);
                 }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function editData() {
+        document.getElementById("confirm").innerHTML = "Editing data...";
+        var formData = new FormData(document.getElementById("game-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "/api/mildredleague/edit-game",
+            {
+                method: 'PUT',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("confirm").innerHTML = "API error!";
+                    return;
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function deleteData() {
+        document.getElementById("confirm").innerHTML = "Deleting data...";
+        var requestURL = (
+            "/api/mildredleague/delete-game" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(
+            requestURL,
+            {
+                method: 'DELETE'
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                } 
                 response.text().then(
                     data => {
                         document.getElementById("confirm").innerHTML = data

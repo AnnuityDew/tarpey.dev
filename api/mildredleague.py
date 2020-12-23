@@ -93,7 +93,7 @@ class MLNote(BaseModel):
 
 
 # declaring type of the client just helps with autocompletion.
-@ml_api.post('/add-game')
+@ml_api.post('/game')
 async def add_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
@@ -109,7 +109,7 @@ async def add_game(
         return "Game " + str(doc.doc_id) + " already exists!"
 
 
-@ml_api.get('/get-game/{doc_id}', response_model=MLGame)
+@ml_api.get('/game/{doc_id}', response_model=MLGame)
 async def get_game(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
@@ -123,7 +123,7 @@ async def get_game(
         return "No document found!"
 
 
-@ml_api.put('/edit-game')
+@ml_api.put('/game')
 async def edit_game(
     doc: MLGame,
     client: MongoClient = Depends(get_dbm),
@@ -136,7 +136,7 @@ async def edit_game(
     return "Success! Edited game " + str(doc.doc_id) + "."
 
 
-@ml_api.delete('/delete-game/{doc_id}')
+@ml_api.delete('/game/{doc_id}')
 async def delete_game(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
@@ -188,7 +188,7 @@ def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
         return data
 
 
-@ml_api.post('/add-note')
+@ml_api.post('/note')
 def add_note(
     doc: MLNote,
     client: MongoClient = Depends(get_dbm),
@@ -203,7 +203,7 @@ def add_note(
         return "Note " + str(doc.doc_id) + " already exists!"
 
 
-@ml_api.get('/get-note/{doc_id}', response_model=MLNote)
+@ml_api.get('/note/{doc_id}', response_model=MLNote)
 def get_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
     db = client.mildredleague
     collection = db.notes
@@ -214,19 +214,7 @@ def get_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
         return "No document found!"
 
 
-@ml_api.get('/notes/{season}', response_model=List[MLNote])
-def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.notes
-    # return all results if no search_term
-    doc_list = list(collection.find({"season": season}))
-    if doc_list:
-        return doc_list
-    else:
-        return "No documents found!"
-
-
-@ml_api.put('/edit-note')
+@ml_api.put('/note')
 def edit_note(
     doc: MLNote,
     client: MongoClient = Depends(get_dbm),
@@ -238,7 +226,7 @@ def edit_note(
     return "Success! Edited note " + str(doc.doc_id) + "."
 
 
-@ml_api.delete('/delete-note/{doc_id}')
+@ml_api.delete('/note/{doc_id}')
 def delete_note(
     doc_id: int,
     client: MongoClient = Depends(get_dbm),
@@ -251,6 +239,18 @@ def delete_note(
         return "Success! Deleted game " + str(doc_id) + "."
     else:
         return "Something weird happened..."
+
+
+@ml_api.get('/notes/{season}', response_model=List[MLNote])
+def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.notes
+    # return all results if no search_term
+    doc_list = list(collection.find({"season": season}))
+    if doc_list:
+        return doc_list
+    else:
+        return "No documents found!"
 
 
 @ml_api.get('/all-time-ranking-fig')
@@ -337,6 +337,76 @@ def win_total_fig(playoff: bool = False, games_data: List[MLGame] = Depends(get_
         'x_data': x_data,
         'y_data': y_data,
         'color_data': color_data,
+    }
+
+
+@ml_api.get('/heatmap-fig')
+def matchup_heatmap_fig(
+    games_data: List[MLGame] = Depends(get_all_games),
+    teams_data: List[MLTeam] = Depends(get_all_teams),
+):
+    # convert to pandas DataFrame
+    games_df = pandas.DataFrame(games_data)
+    # normalize games
+    games_df = normalize_games(games_df)
+    # convert to record_df
+    matchup_df = calc_matchup_records(
+        games_df
+    ).reset_index()
+    # pull all-time file to filter active teams
+    ranking_df = pandas.DataFrame(teams_data)
+
+    # inner joins are just to keep active teams
+    active_matchup_df = matchup_df.merge(
+        ranking_df.loc[
+            ranking_df.active == 'yes',
+            ['nick_name']
+        ].drop_duplicates(),
+        on='nick_name',
+        how='inner',
+    ).merge(
+        ranking_df.loc[
+            ranking_df.active == 'yes',
+            ['nick_name']
+        ].drop_duplicates(),
+        left_on='loser',
+        right_on='nick_name',
+        how='inner',
+    ).drop(
+        columns=['nick_name_y']
+    ).rename(
+        columns={'nick_name_x': 'nick_name'}
+    ).set_index(keys=['nick_name', 'loser'])
+
+    # game total custom data for the hover text
+    game_df = active_matchup_df[['game_total']].unstack()
+    # win pct data is what drives the figure
+    matchup_df = active_matchup_df[['win_pct']].unstack()
+
+    # start creating the figure!
+    # y axis labels
+    y_winners = matchup_df.index.to_list()
+    y_winners.reverse()
+    # x axis labels
+    x_opponents = matchup_df.columns.get_level_values(1).to_list()
+    # z axis data, replacing nan with 0s
+    z_matchup_data = matchup_df[['win_pct']].fillna(-1).values.tolist()
+    z_matchup_data.reverse()
+    # custom hovertext data, replacing nan with 0s
+    hover_data = game_df[['game_total']].fillna(0).values.tolist()
+    hover_data.reverse()
+    # color data
+    matchup_colors = [
+        [i / (len(plotly.colors.diverging.Temps_r) - 1), color]
+        for i, color in enumerate(plotly.colors.diverging.Temps_r)
+    ]
+
+    return {
+        'x_opponents': x_opponents,
+        'y_winners': y_winners,
+        'z_matchup_data': z_matchup_data,
+        'matchup_colors': matchup_colors,
+        'hover_data': hover_data
     }
 
 
@@ -459,76 +529,6 @@ def season_boxplot_fig(
     }
 
 
-@ml_api.get('/heatmap-fig')
-def matchup_heatmap_fig(
-    games_data: List[MLGame] = Depends(get_all_games),
-    teams_data: List[MLTeam] = Depends(get_all_teams),
-):
-    # convert to pandas DataFrame
-    games_df = pandas.DataFrame(games_data)
-    # normalize games
-    games_df = normalize_games(games_df)
-    # convert to record_df
-    matchup_df = calc_matchup_records(
-        games_df
-    ).reset_index()
-    # pull all-time file to filter active teams
-    ranking_df = pandas.DataFrame(teams_data)
-
-    # inner joins are just to keep active teams
-    active_matchup_df = matchup_df.merge(
-        ranking_df.loc[
-            ranking_df.active == 'yes',
-            ['nick_name']
-        ].drop_duplicates(),
-        on='nick_name',
-        how='inner',
-    ).merge(
-        ranking_df.loc[
-            ranking_df.active == 'yes',
-            ['nick_name']
-        ].drop_duplicates(),
-        left_on='loser',
-        right_on='nick_name',
-        how='inner',
-    ).drop(
-        columns=['nick_name_y']
-    ).rename(
-        columns={'nick_name_x': 'nick_name'}
-    ).set_index(keys=['nick_name', 'loser'])
-
-    # game total custom data for the hover text
-    game_df = active_matchup_df[['game_total']].unstack()
-    # win pct data is what drives the figure
-    matchup_df = active_matchup_df[['win_pct']].unstack()
-
-    # start creating the figure!
-    # y axis labels
-    y_winners = matchup_df.index.to_list()
-    y_winners.reverse()
-    # x axis labels
-    x_opponents = matchup_df.columns.get_level_values(1).to_list()
-    # z axis data, replacing nan with 0s
-    z_matchup_data = matchup_df[['win_pct']].fillna(-1).values.tolist()
-    z_matchup_data.reverse()
-    # custom hovertext data, replacing nan with 0s
-    hover_data = game_df[['game_total']].fillna(0).values.tolist()
-    hover_data.reverse()
-    # color data
-    matchup_colors = [
-        [i / (len(plotly.colors.diverging.Temps_r) - 1), color]
-        for i, color in enumerate(plotly.colors.diverging.Temps_r)
-    ]
-
-    return {
-        'x_opponents': x_opponents,
-        'y_winners': y_winners,
-        'z_matchup_data': z_matchup_data,
-        'matchup_colors': matchup_colors,
-        'hover_data': hover_data
-    }
-
-
 @ml_api.get('/table/{season}')
 def season_table(
     season: int,
@@ -638,7 +638,7 @@ def season_table(
         return json.loads(season_table.reset_index().to_json(orient='table', index=False))
 
 
-@ml_api.get("/{season}/sim")
+@ml_api.get("/sim/{season}")
 def seed_sim(
     season: int,
     games_data: List[MLGame] = Depends(get_season_games),

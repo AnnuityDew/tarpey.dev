@@ -16,6 +16,8 @@ from api.mildredleague import (
     season_boxplot_fig,
     season_table,
     seed_sim,
+    UserOut,
+    oauth2_scheme,
 )
 
 
@@ -24,34 +26,32 @@ ml_views = APIRouter(prefix="/mildredleague")
 templates = Jinja2Templates(directory='templates')
 
 
+@ml_views.get("/game-admin", response_class=HTMLResponse)
+def game_admin(
+    request: Request,
+    user: UserOut = Depends(oauth2_scheme),
+):
+    return templates.TemplateResponse(
+        'mildredleague/games.html',
+        context={'request': request},
+    )
+
+
+@ml_views.get("/note-admin", response_class=HTMLResponse)
+def note_admin(
+    request: Request,
+    user: UserOut = Depends(oauth2_scheme),
+):
+    return templates.TemplateResponse(
+        'mildredleague/notes.html',
+        context={'request': request},
+    )
+
+
 @ml_views.get("/", response_class=HTMLResponse)
 def mildredleague(request: Request):
     return templates.TemplateResponse(
         'mildredleague/home.html',
-        context={'request': request},
-    )
-
-
-@ml_views.get("/add-game", response_class=HTMLResponse)
-def add_game(request: Request):
-    return templates.TemplateResponse(
-        'mildredleague/add.html',
-        context={'request': request},
-    )
-
-
-@ml_views.get("/edit-game", response_class=HTMLResponse)
-def edit_game(request: Request):
-    return templates.TemplateResponse(
-        'mildredleague/edit.html',
-        context={'request': request},
-    )
-
-
-@ml_views.get("/add-note", response_class=HTMLResponse)
-def add_note(request: Request):
-    return templates.TemplateResponse(
-        'mildredleague/notes.html',
         context={'request': request},
     )
 
@@ -108,7 +108,7 @@ def season_page(
     )
 
 
-@ml_views.get("/{season}/sim", response_class=HTMLResponse)
+@ml_views.get("/sim/{season}", response_class=HTMLResponse)
 def simulation(request: Request, season: int, playoff_table=Depends(seed_sim)):
     if True:
         return RedirectResponse(request.url_for('mildredleague.season_page', season=season))

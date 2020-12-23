@@ -4,6 +4,7 @@ dnspython==1.16.0
 google-cloud-firestore==1.9.0
 google-python-cloud-debugger  # Required for GCP debugging.
 FastAPI==0.62.0
+fastapi-login==1.5.1
 gunicorn==20.0.4
 uvicorn==0.13.1
 httptools==0.1.1
