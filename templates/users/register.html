@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %} - register{% endblock %}</h1>
-{% endblock %}
+{% block title %} - register{% endblock %}
+
+{% block header %}register{% endblock %}
 
 {% block content %}
 
+<p>
 {{ message }}
+</p>
 
 <form method="post" action="{{ url_for('register_result') }}">
   <label for="username">Username</label>

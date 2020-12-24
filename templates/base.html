@@ -28,7 +28,6 @@
 
 <body>
   <header>
-    {% if True %}
     <nav>
       Hello!
       <a href="{{ url_for('login') }}">login</a>
@@ -37,13 +36,10 @@
       <a class="mildredleague" href="{{ url_for('mildredleague') }}">mildredleague</a>
       <a class="ddr" href="{{ url_for('ddr') }}">DDR</a>
       <a class="autobracket" href="{{ url_for('generate') }}">autobracket</a>
-      {% if False %}
-      <a class="timecapsule" href="{{ url_for('timecapsule:timecapsule') }}">timecapsule</a>
-      {% endif %}
+      <a class="timecapsule" href="{{ url_for('timecapsule', template_id='enter') }}">timecapsule</a>
       <a class="links" href="{{ url_for('links') }}">links</a>
       <a class="colors" href="{{ url_for('colors') }}">colors</a>
     </nav>
-    {% endif %}
   </header>
   {% block special %}{% endblock %}
   <main>

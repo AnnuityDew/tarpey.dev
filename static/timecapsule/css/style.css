@@ -9,4 +9,26 @@ body {
     background: -ms-linear-gradient(left,  rgba(0,6,14,1) 0%,rgba(0,15,34,1) 17%,rgba(0,24,54,1) 33%,rgba(0,46,102,1) 67%,rgba(0,58,128,1) 83%,rgba(0,70,156,1) 100%); /* IE10+ */
     background: linear-gradient(to right,  rgba(0,6,14,1) 0%,rgba(0,15,34,1) 17%,rgba(0,24,54,1) 33%,rgba(0,46,102,1) 67%,rgba(0,58,128,1) 83%,rgba(0,70,156,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00060e', endColorstr='#00469c',GradientType=1 ); /* IE6-9 */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #FFFFFF;
+    background-color: #003092;
+    font-size: 3;
+}
+
+a:link {color: #B3B3B3;}        
+a:visited {color: #FFFFFF;}
+a:hover {color: #7e7e7e;}        
+a:active {color: #FFFFFF;}
+
+header {
+    text-align: center;
+}
+
+footer {
+    font-size: 1;
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
 }

@@ -1,36 +1,22 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timecapsule/css/style.css') }}">
-<html>
-<font face=verdana color=FFFFFF size=3>
-<link rel="shortcut icon" HREF="http://michaeltarpey.com/1up.ico">
-	
-	<head>
-		<title>
-		Mike Tarpey's High School Java Projects
-		</title>
-		<META NAME="Keywords" CONTENT="michael mike patrick tarpey college senior uconn irish java projects ap computer science">
-		<META NAME="Description" CONTENT="These are all of Mike Tarpey's projects from his class in AP Computer Science during the 2008-09 school year.">
-	</head>
+{% extends 'tcbase.html' %}
 
-	<body bgcolor=003092 text=FFFFFF link=B3B3B3 alink=FFFFFF vlink=FFFFFF>
-		<center>
-			<h1>Java Applets</h1>
-		</center>
-		
-		<p>
-		<a href="{{ url_for('timecapsule.firstapplet') }}">First Applet</a><br>
-		<a href="{{ url_for('timecapsule.bluebird') }}">Bluebird</a><br>
-		<a href="{{ url_for('timecapsule.carpayment') }}">Car Payment</a><br>
-		<a href="{{ url_for('timecapsule.doyouknowme') }}">Do You Know Me?</a><br>
-		</p>
+{% block title %}'s High School Java Projects
+{% endblock %}
 
-		<p>
-		<font size=1><center>To contact Mike Tarpey, type up an e-mail and send it to an old email address that no longer exists.
-		</p>
-		
-		<p>
-		<a href="{{ url_for('timecapsule.index') }}">Back to the home page</a>
-		</p>
-	</body>
+{% block description %}
+<META NAME="Description"
+	CONTENT="These are all of Mike Tarpey's projects from his class in AP Computer Science during the 2008-09 school year.">
+{% endblock %}
 
-	
-</html>
+{% block header %}Java Applets{% endblock %}
+
+{% block content %}
+
+<p>
+	<a href="{{ url_for('timecapsule', template_id='firstapplet') }}">First Applet</a><br>
+	<a href="{{ url_for('timecapsule', template_id='bluebird') }}">Bluebird</a><br>
+	<a href="{{ url_for('timecapsule', template_id='carpayment') }}">Car Payment</a><br>
+	<a href="{{ url_for('timecapsule', template_id='doyouknowme') }}">Do You Know Me?</a><br>
+</p>
+
+{% endblock %}

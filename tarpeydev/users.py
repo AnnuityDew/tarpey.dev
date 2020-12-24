@@ -43,7 +43,7 @@ def register_result(
             'users/register.html',
             context={
                 'request': request,
-                'message': 'Registration failed!'
+                'message': 'Registration failed! Try again.'
             },
         )
 

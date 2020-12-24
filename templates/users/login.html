@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %} - login{% endblock %}</h1>
-{% endblock %}
+{% block title %} - login{% endblock %}
+
+{% block header %}login{% endblock %}
 
 {% block content %}
 
+<p>
 {{ message }}
+</p>
 
 <form method="post" action="{{ url_for('auth') }}">
   <label for="username">Username</label>

@@ -1,28 +1,14 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timecapsule/css/style.css') }}">
-<html>
-<font face=verdana color=FFFFFF size=3>
-<link rel="shortcut icon" HREF="http://michaeltarpey.com/1up.ico">
+{% extends 'tcbase.html' %}
 
-	<head>
-		<title>
-		Mike Tarpey's College Degree
-		</title>
-		<META NAME="Keywords" CONTENT="michael mike patrick tarpey college senior uconn irish landstown high class of 2010">
-		<META NAME="Description" CONTENT="This is Mike Tarpey's College Degree, awarded by the University of Connecticut via mail in February 2014.">
-	</head>
-	
-	<body bgcolor=003092 text=FFFFFF link=B3B3B3 alink=FFFFFF vlink=FFFFFF>
+{% block title %}'s College Degree
+{% endblock %}
 
-<img src="{{ url_for('static', filename='timecapsule/images/uconndiploma.jpg') }}">
+{% block description %}
+<META NAME="Description"
+	CONTENT="This is Mike Tarpey's College Degree, awarded by the University of Connecticut via mail in February 2014.">
+{% endblock %}
 
-		<p>
-		<font size=1><center>To contact Mike Tarpey, type up an e-mail and send it to an old email address that no longer exists.
-		</p>
-		
-		<p>
-		<a href="{{ url_for('timecapsule.index') }}">Back to the home page</a>
-		</p>
-	</body>
+{% block content %}
+<img src="{{ url_for('static', path='timecapsule/images/uconndiploma.jpg') }}">
 
-
-</html>
+{% endblock %}

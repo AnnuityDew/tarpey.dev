@@ -111,7 +111,7 @@ class UserDB(UserBase):
 
 @users_api.post("/", response_model=UserOut)
 async def create_user(
-    new_user: UserIn,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     client: MongoClient = Depends(get_dbm),
 ):
     db = client.users
@@ -119,16 +119,16 @@ async def create_user(
 
     try:
         collection.insert_one({
-            "_id": new_user.username,
-            "hashed_password": get_password_hash(new_user.password)
+            "_id": form_data.username,
+            "hashed_password": get_password_hash(form_data.password)
         })
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(
             status_code=400,
-            detail=f"{new_user.username} is already registered!"
+            detail=f"{form_data.username} is already registered!"
         )
 
-    return new_user
+    return {'username': form_data.username}
 
 
 @users_api.post("/token", response_model=Token)

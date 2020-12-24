@@ -1,28 +1,11 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timecapsule/css/style.css') }}">
-<html>
-<font face=verdana color=FFFFFF size=3>
-<link rel="shortcut icon" HREF="http://michaeltarpey.com/1up.ico">
+{% extends 'tcbase.html' %}
 
-	<head>
-		<title>
-		Mike Tarpey's Virginian-Pilot Scholastic Achievement Recognition for 2009
-		</title>
-		<META NAME="Keywords" CONTENT="michael mike patrick tarpey college senior uconn irish virginian pilot scholastic achievement">
-		<META NAME="Description" CONTENT="This is Mike Tarpey's Virginian-Pilot Scholastic Achievement Recognition Award for the junior year of Landstown High School's Class of 2010">
-	</head>
-	
-	<body bgcolor=003092 text=FFFFFF link=B3B3B3 alink=FFFFFF vlink=FFFFFF>
-		
-<img src="{{ url_for('static', filename='timecapsule/images/vapilot2.png') }}">
+{% block title %}'s Virginian-Pilot Scholastic Achievement Recognition for 2009
+{% endblock %}
 
-		<p>
-		<font size=1><center>To contact Mike Tarpey, type up an e-mail and send it to an old email address that no longer exists.
-		</p>
-		
-		<p>
-		<a href="{{ url_for('timecapsule.index') }}">Back to the home page</a>
-		</p>
-	</body>
+{% block description %}<META NAME="Description" CONTENT="This is Mike Tarpey's Virginian-Pilot Scholastic Achievement Recognition Award for the junior year of Landstown High School's Class of 2010">
+{% endblock %}
+{% block content %}
+<img src="{{ url_for('static', path='timecapsule/images/vapilot2.png') }}">
 
-
-</html>
+{% endblock %}

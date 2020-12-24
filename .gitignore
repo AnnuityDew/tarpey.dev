@@ -139,11 +139,11 @@ settings.json
 
 # GOOGLE_APPLICATION_CREDENTIALS
 tarpeydev-gcp.json
+source-context.json
 tarpeydev-12771e760bd4.json:Zone.Identifier
 
 # constructed DDR data
 data/ddr/constructed
 
-# Flask stuff:
+# secret stuff
 instance/
-.webassets-cache

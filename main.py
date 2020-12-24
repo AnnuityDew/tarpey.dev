@@ -7,7 +7,13 @@ from fastapi.staticfiles import StaticFiles
 # import custom local stuff
 from instance.config import GCP_FILE
 from tarpeydev import (
-    index, autobracket, ddr, haveyouseenx, mildredleague, users
+    index,
+    autobracket,
+    ddr,
+    haveyouseenx,
+    mildredleague,
+    timecapsule,
+    users,
 )
 from api.index import index_api
 from api.haveyouseenx import hysx_api
@@ -18,7 +24,7 @@ from api.users import users_api
 try:
     import googleclouddebugger
     googleclouddebugger.enable(
-        breakpoint_enable_canary=True,
+        breakpoint_enable_canary=False,
         service_account_json_file=GCP_FILE,
     )
 except ImportError:
@@ -37,12 +43,15 @@ def create_fastapi_app():
     api_app = FastAPI(
         title="tarpey.dev API",
         description="API for Mike Tarpey's app sandbox.",
+        servers=[
+            {"url": "http://127.0.0.1", "description": "Testing environment."},
+            {"url": "https://dev.tarpey.dev", "description": "Staging environment."},
+            {"url": "https://tarpey.dev", "description": "Production environment"},
+        ],
     )
 
     # config stuff
     view_app.mount("/static", app=StaticFiles(directory='static'), name="static")
-    # if os.getenv('PRODUCTION') == 'prod':
-    # view_app.add_middleware(HTTPSRedirectMiddleware)
 
     # include subrouters of views
     view_app.include_router(index.index_views)
@@ -50,6 +59,7 @@ def create_fastapi_app():
     view_app.include_router(ddr.ddr_views)
     view_app.include_router(haveyouseenx.hysx_views)
     view_app.include_router(mildredleague.ml_views)
+    view_app.include_router(timecapsule.tc_views)
     view_app.include_router(users.user_views)
 
     # include subrouters of the FastAPI app

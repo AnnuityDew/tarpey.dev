@@ -1,25 +1,10 @@
-<html>
-	<head>
-		<title>
-		Michael Tarpey, High School Senior - First Applet
-		</title>
-		<META NAME="Keywords" CONTENT="michael patrick tarpey high school junior irish">
-		<META NAME="Description" CONTENT="Landstown High School, Virginia Beach, VA, USA.">
-	</head>
-	
-	<body bgcolor=000000 text=FFFFFF link=90EE90 alink=DC143C vlink=7F9A65>
-<font face=verdana color=FFFFFF size=3>
+{% extends 'tcbase.html' %}
 
+{% block title %}, High School Senior - First Applet
+{% endblock %}
+
+{% block description %}<META NAME="Description" CONTENT="Landstown High School, Virginia Beach, VA, USA.">
+	{% endblock %}
+{% block content %}
 <applet code="FirstApplet.class" width=500 height=500></applet>
-
-<link rel="shortcut icon" HREF="http://michaeltarpey.50webs.com/1up.ico">
-
-		<p>
-		<font size=1><center>To contact Mike Tarpey, type up an e-mail and send it to an even older email address that no longer exists.
-		</p>
-		
-		<p>
-		<a href="{% url 'timecapsule:index' %}">Back to the home page</a>
-		</p>
-	</body>
-</html>
+{% endblock %}

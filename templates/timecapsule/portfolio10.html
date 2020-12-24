@@ -1,65 +1,62 @@
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='timecapsule/css/style.css') }}">
-<html>
-<font face=verdana color=FFFFFF size=3>
-<link rel="shortcut icon" HREF="http://michaeltarpey.com/1up.ico">
-	
-	<head>
-		<title>
-		Mike Tarpey's High School Senior English Digital Portfolio
-		</title>
-		<META NAME="Keywords" CONTENT="michael mike patrick tarpey high school irish senior english digital portfolio">
-		<META NAME="Description" CONTENT="This is Mike Tarpey's Senior English Digital Portfolio for the 2009-2010 school year at Landstown High School.">
-	</head>
+{% extends 'tcbase.html' %}
 
-	<body bgcolor=003092 text=FFFFFF link=B3B3B3 alink=FFFFFF vlink=FFFFFF>
-		<center>
-			<h1>Senior English Digital Portfolio</h1>
-			<h4>Ms. Newland's AP English Literature and Composition, Block 3A</h4>
-			
-			<p>
-			<img src="{{ url_for('static', filename='timecapsule/images/fly.jpg') }}">
-			</p>
-		</center>
-		
-		<p>
-		Welcome to my digital portfolio website for the 2009-2010 school year! This is my final entry into my high school English portfolio, and it was heavily influenced by the passing of my mother and father during the course of senior year. Many pieces in here are analytical, given that this was required by the nature of the course. But there are a few pieces that I poured a plethora of emotion into, and it is my firm belief that these are the best pieces of the portfolio. I'm extremely proud of everything on this page, so please, enjoy everything you come across!
-		</p>
-		
-		<p>
-		The elements of the portfolio PDF are organized in the format required by Ms. Newland. The rest of the pieces created during the year that weren't featured in the portfolio are below.
-		
-		<p>
-		<b><u><font color=00E5EE>Senior Portfolio</font></u></b><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/portfolio.doc') }}">Download DOC</a>
-		</p>
-		
-		<p>
-		<b><u>Compositions Not Featured</u></b><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/finaldestructive.doc') }}">Destructive Disease: An Analysis of How Loneliness Affects the World</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/bartleby.doc') }}">Bartleby Blues: An Analysis of Bartleby the Scrivener Through the Lens of Deconstruction</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/college1.doc') }}">College Essay One</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/college2.doc') }}">College Essay Two</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/dracula.doc') }}">The Face of Evil: An Analysis of the Teamwork Themes Displayed in Bram Stoker's Dracula</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/legacy.doc') }}">Legacy</a><br>
-		<a href="{{ url_for('static', filename='timecapsule/2010portfolio/wutheringextra.doc') }}">An Explication "To Some Ladies"</a><br>
-		</p>
-		
-		<p>
-		<b><u>Other Projects</u></b><br>
-		<a href="http://www.youtube.com/watch?v=8OtRGGm1WsM">Mr. Forbidden: The Movie</a><br>
-		<a href="http://www.youtube.com/watch?v=Qty7NPrnScA">Dracula Book Talk</a><br>
-		<a href="http://www.youtube.com/watch?v=j-N1vizingw">Dracula Book Talk Bloopers</a><br>
-		</p>
-		
-		<p>
-		<font size=1><center>To contact Mike Tarpey, type up an e-mail and send it to an old email address that no longer exists.
-		</p>
-		
-		<p>
-		<a href="{{ url_for('timecapsule.index') }}">Back to the home page</a>
-		</p>
+{% block title %}'s High School Senior English Digital Portfolio
+{% endblock %}
 
-	</body>
-	
-	
-</html>
+{% block description %}
+<META NAME="Description"
+	CONTENT="This is Mike Tarpey's Senior English Digital Portfolio for the 2009-2010 school year at Landstown High School.">
+{% endblock %}
+
+{% block header %}Senior English Digital Portfolio
+<h4>Ms. Newland's AP English Literature and Composition, Block 3A</h4>
+
+<p>
+	<img src="{{ url_for('static', path='timecapsule/images/fly.jpg') }}">
+</p>
+{% endblock %}
+
+{% block content %}
+
+<p>
+	Welcome to my digital portfolio website for the 2009-2010 school year! This is my final entry into my high school
+	English portfolio, and it was heavily influenced by the passing of my mother and father during the course of senior
+	year. Many pieces in here are analytical, given that this was required by the nature of the course. But there are a
+	few pieces that I poured a plethora of emotion into, and it is my firm belief that these are the best pieces of the
+	portfolio. I'm extremely proud of everything on this page, so please, enjoy everything you come across!
+</p>
+
+<p>
+	The elements of the portfolio PDF are organized in the format required by Ms. Newland. The rest of the pieces
+	created during the year that weren't featured in the portfolio are below.
+
+<p>
+	<b><u>
+			<span style='color:00E5EE;'>Senior Portfolio</span>
+		</u></b><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/portfolio.doc') }}">Download DOC</a>
+</p>
+
+<p>
+	<b><u>Compositions Not Featured</u></b><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/finaldestructive.doc') }}">Destructive Disease: An
+		Analysis of How Loneliness Affects the World</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/bartleby.doc') }}">Bartleby Blues: An Analysis of
+		Bartleby the Scrivener Through the Lens of Deconstruction</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/college1.doc') }}">College Essay One</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/college2.doc') }}">College Essay Two</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/dracula.doc') }}">The Face of Evil: An Analysis of
+		the Teamwork Themes Displayed in Bram Stoker's Dracula</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/legacy.doc') }}">Legacy</a><br>
+	<a href="{{ url_for('static', path='timecapsule/2010portfolio/wutheringextra.doc') }}">An Explication "To Some
+		Ladies"</a><br>
+</p>
+
+<p>
+	<b><u>Other Projects</u></b><br>
+	<a href="http://www.youtube.com/watch?v=8OtRGGm1WsM">Mr. Forbidden: The Movie</a><br>
+	<a href="http://www.youtube.com/watch?v=Qty7NPrnScA">Dracula Book Talk</a><br>
+	<a href="http://www.youtube.com/watch?v=j-N1vizingw">Dracula Book Talk Bloopers</a><br>
+</p>
+
+{% endblock %}
