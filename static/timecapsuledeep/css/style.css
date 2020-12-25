@@ -1,0 +1,35 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:700,400);
+
+.bodyone {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #000000;
+    background-color: #00FF7F;
+}
+
+.bodytwo {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #000000;
+    background-color: #00FA9A;
+}
+
+header {
+    text-align: center;
+}
+
+table {
+    border: 1;
+}
+
+.footerone {
+    font-size: 75%;
+    text-align: left;
+}
+
+.footertwo {
+    font-size: 75%;
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+}

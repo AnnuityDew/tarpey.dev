@@ -17,7 +17,11 @@ templates = Jinja2Templates(directory='templates')
 
 
 @hysx_views.get("/", response_class=HTMLResponse, name="haveyouseenx")
-async def home(request: Request, stats=Depends(count_by_status), hours=Depends(playtime)):
+async def home(
+    request: Request,
+    stats=Depends(count_by_status),
+    hours=Depends(playtime),
+):
     return templates.TemplateResponse(
         'haveyouseenx/home.html',
         context={
@@ -29,7 +33,11 @@ async def home(request: Request, stats=Depends(count_by_status), hours=Depends(p
 
 
 @hysx_views.get("/results", response_class=HTMLResponse)
-async def search_results(request: Request, q: str, results=Depends(search)):
+async def search_results(
+    request: Request,
+    q: str,
+    results=Depends(search),
+):
     return templates.TemplateResponse(
         'haveyouseenx/results.html',
         context={

@@ -1,7 +1,7 @@
 # import native Python packages
 
 # import third party packages
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
 
 # import custom local stuff
@@ -18,7 +18,7 @@ from tarpeydev import (
 from api.index import index_api
 from api.haveyouseenx import hysx_api
 from api.mildredleague import ml_api
-from api.users import users_api
+from api.users import users_api, oauth2_scheme
 
 # GCP debugger
 try:
@@ -60,6 +60,7 @@ def create_fastapi_app():
     view_app.include_router(haveyouseenx.hysx_views)
     view_app.include_router(mildredleague.ml_views)
     view_app.include_router(timecapsule.tc_views)
+    view_app.include_router(timecapsule.tcd_views)
     view_app.include_router(users.user_views)
 
     # include subrouters of the FastAPI app

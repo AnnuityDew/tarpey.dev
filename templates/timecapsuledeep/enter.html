@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+  
+{% block title %} - timecapsule{% endblock %}
+
+{% block header %}timecapsule{% endblock %}
+
+{% block content %}
+<p>
+"This isn't just any time capsule. This is...the ADVANCED time capsule."
+</p>
+
+<p>
+Written entirely in my 8th grade Advanced Computers class (shoutout to Mrs. Potter).
+</p>
+
+<p>
+  <b class="bold_warning">You've been warned.</b>
+</p>
+
+<p>
+  <a href="{{ url_for('timecapsuledeep', template_id='otherhome') }}">Click here to enter!</a>
+</p>
+{% endblock %}

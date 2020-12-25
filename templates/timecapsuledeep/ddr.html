@@ -1,0 +1,49 @@
+{% extends 'tcdbase2.html' %}
+
+{% block title %}Mr. Man Inc. - Dance Dance Revolution{% endblock %}
+
+{% block header %}
+<h1>Dance Dance Revolution</h1>
+<h5>"DDR, MAX...Two!!!"</h5>
+{% endblock %}
+
+{% block content %}
+<p>
+    Dance Dance Revolution. The coolest, healthiest video game ever to grace Earth. No, you don't use your
+    thumbs (unless you're
+    lazy :). You actually use your feet to hit arrows on a pad. You hit the arrow that is lined up with the
+    outline on the
+    screen. No idea what I'm talking about? Then check out <a href="http://www.ddrfreak.com">DDR Freak</a>.
+    They have a much
+    better site than mine. I'll be posting here a lot with my new pictures and resources, so check back
+    often!
+</p>
+
+<nav>
+    <table align="top">
+        <tr>
+            <td>
+                DDR Stuff
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="{{ url_for('timecapsuledeep', template_id='ddrpics') }}">Pictures</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="{{ url_for('timecapsuledeep', template_id='ddrvideos') }}">Videos</a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <a href="{{ url_for('timecapsuledeep', template_id='ddrlinks') }}">Links</a>
+            </td>
+        </tr>
+    </table>
+</nav>
+{% endblock %}

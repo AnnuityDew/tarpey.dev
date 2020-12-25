@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 import seaborn
 
 # import custom local stuff
-from api.index import RandomQuote, random_quote
+from api.index import Quote, random_quote
 
 
 # router and templates
@@ -16,7 +16,7 @@ templates = Jinja2Templates(directory='templates')
 
 
 @index_views.get("/", response_class=HTMLResponse)
-async def homepage(request: Request, quote: RandomQuote = Depends(random_quote)):
+async def homepage(request: Request, quote: Quote = Depends(random_quote)):
     # generate color palette using Seaborn for the main site buttons
     app_colors = main_color_palette()
 

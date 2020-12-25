@@ -5,9 +5,18 @@ from pymongo import MongoClient
 from instance.config import MONGO_CONNECT
 
 
-# async client
+# async mongo client
 async def get_dbm():
     client = MongoClient(MONGO_CONNECT)
+    try:
+        yield client
+    finally:
+        client.close()
+
+
+# async firestore client
+async def get_dbf():
+    client = firestore.Client()
     try:
         yield client
     finally:

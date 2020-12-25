@@ -14,62 +14,6 @@ import pymongo
 from pymongo import MongoClient
 
 
-def get_dbf():
-    '''Retrieve the firestore db.
-
-    g is a special object that is unique for each request.
-    It is used to store data that might be accessed by multiple
-    functions during the request. The connection is stored and
-    reused instead of creating a new connection if get_db is
-    called a second time in the same request.
-
-    '''
-
-    if 'dbf' not in g:
-        g.dbf = firestore.Client()
-    return g.dbf
-
-
-def close_firestore(e=None):
-    '''Close the firestore db (if it's open).'''
-
-    dbf = g.pop('dbf', None)
-
-    if dbf is not None:
-        dbf.close()
-
-
-def get_dbm():
-    '''Retrieve the MongoDB client.'''
-
-    if 'client' not in g:
-        g.client = MongoClient(current_app.config['MONGO_CONNECT'])
-
-    return g.client
-
-
-def close_mongo(e=None):
-    '''Close the MongoDB (if it's open).'''
-
-    client = g.pop('client', None)
-
-    if client is not None:
-        client.close()
-
-
-def add_db_syncs_and_teardowns(app):
-    '''Enable apps to resync with CSVs and close the db connection.
-
-    app.teardown_appcontext() tells Flask to call the close_db
-    functions when cleaning up after returning the response.
-
-    '''
-
-    app.cli.add_command(csv_sync_command)
-    app.teardown_appcontext(close_firestore)
-    app.teardown_appcontext(close_mongo)
-
-
 @click.command('csv-sync')
 @with_appcontext
 def csv_sync_command():
