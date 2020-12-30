@@ -222,13 +222,18 @@ def get_user(username: str, client: MongoClient = None):
     # these two more separate, but it doesn't seem necessary since
     # the password gets chopped off by the UserOut model in the /me
     # endpoint.
+    return_user_only = False
     if client is None:
+        return_user_only = True
         client = get_dbm_no_close()
     db = client.users
     collection = db.users
     user_dict = collection.find_one({"_id": username})
-    # since we're not calling this with yield, need to
-    # manually close mongo here
     client.close()
+    # if calling through FastAPI login, just return username
+    # otherwise, return hashed password so it can be verified
     if user_dict:
-        return UserDB(**user_dict)
+        if return_user_only:
+            return user_dict["_id"]
+        else:
+            return UserDB(**user_dict)

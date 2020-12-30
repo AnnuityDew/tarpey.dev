@@ -5,16 +5,18 @@ import json
 from typing import List, Optional
 
 # import third party packages
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 import numpy
 import pandas
 import plotly
 import plotly.express as px
 from pydantic import BaseModel, Field
+import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
 from api.db import get_dbm
+from api.users import UserOut, oauth2_scheme
 
 
 hysx_api = APIRouter(
@@ -67,6 +69,69 @@ def backlog(client: MongoClient = Depends(get_dbm)):
     collection = db.annuitydew
     results = list(collection.find())
     return results
+
+
+@hysx_api.post('/game')
+async def add_game(
+    doc: BacklogGame,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.backlogs
+    collection = getattr(db, user)
+    try:
+        collection.insert_one(doc.dict(by_alias=True))
+        # recalculate boxplot data for points for and against
+        return doc
+    except pymongo.errors.DuplicateKeyError:
+        raise HTTPException(status_code=409, detail="Duplicate ID!")
+
+
+@hysx_api.get('/game/{doc_id}', response_model=BacklogGame)
+async def get_game(
+    doc_id: str,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.backlogs
+    collection = getattr(db, user)
+    doc = list(collection.find({'_id': doc_id}))
+    if doc:
+        return doc[0]
+    else:
+        raise HTTPException(status_code=404, detail="No game found!")
+
+
+@hysx_api.put('/game')
+async def edit_game(
+    doc: BacklogGame,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    try:
+        db = client.backlogs
+        collection = getattr(db, user)
+        new_doc = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+        # recalculate boxplot data, points for and against
+        return new_doc
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f'Error! {e}')
+
+
+@hysx_api.delete('/game/{doc_id}')
+async def delete_game(
+    doc_id: str,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.backlogs
+    collection = getattr(db, user)
+    doc = collection.find_one_and_delete({'_id': doc_id})
+    # recalculate boxplot data, points for and against
+    if doc:
+        return doc
+    else:
+        raise HTTPException(status_code=404, detail="No game found!")
 
 
 @hysx_api.get('/count-by-status')

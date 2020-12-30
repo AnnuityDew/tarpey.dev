@@ -1,7 +1,7 @@
 # import native Python packages
 
 # import third party packages
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 # import custom local stuff
@@ -18,7 +18,7 @@ from tarpeydev import (
 from api.index import index_api
 from api.haveyouseenx import hysx_api
 from api.mildredleague import ml_api
-from api.users import users_api, oauth2_scheme
+from api.users import users_api
 
 # GCP debugger
 try:
@@ -40,15 +40,31 @@ def create_fastapi_app():
         redoc_url=None,
     )
 
+    @view_app.get('/url-list')
+    def get_all_urls():
+        url_list = [
+            {'path': route.path, 'name': route.name}
+            for route in app.routes
+        ]
+        return url_list
+
     api_app = FastAPI(
         title="tarpey.dev API",
         description="API for Mike Tarpey's app sandbox.",
         servers=[
-            {"url": "http://127.0.0.1", "description": "Testing environment."},
-            {"url": "https://dev.tarpey.dev", "description": "Staging environment."},
-            {"url": "https://tarpey.dev", "description": "Production environment"},
+            {"url": "http://127.0.0.1:8000/api", "description": "Testing environment."},
+            {"url": "https://dev.tarpey.dev/api", "description": "Staging environment."},
+            {"url": "https://tarpey.dev/api", "description": "Production environment"},
         ],
     )
+
+    @api_app.get('/url-list')
+    def get_all_urls():
+        url_list = [
+            {'path': route.path, 'name': route.name}
+            for route in app.routes
+        ]
+        return url_list
 
     # config stuff
     view_app.mount("/static", app=StaticFiles(directory='static'), name="static")

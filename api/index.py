@@ -10,7 +10,7 @@ from pymongo import MongoClient
 
 # import custom local stuff
 from api.db import get_dbm
-from api.users import oauth2_scheme, UserOut
+from api.users import oauth2_scheme
 
 
 index_api = APIRouter(
@@ -30,7 +30,7 @@ async def random_quote(client: MongoClient = Depends(get_dbm)):
     db = client.quotes
     collection = db.quotes
     quote_count = collection.estimated_document_count()
-    doc_id = str(random.randint(1, quote_count))
+    doc_id = random.randint(1, quote_count)
     quote = collection.find_one({"_id": doc_id})
     return quote
 
@@ -84,9 +84,9 @@ async def edit_quote(
 ):
     db = client.quotes
     collection = db.quotes
-    collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    collection.replace_one({'_id': quote.doc_id}, quote.dict(by_alias=True))
     # recalculate boxplot data, points for and against
-    return "Success! Edited quote " + str(doc.doc_id) + "."
+    return "Success! Edited quote " + str(quote.doc_id) + "."
 
 
 @index_api.delete('/quote/{doc_id}', dependencies=[Depends(oauth2_scheme)])
