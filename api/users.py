@@ -2,8 +2,10 @@
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
+from fastapi.security.oauth2 import OAuth2PasswordBearer
 
 # import third party packages
+import jwt
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
@@ -32,26 +34,19 @@ users_api = APIRouter(
 # order of fastapi_login essentially, so the docs will work
 # correctly.
 class LoginManagerReversed(LoginManager):
-    async def __call__(self, request: Request):
+    def _token_from_cookie(self, request: Request) -> Optional[str]:
         """
-        Provides the functionality to act as a Dependency
-        :param Request request: The incoming request, this is
-            set automatically by FastAPI
-        :return: The user object or None
-        :raises: The not_authenticated_exception if set by the user
+        Simplifying the FastAPI cookie method here. Rather than raise an unnecessary
+        exception, if there is no cookie we simply return None and move on to checking headers.
         """
-        token = None
-        if self.use_header:
-            token = await super(LoginManager, self).__call__(request)
+        token = request.cookies.get(self.cookie_name)
 
-        if token is None and self.use_cookie:
-            token = self._token_from_cookie(request)
+        # if not token and self.auto_error:
+            # this is the standard exception as raised
+            # by the parent class
+            # raise InvalidCredentialsException
 
-        if token is not None:
-            return await self.get_current_user(token)
-
-        # No token is present in the request and no Exception has been raised (auto_error=False)
-        raise self.not_authenticated_exception
+        return token if token else None
 
 
 oauth2_scheme = LoginManagerReversed(
@@ -234,6 +229,6 @@ def get_user(username: str, client: MongoClient = None):
     # otherwise, return hashed password so it can be verified
     if user_dict:
         if return_user_only:
-            return user_dict["_id"]
+            return UserOut(**user_dict)
         else:
             return UserDB(**user_dict)

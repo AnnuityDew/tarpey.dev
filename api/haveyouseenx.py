@@ -67,7 +67,7 @@ class BacklogGame(BaseModel):
 def backlog(client: MongoClient = Depends(get_dbm)):
     db = client.backlogs
     collection = db.annuitydew
-    results = list(collection.find())
+    results = list(collection.find().sort("_id"))
     return results
 
 
@@ -185,7 +185,7 @@ def search(client: MongoClient = Depends(get_dbm), q: str = None):
     collection = db.annuitydew
     # change to plain q for OR results. f"\"{q}\"" is an AND search.
     if q == '':
-        results = list(collection.find())
+        results = list(collection.find().sort("_id"))
     else:
         results = list(collection.find(
             {
@@ -193,7 +193,7 @@ def search(client: MongoClient = Depends(get_dbm), q: str = None):
                     '$search': f"\"{q}\""
                 }
             }
-        ))
+        ).sort("_id"))
 
     return results
 

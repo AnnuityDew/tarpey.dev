@@ -16,6 +16,8 @@ from api.mildredleague import (
     season_boxplot_fig,
     season_table,
     seed_sim,
+)
+from api.users import (
     UserOut,
     oauth2_scheme,
 )

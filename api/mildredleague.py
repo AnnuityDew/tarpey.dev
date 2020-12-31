@@ -5,7 +5,7 @@ import json
 from typing import List
 
 # import third party packages
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Path
 import pandas
 import plotly
 import plotly.express as px
@@ -93,16 +93,55 @@ class MLNote(BaseModel):
 
 
 # declaring type of the client just helps with autocompletion.
+@ml_api.get('/all/game/all', response_model=List[MLGame])
+def get_all_games(client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.games
+    # return full history of mildredleague games
+    data = list(collection.find().sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
+@ml_api.get('/all/game/{playoff}', response_model=List[MLGame])
+def get_all_playoff_games(
+    playoff: int = Path(..., title="Playoff flag.", description="0: regular, 1: playoffs, 2: losers", ge=0, le=2),
+    client: MongoClient = Depends(get_dbm)
+):
+    db = client.mildredleague
+    collection = db.games
+    # return full history of mildredleague games
+    data = list(collection.find({"playoff": playoff}).sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
+@ml_api.get('/all/team/all')
+def get_all_teams(client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.teams
+    # return full history of mildredleague teams
+    data = list(collection.find().sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
 @ml_api.post('/game')
 async def add_game(
-    doc: MLGame,
+    doc_list: List[MLGame],
     client: MongoClient = Depends(get_dbm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.games
     try:
-        collection.insert_one(doc.dict(by_alias=True))
+        collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
         # recalculate boxplot data for points for and against
         return "Success! Added game " + str(doc.doc_id) + "."
     except pymongo.errors.DuplicateKeyError:
@@ -150,42 +189,6 @@ async def delete_game(
         return "Success! Deleted game " + str(doc_id) + "."
     else:
         return "Something weird happened..."
-
-
-@ml_api.get('/teams/all')
-def get_all_teams(client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.teams
-    # return full history of mildredleague teams
-    data = list(collection.find())
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/games/all', response_model=List[MLGame])
-def get_all_games(client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
-    # return full history of mildredleague games
-    data = list(collection.find())
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/games/{season}', response_model=List[MLGame])
-def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
-    # return all results if no search_term
-    data = list(collection.find({"season": season}))
-    if not data:
-        return "No data found!"
-    else:
-        return data
 
 
 @ml_api.post('/note')
@@ -240,17 +243,6 @@ def delete_note(
     else:
         return "Something weird happened..."
 
-
-@ml_api.get('/notes/{season}', response_model=List[MLNote])
-def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.notes
-    # return all results if no search_term
-    doc_list = list(collection.find({"season": season}))
-    if doc_list:
-        return doc_list
-    else:
-        return "No documents found!"
 
 
 @ml_api.get('/all-time-ranking-fig')
@@ -410,7 +402,47 @@ def matchup_heatmap_fig(
     }
 
 
-@ml_api.get('/boxplot/{season}')
+@ml_api.get('/{season}/game/all', response_model=List[MLGame])
+def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.games
+    # return all results if no search_term
+    data = list(collection.find({"season": season}).sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
+@ml_api.get('/{season}/game/{playoff}', response_model=List[MLGame])
+def get_season_playoff_games(
+    season: int,
+    playoff: int = Path(..., title="Playoff flag.", description="0: regular, 1: playoffs, 2: losers", ge=0, le=2),
+    client: MongoClient = Depends(get_dbm),
+):
+    db = client.mildredleague
+    collection = db.games
+    # return all results if no search_term
+    data = list(collection.find({"season": season, "playoff": playoff}).sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
+@ml_api.get('/{season}/note/all', response_model=List[MLNote])
+def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.notes
+    # return all results if no search_term
+    doc_list = list(collection.find({"season": season}).sort("_id"))
+    if doc_list:
+        return doc_list
+    else:
+        return "No documents found!"
+
+
+@ml_api.get('/{season}/boxplot')
 def season_boxplot_fig(
     season: int,
     client: MongoClient = Depends(get_dbm),
@@ -478,7 +510,7 @@ def season_boxplot_fig(
     # write data to MongoDB
     db = client.mildredleague
     collection = getattr(db, 'boxplot' + str(season))
-    if list(collection.find()) == doc_list:
+    if list(collection.find().sort("_id")) == doc_list:
         message = str(season) + " boxplot chart is already synced!"
     else:
         # if boxplots need to be recalculated, just wipe the collection and reinsert
@@ -486,7 +518,7 @@ def season_boxplot_fig(
         collection.insert_many(doc_list)
         message = "Bulk delete and insert complete!"
 
-    data = list(collection.find({"name": {'$ne': 'Bye'}}))
+    data = list(collection.find({"name": {'$ne': 'Bye'}}).sort("_id"))
 
     # convert to pandas DataFrame
     score_df = pandas.DataFrame(data)
@@ -529,7 +561,7 @@ def season_boxplot_fig(
     }
 
 
-@ml_api.get('/table/{season}')
+@ml_api.get('/{season}/table')
 def season_table(
     season: int,
     games_data: List[MLGame] = Depends(get_season_games),
@@ -638,7 +670,7 @@ def season_table(
         return json.loads(season_table.reset_index().to_json(orient='table', index=False))
 
 
-@ml_api.get("/sim/{season}")
+@ml_api.get("/{season}/sim")
 def seed_sim(
     season: int,
     games_data: List[MLGame] = Depends(get_season_games),

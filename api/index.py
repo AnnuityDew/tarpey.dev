@@ -41,7 +41,7 @@ async def all_quotes(
 ):
     db = client.quotes
     collection = db.quotes
-    doc = list(collection.find())
+    doc = list(collection.find().sort("_id"))
     if doc:
         return doc
     else:
