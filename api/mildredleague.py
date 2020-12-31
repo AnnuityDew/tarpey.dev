@@ -5,7 +5,7 @@ import json
 from typing import List
 
 # import third party packages
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, HTTPException, Depends, Path
 import pandas
 import plotly
 import plotly.express as px
@@ -92,6 +92,20 @@ class MLNote(BaseModel):
     note: str
 
 
+# couple of classes here that allow us to parameterize dependencies
+class PlayoffChooser:
+    def __init__(self, playoff: int):
+        self.playoff = playoff
+    
+    def __call__(self, playoff: int):
+        return self.playoff
+
+
+regular_season = PlayoffChooser(0)
+winners_playoff = PlayoffChooser(1)
+losers_playoff = PlayoffChooser(2)
+
+
 # declaring type of the client just helps with autocompletion.
 @ml_api.get('/all/game/all', response_model=List[MLGame])
 def get_all_games(client: MongoClient = Depends(get_dbm)):
@@ -143,9 +157,11 @@ async def add_game(
     try:
         collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
         # recalculate boxplot data for points for and against
-        return "Success! Added game " + str(doc.doc_id) + "."
+        return doc_list
     except pymongo.errors.DuplicateKeyError:
-        return "Game " + str(doc.doc_id) + " already exists!"
+        raise HTTPException(status_code=409, detail="Duplicate ID!")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f'Error! {e}')
 
 
 @ml_api.get('/game/{doc_id}', response_model=MLGame)
@@ -415,7 +431,7 @@ def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.get('/{season}/game/{playoff}', response_model=List[MLGame])
-def get_season_playoff_games(
+def get_season_games_subset(
     season: int,
     playoff: int = Path(..., title="Playoff flag.", description="0: regular, 1: playoffs, 2: losers", ge=0, le=2),
     client: MongoClient = Depends(get_dbm),
@@ -564,7 +580,7 @@ def season_boxplot_fig(
 @ml_api.get('/{season}/table')
 def season_table(
     season: int,
-    games_data: List[MLGame] = Depends(get_season_games),
+    games_data: List[MLGame] = Depends(get_season_games_subset),
     teams_data: List[MLTeam] = Depends(get_all_teams),
 ):
     '''Only use the else statement for the active season, to

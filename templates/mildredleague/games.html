@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-  
+
 {% block title %} - mildredleague admin{% endblock %}
 
 {% block style %}
@@ -22,7 +22,7 @@ mildredleague edit game
     function retrieveData() {
         document.getElementById("away").value = "Retrieving data...";
         var requestURL = (
-            "/api/mildredleague/get-game/" +
+            "/api/mildredleague/game/" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(requestURL);
@@ -95,6 +95,7 @@ mildredleague edit game
         <select name="playoff" id="playoff">
             <option value="0">0</option>
             <option value="1">1</option>
+            <option value="2">2</option>
         </select><br>
     </section>
 </form>
@@ -114,10 +115,10 @@ mildredleague edit game
             formDict[key] = value;
         });
         var request = new Request(
-            "/api/mildredleague/add-game",
+            "/api/mildredleague/game",
             {
                 method: 'POST',
-                body: JSON.stringify(formDict)
+                body: JSON.stringify([formDict])
             }
         );
         fetch(request).then(
@@ -145,7 +146,7 @@ mildredleague edit game
             formDict[key] = value;
         });
         var request = new Request(
-            "/api/mildredleague/edit-game",
+            "/api/mildredleague/game",
             {
                 method: 'PUT',
                 body: JSON.stringify(formDict)
@@ -173,7 +174,7 @@ mildredleague edit game
     function deleteData() {
         document.getElementById("confirm").innerHTML = "Deleting data...";
         var requestURL = (
-            "/api/mildredleague/delete-game" +
+            "/api/mildredleague/game" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(

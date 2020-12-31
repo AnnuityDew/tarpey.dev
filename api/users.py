@@ -37,7 +37,7 @@ class LoginManagerReversed(LoginManager):
     def _token_from_cookie(self, request: Request) -> Optional[str]:
         """
         Simplifying the FastAPI cookie method here. Rather than raise an unnecessary
-        exception, if there is no cookie we simply return None and move on to checking headers.
+        exception, if there is no cookie we simply return None and move on to checking
         """
         token = request.cookies.get(self.cookie_name)
 

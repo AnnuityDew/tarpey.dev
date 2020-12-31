@@ -85,6 +85,8 @@ async def add_game(
         return doc
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f'Error! {e}')
 
 
 @hysx_api.get('/game/{doc_id}', response_model=BacklogGame)
