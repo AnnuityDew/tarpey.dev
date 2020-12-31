@@ -61,18 +61,12 @@ def mildredleague(request: Request):
 @ml_views.get("/all-time", response_class=HTMLResponse)
 def all_time(
     request: Request,
-    matchup_data=Depends(matchup_heatmap_fig),
-    ranking_data=Depends(all_time_ranking_fig),
-    win_data=Depends(win_total_fig),
 ):
 
     return templates.TemplateResponse(
         'mildredleague/alltime.html',
         context={
             'request': request,
-            'matchup_data': matchup_data,
-            'ranking_data': ranking_data,
-            'win_data': win_data,
         }
     )
 
@@ -91,10 +85,7 @@ def rules(request: Request):
 def season_page(
     request: Request,
     season: int,
-    games_data=Depends(get_season_games),
     notes_data=Depends(get_season_notes),
-    boxplot_data=Depends(season_boxplot_fig),
-    season_table=Depends(season_table),
 ):
 
     return templates.TemplateResponse(
@@ -102,10 +93,7 @@ def season_page(
         context={
             'request': request,
             'season': season,
-            'games_data': games_data,
             'notes_data': notes_data,
-            'boxplot_data': boxplot_data,
-            'season_table': season_table,
         }
     )
 

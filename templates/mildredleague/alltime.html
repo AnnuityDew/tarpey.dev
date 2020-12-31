@@ -22,20 +22,43 @@
   (Best viewed in landscape!)
 </p>
 
-<div class="plots" id="matchup_heatmap">
+<div class="plots" id="matchup-heatmap">
 </div>
 
-<div class="plots" id="ranking_heatmap">
+<div class="plots" id="ranking-heatmap">
 </div>
 
-<div class="plots" id="win_bars">
+<div class="plots" id="regular-win-bars">
+</div>
+
+<div class="plots" id="playoff-win-bars">
+</div>
+
+<div class="plots" id="loser-win-bars">
 </div>
 
 <script>
-  var matchupHeatmap = () => {
-    MATCHUPS = document.getElementById('matchup_heatmap')
+  const fetchData = async () => {
+    let rawMatchupData = await fetch("/api/mildredleague/all/figure/heatmap");
+    let matchupData = await rawMatchupData.json();
+    let rawRankingData = await fetch("/api/mildredleague/all/figure/ranking");
+    let rankingData = await rawRankingData.json();
+    let rawRegularWinData = await fetch("/api/mildredleague/all/figure/wins/0");
+    let regularWinData = await rawRegularWinData.json();
+    let rawPlayoffWinData = await fetch("/api/mildredleague/all/figure/wins/1");
+    let playoffWinData = await rawPlayoffWinData.json();
+    let rawLoserWinData = await fetch("/api/mildredleague/all/figure/wins/2");
+    let loserWinData = await rawLoserWinData.json();
+
+    // make sure all data is returned at the same time
+    // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
+    var data = Promise.all([matchupData, rankingData, regularWinData, playoffWinData, loserWinData]);
+    return data;
+  }
+
+  var matchupHeatmap = async (chartData) => {
+    MATCHUPS = document.getElementById('matchup-heatmap')
     // pull x_data, y_data, z_data, and color data from Python
-    var chartData = {{matchup_data|safe}};
     var xData = chartData['x_opponents'];
     var yData = chartData['y_winners'];
     var zData = chartData['z_matchup_data'];
@@ -104,11 +127,10 @@
     Plotly.newPlot(MATCHUPS, plotData, layout, config);
   }
 
-  var rankingHeatmap = () => {
+  var rankingHeatmap = async (chartData) => {
     // ranking heatmap object
-    RANKINGS = document.getElementById('ranking_heatmap')
+    RANKINGS = document.getElementById('ranking-heatmap')
     // pull x_data, y_data, z_data, and color data from Python
-    var chartData = {{ranking_data | safe}}
     var xData = chartData['x_seasons'];
     var yData = chartData['y_ranking_names'];
     var zData = chartData['z_rankings'];
@@ -177,10 +199,9 @@
     Plotly.newPlot(RANKINGS, plotData, layout, config);
   }
 
-  var winBars = () => {
+  var regularWinBars = async (chartData) => {
     // win bars object
-    TOTALWINS = document.getElementById('win_bars')
-    var chartData = {{win_data | safe}}
+    TOTALWINS = document.getElementById('regular-win-bars')
     // pull x_data, y_data, and color data from Python
     var xData = chartData['x_data'];
     var yData = chartData['y_data'];
@@ -208,7 +229,10 @@
       template: tarpeydevDefault,
       title: "Regular Season Win Totals",
       margin: {l:120, r:60},
-      xaxis:{title:null},
+      xaxis:{
+        title:null,
+        side:'top',
+      },
       yaxis:{title:null},
       showlegend: false,
       hovermode: 'closest',
@@ -217,8 +241,98 @@
     Plotly.newPlot(TOTALWINS, plotData, layout, config);
   }
 
-  matchupHeatmap();
-  rankingHeatmap();
-  winBars();
+  var playoffWinBars = async (chartData) => {
+    // win bars object
+    PLAYOFFWINS = document.getElementById('playoff-win-bars')
+    // pull x_data, y_data, and color data from Python
+    var xData = chartData['x_data'];
+    var yData = chartData['y_data'];
+    var barColors = chartData['color_data'];
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    // bars are colored at the trace level and not
+    // the layout level
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        x: [xData[i]],
+        y: [yData[i]],
+        name: yData[i],
+        type: 'bar',
+        orientation: 'h',
+        marker: {
+          color: barColors[i],
+        }
+      };
+      plotData.push(trace);
+    };
+    var layout = {
+      template: tarpeydevDefault,
+      title: "Playoff Win Totals (including earned byes)",
+      margin: {l:120, r:60},
+      xaxis:{
+        title:null,
+        side:'top',
+      },
+      yaxis:{title:null},
+      showlegend: false,
+      hovermode: 'closest',
+    };
+    var config = {responsive: true};
+    Plotly.newPlot(PLAYOFFWINS, plotData, layout, config);
+  }
+
+  var loserWinBars = async (chartData) => {
+    // win bars object
+    LOSERWINS = document.getElementById('loser-win-bars')
+    // pull x_data, y_data, and color data from Python
+    var xData = chartData['x_data'];
+    var yData = chartData['y_data'];
+    var barColors = chartData['color_data'];
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    // bars are colored at the trace level and not
+    // the layout level
+    var plotData = [];
+    for ( var i = 0; i < xData.length; i ++ ) {
+      var trace = {
+        x: [xData[i]],
+        y: [yData[i]],
+        name: yData[i],
+        type: 'bar',
+        orientation: 'h',
+        marker: {
+          color: barColors[i],
+        }
+      };
+      plotData.push(trace);
+    };
+    var layout = {
+      template: tarpeydevDefault,
+      title: "Loser's Bracket Win Totals",
+      margin: {l:120, r:60},
+      xaxis:{
+        title:null,
+        side:'top',
+      },
+      yaxis:{title:null},
+      showlegend: false,
+      hovermode: 'closest',
+    };
+    var config = {responsive: true};
+    Plotly.newPlot(LOSERWINS, plotData, layout, config);
+  }
+
+  async function renderCharts () {
+    const data = await fetchData();
+    matchupHeatmap(data[0]);
+    rankingHeatmap(data[1]);
+    regularWinBars(data[2]);
+    playoffWinBars(data[3]);
+    loserWinBars(data[4]);
+  }
+  renderCharts();
 </script>
 {% endblock %}

@@ -1,0 +1,105 @@
+﻿team_id,division,full_name,nick_name,year,playoff_rank,active
+1,East Coast Bias,Michael Tarpey,Tarpey,2013,1,yes
+2,West Whatever,Christian Costa,Christian,2013,2,no
+3,West Whatever,Neel Reddy,Neel,2013,3,no
+4,East Coast Bias,Brandon Dilbeck,Brando,2013,4,yes
+5,West Whatever,D. Stonerock Bradford,Debbie,2013,5,no
+6,East Coast Bias,Danny Rinehart,Danny,2013,6,no
+7,East Coast Bias,Mildred Kinley,Mildred,2013,7,yes
+8,East Coast Bias,Hardy Chen,Hardy,2013,8,no
+9,West Whatever,Tommy Pfifferling,Tommy,2013,9,yes
+10,West Whatever,Bryant Sexbang,Bryant,2013,10,no
+11,West Whatever,Brandon Dilbeck,Brando,2014,1,yes
+12,East Coast Bias,Matt Kindy,Kindy,2014,2,yes
+13,East Coast Bias,Jeff Sendzik,Sendzik,2014,3,yes
+14,East Coast Bias,Samik Das,Samik,2014,4,yes
+15,East Coast Bias,Stephanie Neupert,Stephanie,2014,5,no
+16,East Coast Bias,Michael Tarpey,Tarpey,2014,6,yes
+17,West Whatever,Matthew Debski,Debski,2014,7,no
+18,West Whatever,Mildred Kinley,Mildred,2014,8,yes
+19,West Whatever,Benjamin Everette,Ben,2014,9,no
+20,West Whatever,Arthur Neupert,Arthur,2014,10,no
+21,East Coast Bias,tommy pfifferling,Tommy,2014,11,yes
+22,West Whatever,DJ Conti,Conti,2014,12,yes
+23,West Whatever,Kyle Fontimayor,Fonti,2015,1,yes
+24,West Whatever,Samik Das,Samik,2015,2,yes
+25,East Coast Bias,DJ Conti,Conti,2015,3,yes
+26,West Whatever,frank arguello,Frank,2015,4,yes
+27,East Coast Bias,Brandon Dilbeck,Brando,2015,5,yes
+28,West Whatever,Jeff Sendzik,Sendzik,2015,6,yes
+29,West Whatever,Mildred Kinley,Mildred,2015,7,yes
+30,East Coast Bias,Benjamin Everette,Ben,2015,8,no
+31,West Whatever,Matthew Debski,Debski,2015,9,no
+32,East Coast Bias,Matt Kindy,Kindy,2015,10,yes
+33,East Coast Bias,Michael Allen,mballen,2015,11,yes
+34,East Coast Bias,Michael Tarpey,Tarpey,2015,12,yes
+35,East Coast Bias,patrick bell,Patrick,2015,13,no
+36,West Whatever,tommy pfifferling,Tommy,2015,14,yes
+37,East Coast Bias,frank arguello,Frank,2016,1,yes
+38,West Whatever,DJ Conti,Conti,2016,2,yes
+39,West Whatever,Brandon Dilbeck,Brando,2016,3,yes
+40,West Whatever,Samik Das,Samik,2016,4,yes
+41,West Whatever,Michael Allen,mballen,2016,5,yes
+42,East Coast Bias,Benjamin Everette,Ben,2016,6,no
+43,East Coast Bias,Kyle Fontimayor,Fonti,2016,7,yes
+44,East Coast Bias,Matt Kindy,Kindy,2016,8,yes
+45,West Whatever,Jeff Sendzik,Sendzik,2016,9,yes
+46,East Coast Bias,tommy pfifferling,Tommy,2016,10,yes
+47,East Coast Bias,Mildred Kinley,Mildred,2016,11,yes
+48,West Whatever,Michael Tarpey,Tarpey,2016,12,yes
+49,Champions,Kyle Fontimayor,Fonti,2017,1,yes
+50,Referees,Charles Wilson,Charles,2017,2,yes
+51,AFC East,Jeff Sendzik,Sendzik,2017,3,yes
+52,Champions,Brandon Dilbeck,Brando,2017,4,yes
+53,Referees,Michael Allen,mballen,2017,5,yes
+54,AFC East,DJ Conti,Conti,2017,6,yes
+55,Champions,Michael Tarpey,Tarpey,2017,7,yes
+56,AFC East,Samik Das,Samik,2017,8,yes
+57,AFC East,Jake Casado,Jake,2017,9,yes
+58,Referees,Benjamin Everette,Ben,2017,10,no
+59,Champions,frank arguello,Frank,2017,11,yes
+60,AFC East,Matt Kindy,Kindy,2017,12,yes
+61,Referees,tommy pfifferling,Tommy,2017,13,yes
+62,Referees,Mildred Kinley,Mildred,2017,14,yes
+63,Champions,Michael Tarpey,Tarpey,2018,1,yes
+64,AFC East,DJ Conti,Conti,2018,2,yes
+65,AFC East,Samik Das,Samik,2018,4,yes
+66,AFC East,Jeff Sendzik,Sendzik,2018,3,yes
+67,Referees,Charles Wilson,Charles,2018,6,yes
+68,Referees,Michael Allen,mballen,2018,5,yes
+69,Champions,frank arguello,Frank,2018,7,yes
+70,Champions,Kyle Fontimayor,Fonti,2018,9,yes
+71,Champions,Brandon Dilbeck,Brando,2018,8,yes
+72,AFC East,Jake Casado,Jake,2018,11,yes
+73,AFC East,Matt Kindy,Kindy,2018,10,yes
+74,Referees,Mildred Kinley,Mildred,2018,13,yes
+75,Referees,tommy pfifferling,Tommy,2018,12,yes
+76,Referees,Benjamin Everette,Ben,2018,14,no
+77,AFC East,Jeff Sendzik,Sendzik,2019,1,yes
+78,Champions,frank arguello,Frank,2019,2,yes
+79,AFC East,DJ Conti,Conti,2019,3,yes
+80,Champions,Michael Tarpey,Tarpey,2019,4,yes
+81,Referees,Mildred Kinley,Mildred,2019,5,yes
+82,AFC East,Jake Casado,Jake,2019,6,yes
+83,Champions,Brandon Dilbeck,Brando,2019,7,yes
+84,Champions,Kyle Fontimayor,Fonti,2019,8,yes
+85,Referees,Bradley Leer,Brad,2019,9,yes
+86,AFC East,Matt Kindy,Kindy,2019,10,yes
+87,Referees,tommy pfifferling,Tommy,2019,11,yes
+88,Referees,Michael Allen,mballen,2019,12,yes
+89,Referees,Charles Wilson,Charles,2019,13,yes
+90,AFC East,Samik Das,Samik,2019,14,yes
+91,AFC East,Jeff Sendzik,Sendzik,2020,0,yes
+92,Division 6,frank arguello,Frank,2020,0,yes
+93,AFC East,DJ Conti,Conti,2020,0,yes
+94,Division 6,Michael Tarpey,Tarpey,2020,0,yes
+95,Referees,Mildred Kinley,Mildred,2020,0,yes
+96,AFC East,Jake Casado,Jake,2020,0,yes
+97,Division 6,Brandon Dilbeck,Brando,2020,0,yes
+98,Division 6,Kyle Fontimayor,Fonti,2020,0,yes
+99,Referees,Bradley Leer,Brad,2020,0,yes
+100,AFC East,Matt Kindy,Kindy,2020,0,yes
+101,Referees,tommy pfifferling,Tommy,2020,0,yes
+102,Referees,Michael Allen,mballen,2020,0,yes
+103,Referees,Charles Wilson,Charles,2020,0,yes
+104,AFC East,Samik Das,Samik,2020,0,yes

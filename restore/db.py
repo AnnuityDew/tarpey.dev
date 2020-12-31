@@ -1,62 +1,45 @@
 # import native Python packages
-import click
 import csv
 import datetime
 import json
 import os
 
 # import third party packages
-from flask import current_app, g
-from flask.cli import with_appcontext
-from google.cloud import firestore
 import pandas
 import pymongo
-from pymongo import MongoClient
+
+# import custom local stuff
+from api.db import get_dbm_no_close
 
 
-@click.command('csv-sync')
-@with_appcontext
-def csv_sync_command():
-    db_csv_sync()
-    click.echo('Resynced MongoDB and Firestore with CSVs!')
-
-
-def db_csv_sync():
+def ml_team_upload():
     '''Resync databases with CSV files.'''
 
-    # index quotes
-    quotes_path = os.path.join(
+    teams_path = os.path.join(
+        os.getcwd(),
+        'backup',
+        'mildredleague',
+        'mlallteams.csv'
+    )
+    season_data = MildredLeagueSeason(2020)
+    season_data.teams_from_csv(teams_path)
+    season_data.teams_to_mongo()
+
+
+def ml_game_upload():
+    # mildredleague
+    games_path = os.path.join(
         os.getcwd(),
         'data',
-        'index',
-        'index_quotes.csv'
+        'mildredleague',
+        'mlallgames.csv'
     )
-    data_list = list(csv.reader(open(quotes_path)))
-    instances = [Quote(data_list[0], i) for i in data_list[1:]]
+    season_data = MildredLeagueSeason(2020)
+    season_data.games_from_csv(games_path)
+    season_data.games_to_mongo()
 
-    client = get_dbm()
-    db = client.quotes
-    doc_list = [quote.to_dict() for quote in instances]
-    if list(db.quotes.find()) == doc_list:
-        print("All quotes are already synced!")
-    elif not list(db.quotes.find()):
-        db.quotes.insert_many(doc_list)
-        print("Bulk insert complete!")
-    else:
-        for doc in doc_list:
-            try:
-                db.quotes.insert_one(doc)
-                print("Inserted " + doc.get("_id") + ".")
-            except pymongo.errors.DuplicateKeyError:
-                db.quotes.replace_one({"_id": doc.get("_id")}, doc)
-                print("Replaced " + doc.get("_id") + ".")
 
-    # create index
-    db.quotes.create_index([
-        ("quote_text", pymongo.TEXT),
-        ("quote_origin", pymongo.TEXT)
-    ])
-
+def backlog_upload():
     # haveyouseenx
     backlog_path = os.path.join(
         os.getcwd(),
@@ -67,25 +50,6 @@ def db_csv_sync():
     annuitydew = Backlog('annuitydew')
     annuitydew.from_csv(backlog_path)
     annuitydew.to_mongo()
-
-    # mildredleague
-    games_path = os.path.join(
-        os.getcwd(),
-        'data',
-        'mildredleague',
-        'mlallgames.csv'
-    )
-    teams_path = os.path.join(
-        os.getcwd(),
-        'data',
-        'mildredleague',
-        'mlallteams.csv'
-    )
-    season_data = MildredLeagueSeason(2020)
-    season_data.games_from_csv(games_path)
-    season_data.teams_from_csv(teams_path)
-    season_data.games_to_mongo()
-    season_data.teams_to_mongo()
 
 
 class Quote:
@@ -197,7 +161,7 @@ class Backlog:
             )
 
     def to_mongo(self):
-        client = get_dbm()
+        client = get_dbm_no_close()
         db = client.backlogs
         doc_list = [backlog_game.to_dict() for _id, backlog_game in self.backlog_dict.items()]
         if list(db.annuitydew.find()) == doc_list:
@@ -357,7 +321,7 @@ class MildredLeagueSeason:
                 row = [None if item == '' else item for item in row]
                 team = MildredLeagueTeam(
                     _id=row[0],
-                    team_name=row[1],
+                    division=row[1],
                     full_name=row[2],
                     nick_name=row[3],
                     season=row[4],
@@ -367,7 +331,7 @@ class MildredLeagueSeason:
                 self.add_team(team)
 
     def games_to_mongo(self):
-        client = get_dbm()
+        client = get_dbm_no_close()
         db = client.mildredleague
         doc_list = [ml_game.to_dict() for _id, ml_game in self.games_dict.items()]
         if list(db.games.find()) == doc_list:
@@ -390,7 +354,7 @@ class MildredLeagueSeason:
         ])
 
     def teams_to_mongo(self):
-        client = get_dbm()
+        client = get_dbm_no_close()
         db = client.mildredleague
         doc_list = [ml_team.to_dict() for _id, ml_team in self.teams_dict.items()]
         if list(db.teams.find()) == doc_list:
@@ -442,8 +406,8 @@ class MLNote:
 
 class MildredLeagueGame:
     def __init__(self, _id, away, a_name, a_nick, a_division,
-                 a_score, home, h_name, h_nick, h_division,
-                 h_score, week_s, week_e, season, playoff):
+                a_score, home, h_name, h_nick, h_division,
+                h_score, week_s, week_e, season, playoff):
         self._id = _id
         self.away = away
         self.a_name = a_name
@@ -501,10 +465,10 @@ class MildredLeagueGame:
 
 
 class MildredLeagueTeam:
-    def __init__(self, _id, team_name, full_name, nick_name,
-                 season, playoff_rank, active):
+    def __init__(self, _id, division, full_name, nick_name,
+                season, playoff_rank, active):
         self._id = _id
-        self.team_name = team_name
+        self.division = division
         self.full_name = full_name
         self.nick_name = nick_name
         self.season = season

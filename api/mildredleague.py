@@ -5,7 +5,7 @@ import json
 from typing import List
 
 # import third party packages
-from fastapi import APIRouter, HTTPException, Depends, Path
+from fastapi import APIRouter, HTTPException, Depends, Path, File, UploadFile
 import pandas
 import plotly
 import plotly.express as px
@@ -61,14 +61,10 @@ class NickName(str, Enum):
 class MLGame(BaseModel):
     doc_id: int = Field(..., alias='_id')
     away: str
-    a_name: str
     a_nick: NickName
-    a_division: str
     a_score: float
     home: str
-    h_name: str
     h_nick: NickName
-    h_division: str
     h_score: float
     week_s: int
     week_e: int
@@ -78,7 +74,7 @@ class MLGame(BaseModel):
 
 class MLTeam(BaseModel):
     doc_id: int = Field(..., alias='_id')
-    team_name: str
+    division: str
     full_name: str
     nick_name: NickName
     season: int
@@ -92,18 +88,193 @@ class MLNote(BaseModel):
     note: str
 
 
-# couple of classes here that allow us to parameterize dependencies
-class PlayoffChooser:
-    def __init__(self, playoff: int):
-        self.playoff = playoff
-    
-    def __call__(self, playoff: int):
-        return self.playoff
+class MLTable(pandas.DataFrame):
+    def copy(self):
+        copy_df = super().copy()
+        return MLTable(copy_df)
 
+    def merge_with_teams(self, teams_df):
+        merged_df = self.copy()
+        # merge on the away side
+        teams_df.rename(columns={'nick_name': 'a_nick'}, inplace=True)
+        merged_df = merged_df.merge(
+            teams_df[['a_nick', 'season', 'division']],
+            on=['a_nick', 'season'],
+            how='left',
+        )
+        merged_df.rename(columns={'division': 'a_division'}, inplace=True)
+        # merge on the home side
+        teams_df.rename(columns={'a_nick': 'h_nick'}, inplace=True)
+        merged_df = merged_df.merge(
+            teams_df[['h_nick', 'season', 'division']],
+            on=['h_nick', 'season'],
+            how='left',
+        )
+        merged_df.rename(columns={'division': 'h_division'}, inplace=True)
+        return merged_df
 
-regular_season = PlayoffChooser(0)
-winners_playoff = PlayoffChooser(1)
-losers_playoff = PlayoffChooser(2)
+    def normalize_games(self):
+        normalized_df = self.copy()
+        # which team won?
+        normalized_df['a_win'] = 0
+        normalized_df['h_win'] = 0
+        normalized_df['a_tie'] = 0
+        normalized_df['h_tie'] = 0
+        # away win
+        normalized_df.loc[normalized_df.a_score > normalized_df.h_score, 'a_win'] = 1
+        # home win
+        normalized_df.loc[normalized_df.a_score < normalized_df.h_score, 'h_win'] = 1
+        # tie
+        normalized_df.loc[normalized_df.a_score == normalized_df.h_score, ['a_tie', 'h_tie']] = 1
+        # normalized score columns for two-week playoff games
+        normalized_df['a_score_norm'] = (
+            normalized_df['a_score'] / (
+                normalized_df['week_e'] - normalized_df['week_s'] + 1
+            )
+        )
+        normalized_df['h_score_norm'] = (
+            normalized_df['h_score'] / (
+                normalized_df['week_e'] - normalized_df['week_s'] + 1
+            )
+        )
+        # margin = home - away
+        normalized_df['h_margin'] = normalized_df['h_score_norm'] - normalized_df['a_score_norm']
+
+        return normalized_df
+
+    def calc_records(self, teams_df, divisions=True):
+        if divisions:
+            a_index = ['a_division', 'a_nick']
+            h_index = ['h_division', 'h_nick']
+            a_rename = {'a_nick': 'nick_name', 'a_division': 'division'}
+            h_rename = {'h_nick': 'nick_name', 'h_division': 'division'}
+        else:
+            a_index = ['a_nick']
+            h_index = ['h_nick']
+            a_rename = {'a_nick': 'nick_name'}
+            h_rename = {'h_nick': 'nick_name'}
+        normalized_df = self.normalize_games()
+        normalized_df = normalized_df.merge_with_teams(teams_df)
+        # season wins/losses/ties/PF/PA for away teams, home teams
+        away_df = pandas.pivot_table(
+            normalized_df.convert_dtypes(),
+            values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'],
+            index=a_index,
+            aggfunc='sum',
+            fill_value=0
+            )
+        home_df = pandas.pivot_table(
+            normalized_df.convert_dtypes(),
+            values=['h_win', 'a_win', 'h_tie', 'h_score_norm', 'a_score_norm'],
+            index=h_index,
+            aggfunc='sum',
+            fill_value=0
+            )
+
+        # rename index and against columns
+        away_df = away_df.rename(
+            columns={'h_win': 'a_loss', 'h_score_norm': 'a_score_norm_against'},
+        ).rename_axis(
+            index=a_rename
+        )
+        home_df = home_df.rename(
+            columns={'a_win': 'h_loss', 'a_score_norm': 'h_score_norm_against'},
+        ).rename_axis(
+            index=h_rename
+        )
+        # merge to one table. some teams will have only played away or home, so
+        # fillna fills their other side with zeroes
+        record_df = home_df.join(
+            away_df,
+            how='outer',
+            ).fillna(0)
+        # win total, loss total, game total, points for, points against, win percentage
+        record_df['win_total'] = record_df['h_win'] + record_df['a_win']
+        record_df['loss_total'] = record_df['h_loss'] + record_df['a_loss']
+        record_df['tie_total'] = record_df['h_tie'] + record_df['a_tie']
+        record_df['games_played'] = record_df['win_total'] + record_df['loss_total'] + record_df['tie_total']
+        record_df['win_pct'] = (record_df['win_total'] + record_df['tie_total'] * 0.5) / record_df['games_played']
+        record_df['points_for'] = record_df['h_score_norm'] + record_df['a_score_norm']
+        record_df['points_against'] = record_df['h_score_norm_against'] + record_df['a_score_norm_against']
+        record_df['avg_margin'] = (record_df['points_for'] - record_df['points_against']) / record_df['games_played']
+        record_df.sort_values(by='win_pct', ascending=False, inplace=True)
+        record_df.drop(
+            columns=[
+                'h_win',
+                'a_win',
+                'h_loss',
+                'a_loss',
+                'h_tie',
+                'a_tie',
+                'h_score_norm',
+                'a_score_norm',
+                'h_score_norm_against',
+                'a_score_norm_against',
+            ],
+            inplace=True,
+        )
+        return record_df
+        
+    def calc_matchup_records(self, teams_df):
+        normalized_df = self.normalize_games()
+        normalized_df = normalized_df.merge_with_teams(teams_df)
+        # grouping for away and home matchup winners, ties, occurrences
+        away_df = pandas.pivot_table(
+            normalized_df,
+            values=['a_win', 'a_tie', 'season'],
+            index=['a_nick', 'h_nick'],
+            aggfunc={
+                'a_win': 'sum',
+                'a_tie': 'sum',
+                'season': 'count',
+            },
+            fill_value=0,
+            ).rename(columns={'season': 'a_games'})
+        home_df = pandas.pivot_table(
+            normalized_df,
+            values=['h_win', 'h_tie', 'season'],
+            index=['h_nick', 'a_nick'],
+            aggfunc={
+                'h_win': 'sum',
+                'h_tie': 'sum',
+                'season': 'count',
+            },
+            fill_value=0,
+            ).rename(columns={'season': 'h_games'})
+        # rename indices
+        away_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
+        home_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
+        # join and sum to get total matchup wins
+        matchup_df = away_df.join(
+            home_df,
+            how='outer',
+        ).fillna(0).convert_dtypes()
+        # ties count for 0.5
+        matchup_df['win_total'] = (
+            matchup_df['a_win'] +
+            matchup_df['h_win'] +
+            matchup_df['a_tie'] * 0.5 +
+            matchup_df['h_tie'] * 0.5
+        )
+        matchup_df['game_total'] = (
+            matchup_df['a_games'] +
+            matchup_df['h_games']
+        )
+        # get rid of intermediate columns. just wins and games now
+        matchup_df = matchup_df.convert_dtypes().drop(
+            columns=[
+                'a_win',
+                'h_win',
+                'a_tie',
+                'h_tie',
+                'a_games',
+                'h_games',
+            ]
+        )
+        # add win pct column and sort by
+        matchup_df['win_pct'] = matchup_df['win_total'] / matchup_df['game_total']
+        matchup_df.sort_values(by=['win_pct'], ascending=False, inplace=True)
+        return matchup_df
 
 
 # declaring type of the client just helps with autocompletion.
@@ -261,13 +432,13 @@ def delete_note(
 
 
 
-@ml_api.get('/all-time-ranking-fig')
+@ml_api.get('/all/figure/ranking')
 def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
     # convert to pandas dataframe
-    ranking_df = pandas.DataFrame(teams_data)
+    teams_df = pandas.DataFrame(teams_data)
     # pivot by year for all teams
     annual_ranking_df = pandas.pivot(
-        ranking_df,
+        teams_df,
         index='nick_name',
         columns='season',
         values='playoff_rank'
@@ -309,20 +480,16 @@ def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
     }
 
 
-@ml_api.get('/win-total-fig')
-def win_total_fig(playoff: bool = False, games_data: List[MLGame] = Depends(get_all_games)):
-    # convert to pandas DataFrame and normalize
-    games_df = pandas.DataFrame(games_data)
-    games_df = normalize_games(games_df)
-    # regular season df or playoff df?
-    if playoff is False:
-        games_df = games_df.loc[games_df.playoff == 0]
-    else:
-        games_df = games_df.loc[games_df.playoff == 1]
-    # convert to record_df
-    record_df = calc_records(
-        games_df
-    )
+@ml_api.get('/all/figure/wins/{playoff}')
+def win_total_fig(
+    playoff: int,
+    games_data: List[MLGame] = Depends(get_all_playoff_games),
+    teams_data: List[MLTeam] = Depends(get_all_teams)
+):
+    # convert to pandas DataFrame and normalize as record_df
+    games_df = MLTable(games_data)
+    teams_df = pandas.DataFrame(teams_data)
+    record_df = games_df.calc_records(teams_df, divisions=False)
     # group by nick_name (don't need division info for this figure)
     record_df = record_df.groupby(
         level=['nick_name'],
@@ -348,33 +515,29 @@ def win_total_fig(playoff: bool = False, games_data: List[MLGame] = Depends(get_
     }
 
 
-@ml_api.get('/heatmap-fig')
+@ml_api.get('/all/figure/heatmap')
 def matchup_heatmap_fig(
     games_data: List[MLGame] = Depends(get_all_games),
     teams_data: List[MLTeam] = Depends(get_all_teams),
 ):
     # convert to pandas DataFrame
-    games_df = pandas.DataFrame(games_data)
-    # normalize games
-    games_df = normalize_games(games_df)
-    # convert to record_df
-    matchup_df = calc_matchup_records(
-        games_df
-    ).reset_index()
+    games_df = MLTable(games_data)
     # pull all-time file to filter active teams
-    ranking_df = pandas.DataFrame(teams_data)
+    teams_df = pandas.DataFrame(teams_data)
+    # convert to record_df
+    matchup_df = games_df.calc_matchup_records(teams_df.copy()).reset_index()
 
     # inner joins are just to keep active teams
     active_matchup_df = matchup_df.merge(
-        ranking_df.loc[
-            ranking_df.active == 'yes',
+        teams_df.loc[
+            teams_df.active == 'yes',
             ['nick_name']
         ].drop_duplicates(),
         on='nick_name',
         how='inner',
     ).merge(
-        ranking_df.loc[
-            ranking_df.active == 'yes',
+        teams_df.loc[
+            teams_df.active == 'yes',
             ['nick_name']
         ].drop_duplicates(),
         left_on='loser',
@@ -577,7 +740,7 @@ def season_boxplot_fig(
     }
 
 
-@ml_api.get('/{season}/table')
+@ml_api.get('/{season}/table/{playoff}')
 def season_table(
     season: int,
     games_data: List[MLGame] = Depends(get_season_games_subset),
@@ -585,15 +748,14 @@ def season_table(
 ):
     '''Only use the else statement for the active season, to
     resolve tiebreakers.'''
-    games_df = pandas.DataFrame(games_data)
-    games_df = normalize_games(games_df)
-    if season < 2020:
+    # convert to pandas DataFrame and normalize
+    games_df = MLTable(games_data)
+    teams_df = pandas.DataFrame(teams_data)
+    if season < 2010:
         # run calc records for the season
-        season_records_df = calc_records(
-            games_df
-        )
+        season_records_df = games_df.calc_records(teams_df)
         # pull all rankings and filter for the season
-        season_ranking_df = pandas.DataFrame(teams_data).set_index('_id')
+        season_ranking_df = teams_df.set_index('_id')
         season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
         # merge playoff ranking and active status
         season_table = season_records_df.merge(
@@ -603,16 +765,12 @@ def season_table(
         ).sort_values(
             by=['playoff_rank', 'loss_total'], ascending=True
         )
-        return json.loads(season_table.to_json(orient='table', index=False))
+        return json.loads(season_table.to_json(orient='split', index=False))
     else:
         # to resolve tiebreakers, need records for the season
-        season_records_df = calc_records(
-            games_df
-        )
+        season_records_df = games_df.calc_records(teams_df.copy())
         # also bring in H2H matchup records
-        matchup_df = calc_matchup_records(
-            games_df
-        )
+        matchup_df = games_df.calc_matchup_records(teams_df.copy())
 
         # initial division ranking before tiebreakers.
         season_records_df['division_rank'] = season_records_df.groupby(
@@ -644,7 +802,7 @@ def season_table(
                 # if the length of the df is longer than 1 for any rank, there's a tie...
                 tied_df = div_df.loc[div_df.division_rank == rank]
                 if len(tied_df) > 1:
-                    untied_df = division_tiebreaker_one(tied_df, games_df, matchup_df)
+                    untied_df = division_tiebreaker_one(tied_df, matchup_df)
                     div_df.update(untied_df)
             season_records_df.update(div_df)
 
@@ -683,7 +841,7 @@ def season_table(
             by='playoff_seed'
         )
 
-        return json.loads(season_table.reset_index().to_json(orient='table', index=False))
+        return json.loads(season_table.reset_index().to_json(orient='split', index=False))
 
 
 @ml_api.get("/{season}/sim")
@@ -782,159 +940,7 @@ def seed_sim(
     return None
 
 
-def normalize_games(all_games_df):
-    # which team won?
-    all_games_df['a_win'] = 0
-    all_games_df['h_win'] = 0
-    all_games_df['a_tie'] = 0
-    all_games_df['h_tie'] = 0
-    # away win
-    all_games_df.loc[all_games_df.a_score > all_games_df.h_score, 'a_win'] = 1
-    # home win
-    all_games_df.loc[all_games_df.a_score < all_games_df.h_score, 'h_win'] = 1
-    # tie
-    all_games_df.loc[all_games_df.a_score == all_games_df.h_score, ['a_tie', 'h_tie']] = 1
-    # normalized score columns for two-week playoff games
-    all_games_df['a_score_norm'] = (
-        all_games_df['a_score'] / (
-            all_games_df['week_e'] - all_games_df['week_s'] + 1
-        )
-    )
-    all_games_df['h_score_norm'] = (
-        all_games_df['h_score'] / (
-            all_games_df['week_e'] - all_games_df['week_s'] + 1
-        )
-    )
-    # margin = home - away
-    all_games_df['h_margin'] = all_games_df['h_score_norm'] - all_games_df['a_score_norm']
-
-    return all_games_df
-
-
-def calc_records(games_df):
-    # season wins/losses/ties/PF/PA for away teams, home teams
-    away_df = pandas.pivot_table(
-        games_df.convert_dtypes(),
-        values=['a_win', 'h_win', 'a_tie', 'a_score_norm', 'h_score_norm'],
-        index=['a_division', 'a_nick'],
-        aggfunc='sum',
-        fill_value=0
-        )
-    home_df = pandas.pivot_table(
-        games_df.convert_dtypes(),
-        values=['h_win', 'a_win', 'h_tie', 'h_score_norm', 'a_score_norm'],
-        index=['h_division', 'h_nick'],
-        aggfunc='sum',
-        fill_value=0
-        )
-
-    # rename index and against columns
-    away_df = away_df.rename(
-        columns={'h_win': 'a_loss', 'h_score_norm': 'a_score_norm_against'},
-    ).rename_axis(
-        index={'a_nick': 'nick_name', 'a_division': 'division'}
-    )
-    home_df = home_df.rename(
-        columns={'a_win': 'h_loss', 'a_score_norm': 'h_score_norm_against'},
-    ).rename_axis(
-        index={'h_nick': 'nick_name', 'h_division': 'division'}
-    )
-    # merge to one table
-    record_df = home_df.join(
-        away_df,
-        how='inner',
-        )
-    # win total, loss total, game total, points for, points against, win percentage
-    record_df['win_total'] = record_df['h_win'] + record_df['a_win']
-    record_df['loss_total'] = record_df['h_loss'] + record_df['a_loss']
-    record_df['tie_total'] = record_df['h_tie'] + record_df['a_tie']
-    record_df['games_played'] = record_df['win_total'] + record_df['loss_total'] + record_df['tie_total']
-    record_df['win_pct'] = (record_df['win_total'] + record_df['tie_total'] * 0.5) / record_df['games_played']
-    record_df['points_for'] = record_df['h_score_norm'] + record_df['a_score_norm']
-    record_df['points_against'] = record_df['h_score_norm_against'] + record_df['a_score_norm_against']
-    record_df['avg_margin'] = (record_df['points_for'] - record_df['points_against']) / record_df['games_played']
-    record_df.sort_values(by='win_pct', ascending=False, inplace=True)
-    record_df.drop(
-        columns=[
-            'h_win',
-            'a_win',
-            'h_loss',
-            'a_loss',
-            'h_tie',
-            'a_tie',
-            'h_score_norm',
-            'a_score_norm',
-            'h_score_norm_against',
-            'a_score_norm_against',
-        ],
-        inplace=True,
-    )
-
-    return record_df
-
-
-def calc_matchup_records(games_df):
-    # grouping for away and home matchup winners, ties, occurrences
-    away_df = pandas.pivot_table(
-        games_df,
-        values=['a_win', 'a_tie', 'season'],
-        index=['a_nick', 'h_nick'],
-        aggfunc={
-            'a_win': 'sum',
-            'a_tie': 'sum',
-            'season': 'count',
-        },
-        fill_value=0,
-        ).rename(columns={'season': 'a_games'})
-    home_df = pandas.pivot_table(
-        games_df,
-        values=['h_win', 'h_tie', 'season'],
-        index=['h_nick', 'a_nick'],
-        aggfunc={
-            'h_win': 'sum',
-            'h_tie': 'sum',
-            'season': 'count',
-        },
-        fill_value=0,
-        ).rename(columns={'season': 'h_games'})
-    # rename indices
-    away_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
-    home_df.index.set_names(names=['nick_name', 'loser'], inplace=True)
-    # join and sum to get total matchup wins
-    matchup_df = away_df.join(
-        home_df,
-        how='outer',
-    ).fillna(0).convert_dtypes()
-    # ties count for 0.5
-    matchup_df['win_total'] = (
-        matchup_df['a_win'] +
-        matchup_df['h_win'] +
-        matchup_df['a_tie'] * 0.5 +
-        matchup_df['h_tie'] * 0.5
-    )
-    matchup_df['game_total'] = (
-        matchup_df['a_games'] +
-        matchup_df['h_games']
-    )
-    # get rid of intermediate columns. just wins and games now
-    matchup_df = matchup_df.convert_dtypes().drop(
-        columns=[
-            'a_win',
-            'h_win',
-            'a_tie',
-            'h_tie',
-            'a_games',
-            'h_games',
-        ]
-    )
-    # add win pct column and sort by
-    matchup_df['win_pct'] = matchup_df['win_total'] / matchup_df['game_total']
-    matchup_df.sort_values(by=['win_pct'], ascending=False, inplace=True)
-
-    return matchup_df
-
-
-def division_tiebreaker_one(tied_df, games_df, matchup_df):
+def division_tiebreaker_one(tied_df, matchup_df):
     # figure out who's got H2H among the 2+ teams by generating all possible matchups
     matchups = list(permutations(tied_df.index.get_level_values('nick_name'), 2))
     # group by winner to determine H2H among the group

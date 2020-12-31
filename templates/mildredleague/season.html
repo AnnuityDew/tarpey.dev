@@ -8,6 +8,7 @@
 
 {% block java %}
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script src="{{ url_for('static', path='/index/js/tarpeydevlayout.js') }}"></script>
 {% endblock %}
 
@@ -26,80 +27,19 @@ mildredleague {{ season }}
 </p>
 
 <p>
-  <b>Full Standings</b>
-  <ul>
-    <li>Includes playoff games.</li>
-    <li>Scores for playoff games lasting two weeks have been normalized (divided by 2).</li>
-  </ul>
-  <div style="overflow-x:auto;"><table>
-    <thead>
-      {% for header in season_table.get('schema').get('fields') %}
-      <th class="season_header">{{ header.get('name') }}</th>
-      {% endfor %}
-    </thead>
-    <tbody>
-    {% for data in season_table.get('data') %}
-      <tr class="season_row">
-        {% if data.get('division') %}
-        <td class="division">
-          {{ data.get('division') }}
-        </td>
-        {% endif %}
-        <td class="nick_name">
-          {{ data.get('nick_name') }}
-        </td>
-        <td class="win_total">
-          {{ '{:.0f}'.format(data.get('win_total')) }}
-        </td>
-        <td class="loss_total">
-          {{ '{:.0f}'.format(data.get('loss_total')) }}
-        </td>
-        <td class="tie_total">
-          {{ '{:.0f}'.format(data.get('tie_total')) }}
-        </td>
-        <td class="games_played">
-          {{ '{:.0f}'.format(data.get('games_played')) }}
-        </td>
-        <td class="win_pct">
-          {{ '{:03.3f}'.format(data.get('win_pct')) }}
-        </td>
-        <td class="points_for">
-          {{ '{:06.2f}'.format(data.get('points_for')) }}
-        </td>
-        <td class="points_against">
-          {{ '{:06.2f}'.format(data.get('points_against')) }}
-        </td>
-        <td class="avg_margin">
-          {{ '{:04.2f}'.format(data.get('avg_margin')) }}
-        </td>
-        {% if data.get('division_rank') %}
-        <td class="division_rank">
-          {{ '{:.0f}'.format(data.get('division_rank')) }}
-        </td>
-        {% endif %}
-        {% if data.get('playoff_seed') %}
-        <td class="playoff_seed">
-          {{ '{:.0f}'.format(data.get('playoff_seed')) }}
-        </td>
-        {% endif %}
-        {% if data.get('playoff_rank') %}
-        <td class="playoff_rank">
-          {{ '{:.0f}'.format(data.get('playoff_rank')) }}
-        </td>
-        {% endif %}
-        {% if data.get('active') %}
-        <td class="active">
-          {{ data.get('active') }}
-        </td>
-        {% endif %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table></div>
+  <b>Regular Season Standings</b>
+  <div style="overflow-x:auto;">
+    <table id="reg-season-table">
+    </table>
+  </div>
 </p>
 
 <p>
   <b>Stats</b>
+  <ul>
+    <li>These charts include playoff games and byes.</li>
+    <li>Scores for playoff games lasting two weeks have been normalized (divided by 2).</li>
+  </ul>
 </p>
 
 <div class="boxplots">
@@ -111,11 +51,22 @@ mildredleague {{ season }}
 </div>
 
 <script>
-  var boxplotFor = () => {
+  const fetchData = async () => {
+    let rawBoxplotData = await fetch("/api/mildredleague/" + String({{ season }}) + "/boxplot");
+    let boxplotData = await rawBoxplotData.json();
+    let rawTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/0");
+    let tableData = await rawTableData.json();
+
+    // make sure all data is returned at the same time
+    // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
+    var data = Promise.all([boxplotData, tableData]);
+    return data;
+  }
+
+  var boxplotFor = async (chartData) => {
     // boxplot for object
     BOXPLOTFOR = document.getElementById('boxplot_for');
     // pull x_data and y_data from Python
-    chartData = {{boxplot_data | safe}}['for_data'];
     var xData = chartData['x_data'];
     var yData = chartData['y_data'];
     // plotData needs to be an array of valid traces, so
@@ -148,11 +99,10 @@ mildredleague {{ season }}
     Plotly.newPlot(BOXPLOTFOR, plotData, layout, config)
   }
 
-  var boxplotAgainst = () => {
+  var boxplotAgainst = async (chartData) => {
     // boxplot against object
     BOXPLOTAGAINST = document.getElementById('boxplot_against');
     // pull x_data and y_data from Python
-    chartData = {{boxplot_data | safe}}['against_data'];
     var xData = chartData['x_data'];
     var yData = chartData['y_data'];
     // plotData needs to be an array of valid traces, so
@@ -185,7 +135,43 @@ mildredleague {{ season }}
     Plotly.newPlot(BOXPLOTAGAINST, plotData, layout, config)
   }
 
-  boxplotFor();
-  boxplotAgainst();
+  var regSeasonTable = async (data, table) => {
+    let thead = table.createTHead();
+    let row = thead.insertRow();
+
+    // headers
+    for (const header of data['columns']) {
+      let th = document.createElement("th");
+      let text = document.createTextNode(header);
+      th.appendChild(text);
+      row.appendChild(th);
+    }
+
+    // data
+    for (let team of data['data']) {
+      let formatList = ['skip', 'skip', '0', '0', '0', '0', '0.000', '0,0.00', '0,0.00', '0,0.00', '0', 'skip']
+      let row = table.insertRow();
+      for (const [index, item] of team.entries()) {
+        if (formatList[index] !== 'skip') {
+          var itemFormatted = numeral(item).format(formatList[index]);
+        } else {
+          var itemFormatted = item;
+        }
+        let cell = row.insertCell();
+        let text = document.createTextNode(itemFormatted);
+        cell.appendChild(text);
+      }
+    }
+  }
+
+  async function renderCharts () {
+    let table = document.querySelector("#reg-season-table");
+    const data = await fetchData();
+    boxplotFor(data[0]['for_data']);
+    boxplotAgainst(data[0]['against_data']);
+    regSeasonTable(data[1], table);
+  }
+  
+  renderCharts();
 </script>
 {% endblock %}
