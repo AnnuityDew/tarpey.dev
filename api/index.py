@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 import pymongo
 from pymongo import MongoClient
+import seaborn
 
 # import custom local stuff
 from api.db import get_dbm

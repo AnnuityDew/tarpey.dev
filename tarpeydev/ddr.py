@@ -89,7 +89,7 @@ class GenericSavePS2():
         # read each save file as raw bytes
         self.save_path = os.path.join(
             os.getcwd(),
-            'data',
+            'backup',
             'ddr',
             '20200624',
             save_id,

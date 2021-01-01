@@ -17,12 +17,29 @@ tr:hover {background-color: #353535;}
   width: 100%;
 }
 
-span {
-  display: inline-block;
-  width: 5em;
-}
-
 .add-game {
   display: inline-block;
   width: 10em;
+}
+
+/* champ colors! */
+a.tarpey {
+  color: #FFFFFF;
+  background-color: #FB4F14;
+}
+a.brando {
+  color:#FFFFFF;
+  background-color: #A71930;
+}
+a.fonti {
+  color: #000000;
+  background-color: #FFC20E;
+}
+a.frank {
+  color: #FFFFFF;
+  background-color: #006778;
+}
+a.sendzik {
+  color: #FFFFFF;
+  background-color: #00338D;
 }

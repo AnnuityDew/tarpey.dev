@@ -48,6 +48,26 @@ class LoginManagerReversed(LoginManager):
 
         return token if token else None
 
+    async def __call__(self, request: Request):
+        """
+        Couple extra lines added to the __call__ function to add username
+        to the request state (so it can be accessed on every page to say hello).
+        """
+        token = None
+        if self.use_cookie:
+            token = self._token_from_cookie(request)
+                
+        if token is None and self.use_header:
+            token = await super(LoginManager, self).__call__(request)
+
+        if token is not None:
+            active_user = await self.get_current_user(token)
+            request.state.active_user = active_user.username.value
+            return active_user
+
+        # No token is present in the request and no Exception has been raised (auto_error=False)
+        raise self.not_authenticated_exception
+
 
 oauth2_scheme = LoginManagerReversed(
     SECRET_KEY,

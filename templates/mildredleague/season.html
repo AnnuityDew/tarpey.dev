@@ -27,6 +27,23 @@ mildredleague {{ season }}
 </p>
 
 <p>
+  <b>Playoff Results</b>
+  <div style="overflow-x:auto;">
+    <table id="playoff-table">
+    </table>
+  </div>
+</p>
+
+<p>
+  <b>Loser's Bracket Standings</b>
+  <div style="overflow-x:auto;">
+    <table id="losers-table">
+    </table>
+  </div>
+</p>
+
+
+<p>
   <b>Regular Season Standings</b>
   <div style="overflow-x:auto;">
     <table id="reg-season-table">
@@ -56,10 +73,14 @@ mildredleague {{ season }}
     let boxplotData = await rawBoxplotData.json();
     let rawTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/0");
     let tableData = await rawTableData.json();
+    let rawPlayoffTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/1");
+    let playoffTableData = await rawPlayoffTableData.json();
+    let rawLosersTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/2");
+    let losersTableData = await rawLosersTableData.json();
 
     // make sure all data is returned at the same time
     // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
-    var data = Promise.all([boxplotData, tableData]);
+    var data = Promise.all([boxplotData, tableData, playoffTableData, losersTableData]);
     return data;
   }
 
@@ -135,7 +156,7 @@ mildredleague {{ season }}
     Plotly.newPlot(BOXPLOTAGAINST, plotData, layout, config)
   }
 
-  var regSeasonTable = async (data, table) => {
+  var seasonTable = async (data, table) => {
     let thead = table.createTHead();
     let row = thead.insertRow();
 
@@ -165,11 +186,15 @@ mildredleague {{ season }}
   }
 
   async function renderCharts () {
-    let table = document.querySelector("#reg-season-table");
     const data = await fetchData();
     boxplotFor(data[0]['for_data']);
     boxplotAgainst(data[0]['against_data']);
-    regSeasonTable(data[1], table);
+    var table = document.querySelector("#reg-season-table");
+    seasonTable(data[1], table);
+    var table = document.querySelector("#playoff-table");
+    seasonTable(data[2], table);
+    var table = document.querySelector("#losers-table");
+    seasonTable(data[3], table);
   }
   
   renderCharts();

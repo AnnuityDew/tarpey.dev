@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-  
+
 {% block title %} - mildredleague{% endblock %}
 
 {% block style %}
@@ -9,33 +9,79 @@
 {% block header %}mildredleague{% endblock %}
 
 {% block content %}
-<p>
-  I played fantasy football prior to 2013, but 2013 was a special year because it was the year my grandma decided to jump in and play.
-  (She's always loved football - been a Washington Redskins fan for her entire life.) And so, Mildred League was born.
-</p>
+<section class="story-section">
+  <p>
+    I played fantasy football prior to 2013, but 2013 was a special year because it was the year my grandma decided to
+    jump in and play.
+    (She's always loved football - been a Washington Redskins fan for her entire life.) And so, Mildred League was born.
+  </p>
 
-<p>
-  The league is a collection of my friends from all walks of life, and they all love that she's a part of the league...
-  so eventually I decided to just rename the league after her. I'm sure there are other grandmas out there that play fantasy football, but not in my life!
-</p>
+  <p>
+    The league is a collection of my friends from all walks of life, and they all love that she's a part of the league...
+    so eventually I decided to just rename the league after her. I'm sure there are other grandmas out there that play
+    fantasy football, but not in my life!
+  </p>
+</section>
 
-<b>League Info</b>
-  <ul>
-    <li><a href="{{ url_for('all_time') }}">All-time Stats</a></li>
-    <li><a href="{{ url_for('rules') }}">Rules</a></li>
-  </ul>
+<section id="league-info" class="center">
+  <h3 class="section-header">League Info</h3>
+  <nav class="nav-container">
+    <div class="big-nav">
+      <a class="big-nav-link" href="{{ url_for('all_time') }}">
+        <span class="big-nav-text">All-time Stats</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link" href="{{ url_for('rules') }}">
+        <span class="big-nav-text">Rules</span>
+      </a>
+    </div>
+  </nav>
+</section>
 
-<p>
-  <b>Season Info</b>
-  <ul>
-    <li><a href="{{ url_for('season_page', season=2013) }}">2013 (champ: Tarpey)</a></li>
-    <li><a href="{{ url_for('season_page', season=2014) }}">2014 (champ: Brando)</a></li>
-    <li><a href="{{ url_for('season_page', season=2015) }}">2015 (champ: Fonti)</a></li>
-    <li><a href="{{ url_for('season_page', season=2016) }}">2016 (champ: Frank)</a></li>
-    <li><a href="{{ url_for('season_page', season=2017) }}">2017 (champ: Fonti)</a></li>
-    <li><a href="{{ url_for('season_page', season=2018) }}">2018 (champ: Tarpey)</a></li>
-    <li><a href="{{ url_for('season_page', season=2019) }}">2019 (champ: Sendzik)</a></li>
-    <li><a href="{{ url_for('season_page', season=2020) }}">2020 (champ: ???)</a></li>
-  </ul>
-</p>
+<section id="season-info" class="center">
+  <h3 class="section-header">Season Info</h3>
+  <nav class="nav-container">
+    <div class="big-nav">
+      <a class="big-nav-link tarpey" href="{{ url_for('season_page', season=2013) }}">
+        <span class="big-nav-text">2013 (Tarpey)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link brando" href="{{ url_for('season_page', season=2014) }}">
+        <span class="big-nav-text">2014 (Brando)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link fonti" href="{{ url_for('season_page', season=2015) }}">
+        <span class="big-nav-text">2015 (Fonti)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link frank" href="{{ url_for('season_page', season=2016) }}">
+        <span class="big-nav-text">2016 (Frank)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link fonti" href="{{ url_for('season_page', season=2017) }}">
+        <span class="big-nav-text">2017 (Fonti)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link tarpey" href="{{ url_for('season_page', season=2018) }}">
+        <span class="big-nav-text">2018 (Tarpey)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link sendzik" href="{{ url_for('season_page', season=2019) }}">
+        <span class="big-nav-text">2019 (Sendzik)</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link" href="{{ url_for('season_page', season=2020) }}">
+        <span class="big-nav-text">2020 (???)</span>
+      </a>
+    </div>
+  </nav>
+</section>
 {% endblock %}

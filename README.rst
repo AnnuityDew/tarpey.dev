@@ -10,6 +10,15 @@ Good JWT articles
 https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/
 https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
 
+Accessing request.state directly in starlette:
+https://stackoverflow.com/questions/63273028/fastapi-get-user-id-from-api-key
+
+Colors!
+https://refactoringui.com/previews/building-your-color-palette/
+
+Docker file system
+https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system
+
 There's so much that can go wrong when you're building one of these things.
 
 * One wrong / can lead to a redirect that costs you your cookies. =[

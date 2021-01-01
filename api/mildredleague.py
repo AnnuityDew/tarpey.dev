@@ -111,6 +111,7 @@ class MLTable(pandas.DataFrame):
             how='left',
         )
         merged_df.rename(columns={'division': 'h_division'}, inplace=True)
+        # reclass here since merge returns a vanilla DF
         return merged_df
 
     def normalize_games(self):
@@ -609,6 +610,18 @@ def get_season_games_subset(
         return data
 
 
+@ml_api.get('/{season}/team/all', response_model=List[MLGame])
+def get_season_teams(season: int, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.teams
+    # return all results if no search_term
+    data = list(collection.find({"season": season}).sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
+
+
 @ml_api.get('/{season}/note/all', response_model=List[MLNote])
 def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
     db = client.mildredleague
@@ -743,28 +756,42 @@ def season_boxplot_fig(
 @ml_api.get('/{season}/table/{playoff}')
 def season_table(
     season: int,
+    playoff: int,
     games_data: List[MLGame] = Depends(get_season_games_subset),
-    teams_data: List[MLTeam] = Depends(get_all_teams),
+    teams_data: List[MLTeam] = Depends(get_season_teams),
 ):
     '''Only use the else statement for the active season, to
     resolve tiebreakers.'''
     # convert to pandas DataFrame and normalize
     games_df = MLTable(games_data)
-    teams_df = pandas.DataFrame(teams_data)
-    if season < 2010:
-        # run calc records for the season
-        season_records_df = games_df.calc_records(teams_df)
-        # pull all rankings and filter for the season
-        season_ranking_df = teams_df.set_index('_id')
-        season_ranking_df = season_ranking_df.loc[season_ranking_df.season == int(season)]
-        # merge playoff ranking and active status
-        season_table = season_records_df.merge(
-            season_ranking_df[['nick_name', 'playoff_rank', 'active']],
-            on='nick_name',
+    teams_df = pandas.DataFrame(teams_data).set_index('_id')
+    if playoff > 0:
+        if playoff == 2:
+            # for loser's bracket, sort by games played ascending first, 
+            # so teams from winner's bracket end up at the top. then sort by
+            # win total descending and points for descending
+            by_list = ['playoff_rank', 'games_played', 'win_total', 'points_for']
+            ascend_list = [True, True, False, False]
+        else:
+            # for winner's bracket, sort by games played descending first,
+            # so teams staying alive longer end up at the top. then sort
+            # by win_pct descending.
+            by_list = ['playoff_rank', 'games_played', 'win_pct']
+            ascend_list = [True, False, False]
+        # run calc records for the playoff season
+        season_table = games_df.calc_records(teams_df.copy())
+        # merge playoff ranking
+        season_table = season_table.merge(
+            teams_df[['division', 'nick_name', 'playoff_rank']],
+            left_index=True,
+            right_on=['division', 'nick_name'],
             how='left',
         ).sort_values(
-            by=['playoff_rank', 'loss_total'], ascending=True
-        )
+            by=by_list,
+            ascending=ascend_list,
+        ).set_index(
+            ['division', 'nick_name']
+        ).reset_index()
         return json.loads(season_table.to_json(orient='split', index=False))
     else:
         # to resolve tiebreakers, need records for the season

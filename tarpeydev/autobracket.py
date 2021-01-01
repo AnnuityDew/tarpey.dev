@@ -68,22 +68,22 @@ async def bracket(request: Request):
 def run_tournament(model_choice, chaos_choice, model_current):
     # pull a clean matchup table for the next model run
     bracket_19 = pandas.read_csv(
-        'data/autobracket/matchup_table_2019.csv',
+        'backup/autobracket/matchup_table_2019.csv',
         index_col='game_id',
     )
     # also pull the actual results, for comparison purposes
     actual_19 = pandas.read_csv(
-        'data/autobracket/autobracket_actual_19.csv',
+        'backup/autobracket/autobracket_actual_19.csv',
         index_col='game_id',
     )
 
     # full Kenpom table reads for the classic and modern methods
     kenpom_19 = pandas.read_csv(
-        'data/autobracket/team_index_2019.csv',
+        'backup/autobracket/team_index_2019.csv',
         index_col='seed',
     )
     kenpom_19_full = pandas.read_csv(
-        'data/autobracket/team_index_2019_full.csv',
+        'backup/autobracket/team_index_2019_full.csv',
         index_col='team_id',
     )
 
@@ -110,7 +110,7 @@ def run_tournament(model_choice, chaos_choice, model_current):
     # update x if user only wants to run the games that haven't happened yet
     if (model_current == 'partial'):
         bracket_19 = pandas.read_csv(
-            'data/autobracket/autobracket_actual_19.csv',
+            'backup/autobracket/autobracket_actual_19.csv',
             index_col='game_id'
         )
         x = x + 4 + 32 + 16  # + 8 + 4 + 2 + 1

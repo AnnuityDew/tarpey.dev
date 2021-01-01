@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-  
+
 {% block title %} - ddr{% endblock %}
 
 {% block style %}
@@ -8,17 +8,59 @@
 
 {% block header %}DDR{% endblock %}
 {% block content %}
-  <b>Select a style! (These are all PS2 games.)</b><br>
-  <ul>
-    <li><a href="{{ url_for('game_info', game='max_jp') }}">DDRMAX JP</a></li>
-    <li><a href="{{ url_for('game_info', game='max2_jp') }}">DDRMAX2 JP</a></li>
-    <li><a href="{{ url_for('game_info', game='ex_jp') }}">Extreme JP</a></li>
-    <li><a href="{{ url_for('game_info', game='max_us') }}">DDRMAX US</a></li>
-    <li><a href="{{ url_for('game_info', game='max2_us') }}">DDRMAX2 US</a></li>
-    <li><a href="{{ url_for('game_info', game='ex_us') }}">Extreme US</a></li>
-    <li><a href="{{ url_for('game_info', game='ex2_us') }}">Extreme 2 US</a></li>
-    <li><a href="{{ url_for('game_info', game='sn_us') }}">SuperNova US</a></li>
-    <li><a href="{{ url_for('game_info', game='sn2_us') }}">SuperNova 2 US</a></li>
-    <li><a href="{{ url_for('game_info', game='x_us') }}">X US</a></li>
-  </ul>
+<section id="select-style" class="center">
+  <h3 class="section-header">Select a style! (These are all PS2 games.)</h3>
+  <nav class="nav-container">
+    <div class="big-nav">
+      <a class="big-nav-link max" href="{{ url_for('game_info', game='max_jp') }}">
+        <span class="big-nav-text">DDRMAX JP</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link max" href="{{ url_for('game_info', game='max_us') }}">
+        <span class="big-nav-text">DDRMAX US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link max2" href="{{ url_for('game_info', game='max2_jp') }}">
+        <span class="big-nav-text">DDRMAX2 JP</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link max2" href="{{ url_for('game_info', game='max2_us') }}">
+        <span class="big-nav-text">DDRMAX2 US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link ex" href="{{ url_for('game_info', game='ex_jp') }}">
+        <span class="big-nav-text">Extreme JP</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link ex" href="{{ url_for('game_info', game='ex_us') }}">
+        <span class="big-nav-text">Extreme US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link ex2" href="{{ url_for('game_info', game='ex2_us') }}">
+        <span class="big-nav-text">Extreme 2 US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link sn" href="{{ url_for('game_info', game='sn_us') }}">
+        <span class="big-nav-text">SuperNova US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link sn2" href="{{ url_for('game_info', game='sn2_us') }}">
+        <span class="big-nav-text">SuperNova 2 US</span>
+      </a>
+    </div>
+    <div class="big-nav">
+      <a class="big-nav-link ddrx" href="{{ url_for('game_info', game='x_us') }}">
+        <span class="big-nav-text">X US</span>
+      </a>
+    </div>
+  </nav>
+</section>
 {% endblock %}
