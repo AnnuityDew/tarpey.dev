@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 import seaborn
 
 # import custom local stuff
-from api.index import Quote, random_quote
+from src.api.index import Quote, random_quote
 
 
 # router and templates

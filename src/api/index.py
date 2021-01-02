@@ -10,8 +10,8 @@ from pymongo import MongoClient
 import seaborn
 
 # import custom local stuff
-from api.db import get_dbm
-from api.users import oauth2_scheme
+from src.api.db import get_dbm
+from src.api.users import oauth2_scheme
 
 
 index_api = APIRouter(

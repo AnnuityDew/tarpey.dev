@@ -15,7 +15,7 @@ import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
-from api.db import get_dbm, get_dbm_no_close
+from src.api.db import get_dbm, get_dbm_no_close
 from instance.config import (
     SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 )

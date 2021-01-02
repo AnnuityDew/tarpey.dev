@@ -14,8 +14,8 @@ import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
-from api.db import get_dbm
-from api.users import oauth2_scheme, UserOut
+from src.api.db import get_dbm
+from src.api.users import oauth2_scheme, UserOut
 
 
 ml_api = APIRouter(

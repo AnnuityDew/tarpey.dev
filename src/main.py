@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 # import custom local stuff
 from instance.config import GCP_FILE
-from tarpeydev import (
+from src.tarpeydev import (
     index,
     autobracket,
     ddr,
@@ -15,10 +15,10 @@ from tarpeydev import (
     timecapsule,
     users,
 )
-from api.index import index_api
-from api.haveyouseenx import hysx_api
-from api.mildredleague import ml_api
-from api.users import users_api
+from src.api.index import index_api
+from src.api.haveyouseenx import hysx_api
+from src.api.mildredleague import ml_api
+from src.api.users import users_api
 
 # GCP debugger
 try:

@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 # import custom local stuff
-from api.users import (
+from src.api.users import (
     login_for_access_token, create_user, UserOut, Token
 )
 

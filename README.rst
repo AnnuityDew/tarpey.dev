@@ -19,6 +19,9 @@ https://refactoringui.com/previews/building-your-color-palette/
 Docker file system
 https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system
 
+Best practices for testing
+https://docs.pytest.org/en/latest/goodpractices.html#install-package-with-pip
+
 There's so much that can go wrong when you're building one of these things.
 
 * One wrong / can lead to a redirect that costs you your cookies. =[

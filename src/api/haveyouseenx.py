@@ -15,8 +15,8 @@ import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
-from api.db import get_dbm
-from api.users import UserOut, oauth2_scheme
+from src.api.db import get_dbm
+from src.api.users import UserOut, oauth2_scheme
 
 
 hysx_api = APIRouter(

@@ -7,17 +7,11 @@ from fastapi.templating import Jinja2Templates
 
 
 # import custom local stuff
-from api.mildredleague import (
-    matchup_heatmap_fig,
-    all_time_ranking_fig,
-    win_total_fig,
+from src.api.mildredleague import (
     get_season_notes,
-    get_season_games,
-    season_boxplot_fig,
-    season_table,
     seed_sim,
 )
-from api.users import (
+from src.api.users import (
     UserOut,
     oauth2_scheme,
 )

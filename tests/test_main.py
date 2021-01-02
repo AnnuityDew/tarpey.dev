@@ -6,17 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.testclient import TestClient
 
 # import custom local stuff
-from .api.mildredleague import ml_api
-from .tarpeydev.mildredleague import ml_views
+from src.main import create_fastapi_app
 
 # create test app and client
-test_app = FastAPI()
-test_api_app = FastAPI()
-test_app.mount("/static", app=StaticFiles(directory='static'), name="static")
-test_app.include_router(ml_views)
-test_api_app.include_router(ml_api)
-
-client = TestClient(test_app)
+app = create_fastapi_app()
+client = TestClient(app)
 
 
 def test_all_get_urls():

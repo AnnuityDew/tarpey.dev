@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 # import local stuff
-from api.haveyouseenx import (
+from src.api.haveyouseenx import (
     count_by_status, playtime, search
 )
 
