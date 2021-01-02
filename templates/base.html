@@ -32,7 +32,7 @@
   <header>
     <nav class="head-nav">
       Hello{% if request.state.active_user %},
-      {{ request.state.active_user.username.value }}{% endif %}!
+      {{ request.state.active_user }}{% endif %}!
       <a class="small-nav-link index" href="{{ url_for('homepage') }}">home</a>
       <a class="small-nav-link mildredleague" href="{{ url_for('mildredleague') }}">mildredleague</a>
       <a class="small-nav-link haveyouseenx" href="{{ url_for('haveyouseenx') }}">haveyouseenx</a>

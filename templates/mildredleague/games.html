@@ -166,7 +166,7 @@ mildredleague edit game
     function deleteData() {
         document.getElementById("confirm").innerHTML = "Deleting data...";
         var requestURL = (
-            "/api/mildredleague/game" +
+            "/api/mildredleague/game/" +
             String(document.getElementById("_id").value)
         );
         var request = new Request(
