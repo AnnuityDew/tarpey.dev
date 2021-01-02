@@ -11,7 +11,7 @@ from api.index import Quote, random_quote
 
 
 # router and templates
-index_views = APIRouter(prefix="")
+index_views = APIRouter(prefix="", tags=["testable_view"])
 templates = Jinja2Templates(directory='templates')
 
 

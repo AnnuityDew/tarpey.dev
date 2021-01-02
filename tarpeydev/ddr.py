@@ -10,7 +10,7 @@ import pandas
 
 
 # router and templates
-ddr_views = APIRouter(prefix="/ddr")
+ddr_views = APIRouter(prefix="/ddr", tags=["testable_view"])
 templates = Jinja2Templates(directory='templates')
 
 

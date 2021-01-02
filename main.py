@@ -40,14 +40,6 @@ def create_fastapi_app():
         redoc_url=None,
     )
 
-    @view_app.get('/url-list')
-    def get_all_urls():
-        url_list = [
-            {'path': route.path, 'name': route.name}
-            for route in app.routes
-        ]
-        return url_list
-
     api_app = FastAPI(
         title="tarpey.dev API",
         description="API for Mike Tarpey's app sandbox.",
@@ -57,14 +49,6 @@ def create_fastapi_app():
             {"url": "https://tarpey.dev/api", "description": "Production environment"},
         ],
     )
-
-    @api_app.get('/url-list')
-    def get_all_urls():
-        url_list = [
-            {'path': route.path, 'name': route.name}
-            for route in app.routes
-        ]
-        return url_list
 
     # config stuff
     view_app.mount("/static", app=StaticFiles(directory='static'), name="static")

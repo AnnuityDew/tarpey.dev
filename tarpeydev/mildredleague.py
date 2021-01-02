@@ -1,7 +1,7 @@
 # import native Python packages
 
 # import third party packages
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Path
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -24,7 +24,7 @@ from api.users import (
 
 
 # router and templates
-ml_views = APIRouter(prefix="/mildredleague")
+ml_views = APIRouter(prefix="/mildredleague", tags=["testable_view"])
 templates = Jinja2Templates(directory='templates')
 
 
@@ -84,7 +84,7 @@ def rules(request: Request):
 @ml_views.get("/{season}", response_class=HTMLResponse)
 def season_page(
     request: Request,
-    season: int,
+    season: int = Path(..., ge=2013, le=2020),
     notes_data=Depends(get_season_notes),
 ):
 
@@ -99,7 +99,11 @@ def season_page(
 
 
 @ml_views.get("/sim/{season}", response_class=HTMLResponse)
-def simulation(request: Request, season: int, playoff_table=Depends(seed_sim)):
+def simulation(
+    request: Request,
+    season: int = Path(..., ge=2013, le=2020),
+    playoff_table=Depends(seed_sim),
+):
     if True:
         return RedirectResponse(request.url_for('mildredleague.season_page', season=season))
     elif season != 2020:

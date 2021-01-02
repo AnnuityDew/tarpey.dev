@@ -11,7 +11,7 @@ import scipy
 
 
 # router and templates
-autobracket_views = APIRouter(prefix="/autobracket")
+autobracket_views = APIRouter(prefix="/autobracket", tags=["testable_view"])
 templates = Jinja2Templates(directory="templates")
 
 

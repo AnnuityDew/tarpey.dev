@@ -12,7 +12,7 @@ from api.haveyouseenx import (
 
 
 # router and templates
-hysx_views = APIRouter(prefix="/haveyouseenx")
+hysx_views = APIRouter(prefix="/haveyouseenx", tags=["testable_view"])
 templates = Jinja2Templates(directory='templates')
 
 
