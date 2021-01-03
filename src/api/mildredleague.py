@@ -1,8 +1,11 @@
 # import native Python packages
-from enum import Enum
-from itertools import permutations
+from datetime import datetime
+from enum import Enum, IntEnum
+from itertools import permutations, product
 import json
-from typing import List
+from typing import List, Dict
+from bson.errors import InvalidId
+from bson.objectid import ObjectId
 
 # import third party packages
 from fastapi import APIRouter, HTTPException, Depends, Path, File, UploadFile
@@ -10,6 +13,7 @@ import pandas
 import plotly
 import plotly.express as px
 from pydantic import BaseModel, Field
+from pydantic.main import BaseConfig
 import pymongo
 from pymongo import MongoClient
 
@@ -58,6 +62,23 @@ class NickName(str, Enum):
     BYE = 'Bye'
 
 
+class MLSeason(IntEnum):
+    SEASON1 = 2013
+    SEASON2 = 2014
+    SEASON3 = 2015
+    SEASON4 = 2016
+    SEASON5 = 2017
+    SEASON6 = 2018
+    SEASON7 = 2019
+    SEASON8 = 2020
+
+
+class MLPlayoff(IntEnum):
+    REGULAR = 0
+    PLAYOFF = 1
+    LOSERS = 2
+
+
 class MLGame(BaseModel):
     doc_id: int = Field(..., alias='_id')
     away: str
@@ -68,8 +89,8 @@ class MLGame(BaseModel):
     h_score: float
     week_s: int
     week_e: int
-    season: int
-    playoff: int
+    season: MLSeason
+    playoff: MLPlayoff
 
 
 class MLTeam(BaseModel):
@@ -77,15 +98,48 @@ class MLTeam(BaseModel):
     division: str
     full_name: str
     nick_name: NickName
-    season: int
+    season: MLSeason
     playoff_rank: int
     active: bool
 
 
 class MLNote(BaseModel):
     doc_id: int = Field(..., alias='_id')
-    season: int
+    season: MLSeason
     note: str
+
+
+class OID(str):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v):
+        try:
+            return ObjectId(str(v))
+        except InvalidId:
+            raise ValueError("Not a valid ObjectId")
+
+
+class MongoModel(BaseModel):
+    class Config(BaseConfig):
+        json_encoders = {
+            datetime: lambda dt: dt.isoformat(),
+            ObjectId: lambda oid: str(oid),
+        }
+
+
+class MLTableTransform(MongoModel):
+    id: OID = Field(..., alias='_id')
+    columns: List
+    data: List
+
+
+class MLBoxplotTransform(MongoModel):
+    id: OID = Field(..., alias='_id')
+    for_data: Dict
+    against_data: Dict
 
 
 class MLTable(pandas.DataFrame):
@@ -278,40 +332,98 @@ class MLTable(pandas.DataFrame):
         return matchup_df
 
 
-# declaring type of the client just helps with autocompletion.
-@ml_api.get('/all/game/all', response_model=List[MLGame])
-def get_all_games(client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
-    # return full history of mildredleague games
-    data = list(collection.find().sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/all/game/{playoff}', response_model=List[MLGame])
-def get_all_playoff_games(
-    playoff: int = Path(..., title="Playoff flag.", description="0: regular, 1: playoffs, 2: losers", ge=0, le=2),
-    client: MongoClient = Depends(get_dbm)
+@ml_api.post('/team')
+async def add_team(
+    doc_list: List[MLTeam],
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
-    collection = db.games
-    # return full history of mildredleague games
-    data = list(collection.find({"playoff": playoff}).sort("_id"))
-    if not data:
-        return "No data found!"
+    collection = db.teams
+    try:
+        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        # recalculate transforms
+        transform_info = await transform_pipeline(client, run_all=True)
+        return {
+            'insert_many_result': insert_many_result,
+            'transform_info': transform_info,
+            'doc_list': doc_list,
+        }
+    except pymongo.errors.DuplicateKeyError:
+        raise HTTPException(status_code=409, detail="Duplicate ID!")
+
+
+@ml_api.get('/team/{doc_id}', response_model=MLTeam)
+async def get_team(
+    doc_id: int,
+    client: MongoClient = Depends(get_dbm),
+):
+    db = client.mildredleague
+    collection = db.teams
+    doc = list(collection.find({'_id': doc_id}))
+    if doc:
+        return doc[0]
     else:
-        return data
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
+@ml_api.put('/team')
+async def edit_team(
+    doc: MLTeam,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.mildredleague
+    collection = db.teams
+    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, run_all=True)
+    return {
+        'doc': doc,
+        'modified_count': update_result.modified_count,
+        'transform_info': transform_info,
+    }
+
+
+@ml_api.delete('/team/{doc_id}')
+async def delete_team(
+    doc_id: int,
+    client: MongoClient = Depends(get_dbm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    db = client.mildredleague
+    collection = db.teams
+    doc = collection.find_one_and_delete({'_id': doc_id})
+    if doc:
+        # recalculate transforms
+        transform_info = await transform_pipeline(client, run_all=True)
+        return {
+            'doc': doc,
+            'transform_info': transform_info,
+        }
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+# declaring type of the client just helps with autocompletion.
 @ml_api.get('/all/team/all')
 def get_all_teams(client: MongoClient = Depends(get_dbm)):
     db = client.mildredleague
     collection = db.teams
     # return full history of mildredleague teams
     data = list(collection.find().sort("_id"))
+    if data:
+        return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.get('/{season}/team/all', response_model=List[MLTeam])
+def get_season_teams(season: MLSeason, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.teams
+    # return all results if no search_term
+    data = list(collection.find({"season": season}).sort("_id"))
     if not data:
         return "No data found!"
     else:
@@ -327,13 +439,16 @@ async def add_game(
     db = client.mildredleague
     collection = db.games
     try:
-        collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
-        # recalculate boxplot data for points for and against
-        return doc_list
+        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        # recalculate transforms
+        transform_info = await transform_pipeline(client, doc_list=doc_list)
+        return {
+            'insert_many_result': insert_many_result,
+            'transform_info': transform_info,
+            'doc_list': doc_list,
+        }
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f'Error! {e}')
 
 
 @ml_api.get('/game/{doc_id}', response_model=MLGame)
@@ -347,7 +462,7 @@ async def get_game(
     if doc:
         return doc[0]
     else:
-        return "No document found!"
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @ml_api.put('/game')
@@ -358,9 +473,14 @@ async def edit_game(
 ):
     db = client.mildredleague
     collection = db.games
-    collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
-    # recalculate boxplot data, points for and against
-    return "Success! Edited game " + str(doc.doc_id) + "."
+    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, doc_list=[doc])
+    return {
+        'doc': doc,
+        'modified_count': update_result.modified_count,
+        'transform_info': transform_info,
+    }
 
 
 @ml_api.delete('/game/{doc_id}')
@@ -372,26 +492,86 @@ async def delete_game(
     db = client.mildredleague
     collection = db.games
     doc = collection.find_one_and_delete({'_id': doc_id})
-    # recalculate boxplot data, points for and against
+    # recalculate transforms
     if doc:
-        return "Success! Deleted game " + str(doc_id) + "."
+        transform_info = await transform_pipeline(client, doc_list=[doc])
+        return {
+            'doc': doc,
+            'transform_info': transform_info,
+        }
     else:
-        return "Something weird happened..."
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.get('/all/game/all', response_model=List[MLGame])
+def get_all_games(client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.games
+    data = list(collection.find().sort("_id"))
+    if data:
+        return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.get('/all/game/{playoff}', response_model=List[MLGame])
+def get_all_playoff_games(
+    playoff: MLPlayoff,
+    client: MongoClient = Depends(get_dbm)
+):
+    db = client.mildredleague
+    collection = db.games
+    data = list(collection.find({"playoff": playoff}).sort("_id"))
+    if data:
+        return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.get('/{season}/game/all', response_model=List[MLGame])
+def get_season_games(season: MLSeason, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.games
+    # return all results if no search_term
+    data = list(collection.find({"season": season}).sort("_id"))
+    if data:
+        return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.get('/{season}/game/{playoff}', response_model=List[MLGame])
+def get_season_games_subset(
+    season: MLSeason,
+    playoff: MLPlayoff,
+    client: MongoClient = Depends(get_dbm),
+):
+    db = client.mildredleague
+    collection = db.games
+    # return all results if no search_term
+    data = list(collection.find({"season": season, "playoff": playoff}).sort("_id"))
+    if not data:
+        return "No data found!"
+    else:
+        return data
 
 
 @ml_api.post('/note')
 def add_note(
-    doc: MLNote,
+    doc_list: List[MLNote],
     client: MongoClient = Depends(get_dbm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.mildredleague
     collection = db.notes
     try:
-        collection.insert_one(doc.dict(by_alias=True))
-        return "Success! Added note " + str(doc.doc_id) + "."
+        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        return {
+            'insert_many_result': insert_many_result,
+            'doc_list': doc_list,
+        }
     except pymongo.errors.DuplicateKeyError:
-        return "Note " + str(doc.doc_id) + " already exists!"
+        raise HTTPException(status_code=409, detail="Duplicate ID!")
 
 
 @ml_api.get('/note/{doc_id}', response_model=MLNote)
@@ -402,7 +582,7 @@ def get_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
     if doc:
         return doc[0]
     else:
-        return "No document found!"
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @ml_api.put('/note')
@@ -413,8 +593,11 @@ def edit_note(
 ):
     db = client.mildredleague
     collection = db.notes
-    collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
-    return "Success! Edited note " + str(doc.doc_id) + "."
+    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    return {
+        'doc': doc,
+        'modified_count': update_result.modified_count,
+    }
 
 
 @ml_api.delete('/note/{doc_id}')
@@ -427,10 +610,21 @@ def delete_note(
     collection = db.notes
     doc = collection.find_one_and_delete({'_id': doc_id})
     if doc:
-        return "Success! Deleted game " + str(doc_id) + "."
+        return doc
     else:
-        return "Something weird happened..."
+        raise HTTPException(status_code=404, detail="No data found!")
 
+
+@ml_api.get('/{season}/note/all', response_model=List[MLNote])
+async def get_season_notes(season: MLSeason, client: MongoClient = Depends(get_dbm)):
+    db = client.mildredleague
+    collection = db.notes
+    # return all results if no search_term
+    doc_list = list(collection.find({"season": season}).sort("_id"))
+    if doc_list:
+        return doc_list
+    else:
+        return "No documents found!"
 
 
 @ml_api.get('/all/figure/ranking')
@@ -483,7 +677,7 @@ def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
 
 @ml_api.get('/all/figure/wins/{playoff}')
 def win_total_fig(
-    playoff: int,
+    playoff: MLPlayoff,
     games_data: List[MLGame] = Depends(get_all_playoff_games),
     teams_data: List[MLTeam] = Depends(get_all_teams)
 ):
@@ -582,71 +776,94 @@ def matchup_heatmap_fig(
     }
 
 
-@ml_api.get('/{season}/game/all', response_model=List[MLGame])
-def get_season_games(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
-    # return all results if no search_term
-    data = list(collection.find({"season": season}).sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/{season}/game/{playoff}', response_model=List[MLGame])
-def get_season_games_subset(
-    season: int,
-    playoff: int = Path(..., title="Playoff flag.", description="0: regular, 1: playoffs, 2: losers", ge=0, le=2),
+@ml_api.get('/{season}/boxplot', response_model=MLBoxplotTransform)
+async def season_boxplot_fig(
+    season: MLSeason,
     client: MongoClient = Depends(get_dbm),
-):
-    db = client.mildredleague
-    collection = db.games
-    # return all results if no search_term
-    data = list(collection.find({"season": season, "playoff": playoff}).sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/{season}/team/all', response_model=List[MLGame])
-def get_season_teams(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.teams
-    # return all results if no search_term
-    data = list(collection.find({"season": season}).sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
-        return data
-
-
-@ml_api.get('/{season}/note/all', response_model=List[MLNote])
-def get_season_notes(season: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.notes
-    # return all results if no search_term
-    doc_list = list(collection.find({"season": season}).sort("_id"))
-    if doc_list:
-        return doc_list
-    else:
-        return "No documents found!"
-
-
-@ml_api.get('/{season}/boxplot')
-def season_boxplot_fig(
-    season: int,
-    client: MongoClient = Depends(get_dbm),
-    games_data: List[MLGame] = Depends(get_season_games),
-    teams_data: List[MLTeam] = Depends(get_all_teams)
 ):
     '''Ideally something like this would go back to being cached, but
     we still need to figure that out wtih FastAPI!
 
     '''
+    db = client.mildredleague_transforms
+    collection = getattr(db, 'boxplot' + str(season.value))
+    chart_data = list(collection.find())
+    # if no chart data is found, rerun pipeline for all cached charts.
+    if not chart_data:
+        await transform_pipeline(client, run_all=True)
+        chart_data = list(collection.find())
+    return chart_data[0]
+
+
+@ml_api.get('/{season}/table/{playoff}', response_model=MLTableTransform)
+async def season_table(
+    season: MLSeason,
+    playoff: MLPlayoff,
+    client: MongoClient = Depends(get_dbm),
+):
+    db = client.mildredleague_transforms
+    collection = getattr(db, 'table' + str(season.value) + 'playoff' + str(playoff.value))
+    table_data = list(collection.find())
+    if not table_data:
+        await transform_pipeline(client, run_all=True)
+        table_data = list(collection.find())
+    return table_data[0]
+
+
+async def transform_pipeline(client: MongoClient, doc_list=None, run_all=False):
+    # set up data arrays
+    season_games_data_array = []
+    season_teams_data_array = []
+    season_games_subset_data_array = []
+    boxplot_message_array = []
+    ranking_message_array = []
+        
+    if doc_list:
+        season_playoff_combos = list(set([(doc.dict()['season'], doc.dict()['playoff']) for doc in doc_list]))
+    elif run_all:
+        all_seasons = [i for i in range(2013, 2021)]
+        all_playoffs = [0, 1, 2]
+        season_playoff_combos = list(product(all_seasons, all_playoffs))
+    else:
+        raise Exception("Something weird happened with the pipeline...")
+
+    for combo in season_playoff_combos:
+        season_games_data_array.append(get_season_games(combo[0], client))
+        season_teams_data_array.append(get_season_teams(combo[0], client))
+        season_games_subset_data_array.append(get_season_games_subset(combo[0], combo[1], client))
+
+    for i, dataset in enumerate(season_teams_data_array):
+        boxplot_message = await season_boxplot_transform(
+            season_playoff_combos[i][0],
+            season_games_data_array[i],
+            season_teams_data_array[i],
+            client,
+        )
+        boxplot_message_array.append(boxplot_message)
+
+        ranking_message = await season_table_transform(
+            season_playoff_combos[i][0],
+            season_playoff_combos[i][1],
+            season_games_subset_data_array[i],
+            season_teams_data_array[i],
+            client,
+        )
+        ranking_message_array.append(ranking_message)
+
+    return {
+        'boxplot_message': boxplot_message_array,
+        'ranking_message': ranking_message_array,
+    }
+
+
+async def season_boxplot_transform(
+    season: MLSeason,
+    season_games_data: List[MLGame],
+    season_teams_data: List[MLTeam],
+    client: MongoClient,
+):
     # convert to DataFrame
-    season_df = pandas.DataFrame(games_data)
+    season_df = pandas.DataFrame(season_games_data)
     # normalized score columns for two-week playoff games
     season_df['a_score_norm'] = (
         season_df['a_score'] / (
@@ -682,10 +899,10 @@ def season_boxplot_fig(
     score_df = pandas.concat([score_df_for, score_df_against])
     # let's sort by playoff rank instead
     # read season file, but we only need nick_name, season, and playoff_rank
-    ranking_df = pandas.DataFrame(teams_data)[['nick_name', 'season', 'playoff_rank']]
+    ranking_df = pandas.DataFrame(season_teams_data)[['nick_name', 'playoff_rank']]
     # merge this (filtered by season) into score_df so we can sort values
     score_df = score_df.merge(
-        ranking_df.loc[ranking_df.season == int(season), ['nick_name', 'playoff_rank']],
+        ranking_df,
         left_on=['name'],
         right_on=['nick_name'],
         how='left',
@@ -693,27 +910,8 @@ def season_boxplot_fig(
         by='playoff_rank', ascending=True,
     )
 
-    # add a unique _id for Mongo
-    score_df['_id'] = range(1, len(score_df) + 1)
-
-    # convert back to json for writing to Mongo
-    doc_list = json.loads(score_df.to_json(orient='records'))
-
-    # write data to MongoDB
-    db = client.mildredleague
-    collection = getattr(db, 'boxplot' + str(season))
-    if list(collection.find().sort("_id")) == doc_list:
-        message = str(season) + " boxplot chart is already synced!"
-    else:
-        # if boxplots need to be recalculated, just wipe the collection and reinsert
-        collection.delete_many({})
-        collection.insert_many(doc_list)
-        message = "Bulk delete and insert complete!"
-
-    data = list(collection.find({"name": {'$ne': 'Bye'}}).sort("_id"))
-
-    # convert to pandas DataFrame
-    score_df = pandas.DataFrame(data)
+    # filter out Bye games
+    score_df = score_df.loc[score_df.name != 'Bye']
 
     # for and against split
     score_df_for = score_df.loc[score_df.side == 'for']
@@ -738,8 +936,8 @@ def season_boxplot_fig(
     # list of hex color codes
     color_data = px.colors.qualitative.Light24
 
-    return {
-        'message': message,
+    # convert to json for writing to Mongo
+    chart_data = {
         'for_data': {
             'x_data': x_data_for,
             'y_data': y_data_for,
@@ -752,19 +950,30 @@ def season_boxplot_fig(
         },
     }
 
+    # write data to MongoDB
+    db = client.mildredleague_transforms
+    collection = getattr(db, 'boxplot' + str(season.value))
+    if list(collection.find().sort("_id")) == [chart_data]:
+        message = "Collection is already synced! Collection: " + 'boxplot' + str(season.value)
+    else:
+        # if boxplots need to be recalculated, just wipe the collection and reinsert
+        collection.delete_many({})
+        collection.insert_many([chart_data])
+        message = "Bulk delete and insert complete! Collection: " + 'boxplot' + str(season.value)
 
-@ml_api.get('/{season}/table/{playoff}')
-def season_table(
-    season: int,
-    playoff: int,
-    games_data: List[MLGame] = Depends(get_season_games_subset),
-    teams_data: List[MLTeam] = Depends(get_season_teams),
+    return message
+
+
+async def season_table_transform(
+    season: MLSeason,
+    playoff: MLPlayoff,
+    season_games_subset_data: List[MLGame],
+    season_teams_data: List[MLTeam],
+    client: MongoClient,
 ):
-    '''Only use the else statement for the active season, to
-    resolve tiebreakers.'''
     # convert to pandas DataFrame and normalize
-    games_df = MLTable(games_data)
-    teams_df = pandas.DataFrame(teams_data).set_index('_id')
+    games_df = MLTable(season_games_subset_data)
+    teams_df = pandas.DataFrame(season_teams_data).set_index('_id')
     if playoff > 0:
         if playoff == 2:
             # for loser's bracket, sort by games played ascending first, 
@@ -792,7 +1001,7 @@ def season_table(
         ).set_index(
             ['division', 'nick_name']
         ).reset_index()
-        return json.loads(season_table.to_json(orient='split', index=False))
+        table_data = json.loads(season_table.to_json(orient='split', index=False))
     else:
         # to resolve tiebreakers, need records for the season
         season_records_df = games_df.calc_records(teams_df.copy())
@@ -868,12 +1077,25 @@ def season_table(
             by='playoff_seed'
         )
 
-        return json.loads(season_table.reset_index().to_json(orient='split', index=False))
+        table_data = json.loads(season_table.reset_index().to_json(orient='split', index=False))
+    
+    # write data to MongoDB
+    db = client.mildredleague_transforms
+    collection = getattr(db, 'table' + str(season.value) + 'playoff' + str(playoff.value))
+    if list(collection.find().sort("_id")) == [table_data]:
+        message = "Collection is already synced! Collection: " + 'table' + str(season.value) + 'playoff' + str(playoff.value)
+    else:
+        # if boxplots need to be recalculated, just wipe the collection and reinsert
+        collection.delete_many({})
+        collection.insert_many([table_data])
+        message = "Bulk delete and insert complete! Collection: " + 'table' + str(season.value) + 'playoff' + str(playoff.value)
+
+    return message
 
 
 @ml_api.get("/{season}/sim")
 def seed_sim(
-    season: int,
+    season: MLSeason,
     games_data: List[MLGame] = Depends(get_season_games),
     winners_array=['t1', 't2', 't3', 't4', 't5', 't6', 't7'],
 ):

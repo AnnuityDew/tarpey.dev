@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %} - mildredleague admin{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/mildredleague/css/mildredleague.css') }}">
+{% endblock %}
+
+{% block java %}
+{% endblock %}
+
+{% block header %}
+mildredleague edit team
+{% endblock %}
+
+{% block content %}
+
+<button id="get-button">Retrieve team</button><br>
+
+<script>
+    document.getElementById("get-button").addEventListener("click", retrieveData);
+    function retrieveData() {
+        document.getElementById("division").value = "Retrieving data...";
+        var requestURL = (
+            "/api/mildredleague/team/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(requestURL);
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("division").value = "API error!";
+                    return;
+                } 
+                response.json().then(
+                    data => {
+                        for (let key in data) {
+                            document.getElementById(key).value = data[key]; 
+                        }
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
+<form id="team-info">
+    <section class="team_data">
+        <label for="_id"><span class="admin-form">Team ID</span></label>
+        <input name="_id" type="number" id="_id" required><br>
+        <label for="division"><span class="admin-form">Division</span></label>
+        <input name="division" type="text" id="division"><br>
+        <label for="full_name"><span class="admin-form">Full Name</span></label>
+        <input name="full_name" type="text" id="full_name"><br>
+        <label for="nick_name"><span class="admin-form">Full Name</span></label>
+        <input name="nick_name" type="text" id="nick_name"><br>
+        <label for="season"><span class="admin-form">Season</span></label>
+        <select name="season" id="season">
+            {% for i in range(2013, 2022) %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="playoff_rank"><span class="admin-form">Playoff Rank</span></label>
+        <input name="playoff_rank" type="number" id="playoff_rank" required><br>
+        <label for="active"><span class="admin-form">Active</span></label>
+        <select name="active" id="active">
+            <option value="yes">yes</option>
+            <option value="no">no</option>
+        </select><br>
+    </section>
+</form>
+
+<button id="add-button">Add team</button>
+<button id="edit-button">Edit team</button>
+<button id="delete-button">Delete team</button>
+<script>
+    document.getElementById("add-button").addEventListener("click", addData);
+    document.getElementById("edit-button").addEventListener("click", editData);
+    document.getElementById("delete-button").addEventListener("click", deleteData);
+    function addData() {
+        document.getElementById("confirm").innerHTML = "Adding data...";
+        var formData = new FormData(document.getElementById("team-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "/api/mildredleague/team",
+            {
+                method: 'POST',
+                body: JSON.stringify([formDict])
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function editData() {
+        document.getElementById("confirm").innerHTML = "Editing data...";
+        var formData = new FormData(document.getElementById("team-info"));
+        var formDict = {};
+        formData.forEach(function(value, key) {
+            formDict[key] = value;
+        });
+        var request = new Request(
+            "/api/mildredleague/team",
+            {
+                method: 'PUT',
+                body: JSON.stringify(formDict)
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                    document.getElementById("confirm").innerHTML = "API error!";
+                    return;
+                }
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+    function deleteData() {
+        document.getElementById("confirm").innerHTML = "Deleting data...";
+        var requestURL = (
+            "/api/mildredleague/team/" +
+            String(document.getElementById("_id").value)
+        );
+        var request = new Request(
+            requestURL,
+            {
+                method: 'DELETE'
+            }
+        );
+        fetch(request).then(
+            response => {
+                if (response.status !== 200) {
+                    console.log('There was a problem! Code: ' + response.status);
+                } 
+                response.text().then(
+                    data => {
+                        document.getElementById("confirm").innerHTML = data
+                    }
+                );
+            }
+        ).catch(
+            e => {
+                console.log('Fetch error =[', e)
+            }
+        );
+    }
+</script>
+
+<p id="confirm"></p>
+
+{% endblock %}

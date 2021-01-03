@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 
 # import local stuff
 from src.api.haveyouseenx import (
-    count_by_status, playtime, search
+    count_by_status, playtime, search, system_treemap
 )
 
 
@@ -21,6 +21,7 @@ async def home(
     request: Request,
     stats=Depends(count_by_status),
     hours=Depends(playtime),
+    html_treemap=Depends(system_treemap),
 ):
     return templates.TemplateResponse(
         'haveyouseenx/home.html',
@@ -28,6 +29,7 @@ async def home(
             'request': request,
             'stats': stats,
             'playtime': hours,
+            'treemap': html_treemap,
         }
     )
 

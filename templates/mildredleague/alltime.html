@@ -41,21 +41,15 @@
 
 <script>
   const fetchData = async () => {
-    let rawMatchupData = await fetch("/api/mildredleague/all/figure/heatmap");
-    let matchupData = await rawMatchupData.json();
-    let rawRankingData = await fetch("/api/mildredleague/all/figure/ranking");
-    let rankingData = await rawRankingData.json();
-    let rawRegularWinData = await fetch("/api/mildredleague/all/figure/wins/0");
-    let regularWinData = await rawRegularWinData.json();
-    let rawPlayoffWinData = await fetch("/api/mildredleague/all/figure/wins/1");
-    let playoffWinData = await rawPlayoffWinData.json();
-    let rawLoserWinData = await fetch("/api/mildredleague/all/figure/wins/2");
-    let loserWinData = await rawLoserWinData.json();
+    let [matchupData, rankingData, regularWinData, playoffWinData, loserWinData] = await Promise.all([
+      fetch("/api/mildredleague/all/figure/heatmap").then(data => data.json()),
+      fetch("/api/mildredleague/all/figure/ranking").then(data => data.json()),
+      fetch("/api/mildredleague/all/figure/wins/0").then(data => data.json()),
+      fetch("/api/mildredleague/all/figure/wins/1").then(data => data.json()),
+      fetch("/api/mildredleague/all/figure/wins/2").then(data => data.json()),
+    ]);
 
-    // make sure all data is returned at the same time
-    // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
-    var data = Promise.all([matchupData, rankingData, regularWinData, playoffWinData, loserWinData]);
-    return data;
+    return [matchupData, rankingData, regularWinData, playoffWinData, loserWinData];
   }
 
   var matchupHeatmap = async (chartData) => {
@@ -335,6 +329,7 @@
     playoffWinBars(data[3]);
     loserWinBars(data[4]);
   }
+
   renderCharts();
 </script>
 {% endblock %}

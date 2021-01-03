@@ -37,97 +37,106 @@
 </p>
 
 <div class="hysx" id="timeline">
-  <script>
-    const fetchTimelineData = async () => {
-      let rawData = await fetch("/api/haveyouseenx/timeline")
-      //use string literals
-      let chartData = await rawData.json();
-      return chartData;
-    }
-
-    var timelineChart = async () => {
-      let chartData = await fetchTimelineData();
-      var xDataClean = [];
-      // we just need a loop over the x data to convert
-      // to datetime
-      for ( var i = 0; i < chartData['x_data_dates'].length; i ++ ) {
-        xDataClean[i] = new Date(chartData['x_data_dates'][i])
-      };
-      var plotData = [
-        {x: xDataClean, y: chartData['y_data_c'], name: 'Completed', hovertext: chartData['y_data_c'], stackgroup: 'one', groupnorm: 'percent'},
-        {x: xDataClean, y: chartData['y_data_b'], name: 'Beaten', hovertext: chartData['y_data_b'], stackgroup: 'one'},
-        {x: xDataClean, y: chartData['y_data_s'], name: 'Started', hovertext: chartData['y_data_s'], stackgroup: 'one'},
-        {x: xDataClean, y: chartData['y_data_ns'], name: 'Not Started', hovertext: chartData['y_data_ns'], stackgroup: 'one'},
-      ];
-      var layout = {
-        template: tarpeydevDefault,
-        title: 'Backlog Timeline',
-        showlegend: true,
-        yaxis: {
-          title: '% in Category',
-        },
-        colorway: chartData['area_colors'],
-      };
-      var config = {responsive: true};
-      Plotly.newPlot('timeline', plotData, layout, config);
-    }
-
-    timelineChart();
-  </script>
 </div>
 
 <div class="hysx" id="treemap">
-<!-- treemap retired for now -->
 </div>
 
 <div class="hysx" id="bubbles">
-  <script>
-    const fetchBubblesData = async () => {
-      let rawData = await fetch("/api/haveyouseenx/bubbles")
-      //use string literals
-      let chartData = await rawData.json();
-      return chartData;
-    }
-
-    var bubblesChart = async () => {
-      let chartData = await fetchBubblesData();
-      // plotData needs to be an array of valid traces, so
-      // here's a loop that constructs the traces from
-      // x_data and y_data, then pushes it into plotData
-      var plotData = [];
-      for ( var i = 0; i < chartData['x_data_counts'].length; i ++ ) {
-        var trace = {
-          x: chartData['x_data_counts'][i],
-          y: chartData['y_data_dist'][i],
-          name: chartData['bubble_names'][i],
-          mode: 'markers',
-          type: 'scatter',
-          text: chartData['label_data'][i],
-          marker: {
-            size: chartData['z_data_hours'][i],
-            sizemode: 'area',
-            sizeref: 0.5,
-          }
-        };
-        plotData.push(trace);
-      };
-      var layout = {
-        template: tarpeydevDefault,
-        title: 'Backlog Distribution',
-        showlegend: true,
-        xaxis: {
-          title: 'Game Count',
-        },
-        yaxis: {
-          title: '% in Category',
-        },
-        colorway: chartData['color_data'],
-      };
-      var config = {responsive: true};
-      Plotly.newPlot('bubbles', plotData, layout, config);
-    }
-
-    bubblesChart();
-  </script>
 </div>
+
+<script>
+  const fetchData = async () => {
+    let [timelineData, treemapData, bubblesData] = await Promise.all([
+      fetch("/api/haveyouseenx/timeline").then(data => data.json()),
+      fetch("/api/haveyouseenx/treemap").then(data => data.json()),
+      fetch("/api/haveyouseenx/bubbles").then(data => data.json()),
+    ]);
+
+    return [timelineData, treemapData, bubblesData];
+  }
+
+  var timelineChart = async (chartData) => {
+    var xDataClean = [];
+    // we just need a loop over the x data to convert
+    // to datetime
+    for ( var i = 0; i < chartData['x_data_dates'].length; i ++ ) {
+      xDataClean[i] = new Date(chartData['x_data_dates'][i])
+    };
+    var plotData = [
+      {x: xDataClean, y: chartData['y_data_c'], name: 'Completed', hovertext: chartData['y_data_c'], stackgroup: 'one', groupnorm: 'percent'},
+      {x: xDataClean, y: chartData['y_data_b'], name: 'Beaten', hovertext: chartData['y_data_b'], stackgroup: 'one'},
+      {x: xDataClean, y: chartData['y_data_s'], name: 'Started', hovertext: chartData['y_data_s'], stackgroup: 'one'},
+      {x: xDataClean, y: chartData['y_data_ns'], name: 'Not Started', hovertext: chartData['y_data_ns'], stackgroup: 'one'},
+    ];
+    var layout = {
+      template: tarpeydevDefault,
+      title: 'Backlog Timeline',
+      showlegend: true,
+      yaxis: {
+        title: '% in Category',
+      },
+      colorway: chartData['area_colors'],
+    };
+    var config = {responsive: true};
+    Plotly.newPlot('timeline', plotData, layout, config);
+  }
+
+  var treemapChart = async (chartData) => {
+    var plotData = chartData['data'];
+    var layout = chartData['layout'];
+    var layoutUpdate = {
+      template: tarpeydevDefault,
+    };
+    var config = chartData['config'];
+    Plotly.newPlot('treemap', plotData, layout, config);
+    Plotly.relayout('treemap', layoutUpdate)
+  }
+
+  var bubblesChart = async (chartData) => {
+    // plotData needs to be an array of valid traces, so
+    // here's a loop that constructs the traces from
+    // x_data and y_data, then pushes it into plotData
+    var plotData = [];
+    for ( var i = 0; i < chartData['x_data_counts'].length; i ++ ) {
+      var trace = {
+        x: chartData['x_data_counts'][i],
+        y: chartData['y_data_dist'][i],
+        name: chartData['bubble_names'][i],
+        mode: 'markers',
+        type: 'scatter',
+        text: chartData['label_data'][i],
+        marker: {
+          size: chartData['z_data_hours'][i],
+          sizemode: 'area',
+          sizeref: 0.5,
+        }
+      };
+      plotData.push(trace);
+    };
+    var layout = {
+      template: tarpeydevDefault,
+      title: 'Backlog Distribution',
+      showlegend: true,
+      xaxis: {
+        title: 'Game Count',
+      },
+      yaxis: {
+        title: '% in Category',
+      },
+      colorway: chartData['color_data'],
+    };
+    var config = {responsive: true};
+    Plotly.newPlot('bubbles', plotData, layout, config);
+  }
+
+  async function renderCharts () {
+    const data = await fetchData();
+    timelineChart(data[0]);
+    treemapChart(data[1]);
+    bubblesChart(data[2]);
+  }
+
+  renderCharts();
+</script>
 {% endblock %}

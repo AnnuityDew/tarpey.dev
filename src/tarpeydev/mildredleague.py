@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from src.api.mildredleague import (
     get_season_notes,
     seed_sim,
+    MLSeason,
 )
 from src.api.users import (
     UserOut,
@@ -22,13 +23,24 @@ ml_views = APIRouter(prefix="/mildredleague", tags=["testable_view"])
 templates = Jinja2Templates(directory='templates')
 
 
+@ml_views.get("/team-admin", response_class=HTMLResponse)
+def team_admin(
+    request: Request,
+    user: UserOut = Depends(oauth2_scheme),
+):
+    return templates.TemplateResponse(
+        'mildredleague/team-admin.html',
+        context={'request': request},
+    )
+
+
 @ml_views.get("/game-admin", response_class=HTMLResponse)
 def game_admin(
     request: Request,
     user: UserOut = Depends(oauth2_scheme),
 ):
     return templates.TemplateResponse(
-        'mildredleague/games.html',
+        'mildredleague/game-admin.html',
         context={'request': request},
     )
 
@@ -39,7 +51,7 @@ def note_admin(
     user: UserOut = Depends(oauth2_scheme),
 ):
     return templates.TemplateResponse(
-        'mildredleague/notes.html',
+        'mildredleague/note-admin.html',
         context={'request': request},
     )
 
@@ -78,7 +90,7 @@ def rules(request: Request):
 @ml_views.get("/{season}", response_class=HTMLResponse)
 def season_page(
     request: Request,
-    season: int = Path(..., ge=2013, le=2020),
+    season: MLSeason,
     notes_data=Depends(get_season_notes),
 ):
 
@@ -95,7 +107,7 @@ def season_page(
 @ml_views.get("/sim/{season}", response_class=HTMLResponse)
 def simulation(
     request: Request,
-    season: int = Path(..., ge=2013, le=2020),
+    season: MLSeason,
     playoff_table=Depends(seed_sim),
 ):
     if True:

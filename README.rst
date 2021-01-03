@@ -19,8 +19,16 @@ https://refactoringui.com/previews/building-your-color-palette/
 Docker file system
 https://stackoverflow.com/questions/20813486/exploring-docker-containers-file-system
 
-Best practices for testing
+Best practices for testing and packaging
 https://docs.pytest.org/en/latest/goodpractices.html#install-package-with-pip
+https://blog.ionelmc.ro/2014/05/25/python-packaging/
+
+Async fetch
+https://stackoverflow.com/questions/46241827/fetch-api-requesting-multiple-get-requests
+
+MongoDB with FastAPI
+https://github.com/tiangolo/fastapi/issues/1515
+https://github.com/tiangolo/fastapi/issues/452
 
 There's so much that can go wrong when you're building one of these things.
 

@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block header %}
-mildredleague {{ season }}
+mildredleague {{ season.value }}
 {% endblock %}
 
 {% block content %}
@@ -68,20 +68,31 @@ mildredleague {{ season }}
 </div>
 
 <script>
-  const fetchData = async () => {
-    let rawBoxplotData = await fetch("/api/mildredleague/" + String({{ season }}) + "/boxplot");
+  const oldFetchData = async () => {
+    let rawBoxplotData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/boxplot");
     let boxplotData = await rawBoxplotData.json();
-    let rawTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/0");
+    let rawTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/0");
     let tableData = await rawTableData.json();
-    let rawPlayoffTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/1");
+    let rawPlayoffTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/1");
     let playoffTableData = await rawPlayoffTableData.json();
-    let rawLosersTableData = await fetch("/api/mildredleague/" + String({{ season }}) + "/table/2");
+    let rawLosersTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/2");
     let losersTableData = await rawLosersTableData.json();
 
     // make sure all data is returned at the same time
     // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
     var data = Promise.all([boxplotData, tableData, playoffTableData, losersTableData]);
     return data;
+  }
+
+  const fetchData = async () => {
+    let [boxplotData, tableData, playoffTableData, losersTableData] = await Promise.all([
+      fetch("/api/mildredleague/" + String({{ season.value }}) + "/boxplot").then(data => data.json()),
+      fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/0").then(data => data.json()),
+      fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/1").then(data => data.json()),
+      fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/2").then(data => data.json()),
+    ]);
+
+    return [boxplotData, tableData, playoffTableData, losersTableData];
   }
 
   var boxplotFor = async (chartData) => {
@@ -105,7 +116,7 @@ mildredleague {{ season }}
     };
     var layout = { 
       template: tarpeydevDefault,
-      title: {{ season }} + ' Points For',
+      title: {{ season.value }} + ' Points For',
       margin: {l:70, r:50, t:60, b:30},
       legend: {orientation:'h', y:0, xanchor:'left', x:0},
       xaxis: {
@@ -141,7 +152,7 @@ mildredleague {{ season }}
     };
     var layout = { 
       template: tarpeydevDefault,
-      title: {{ season }} + ' Points Against',
+      title: {{ season.value }} + ' Points Against',
       margin: {l:70, r:50, t:60, b:30},
       legend: {orientation:'h', y:0, xanchor:'left', x:0},
       xaxis: {

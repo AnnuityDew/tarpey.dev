@@ -73,20 +73,20 @@ def backlog(client: MongoClient = Depends(get_dbm)):
 
 @hysx_api.post('/game')
 async def add_game(
-    doc: BacklogGame,
+    doc_list: List[BacklogGame],
     client: MongoClient = Depends(get_dbm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.backlogs
     collection = getattr(db, user)
     try:
-        collection.insert_one(doc.dict(by_alias=True))
-        # recalculate boxplot data for points for and against
-        return doc
+        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        return {
+            'insert_many_result': insert_many_result,
+            'doc_list': doc_list,
+        }
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f'Error! {e}')
 
 
 @hysx_api.get('/game/{doc_id}', response_model=BacklogGame)
@@ -96,12 +96,12 @@ async def get_game(
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.backlogs
-    collection = getattr(db, user)
+    collection = getattr(db, user.username.value)
     doc = list(collection.find({'_id': doc_id}))
     if doc:
         return doc[0]
     else:
-        raise HTTPException(status_code=404, detail="No game found!")
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @hysx_api.put('/game')
@@ -110,14 +110,13 @@ async def edit_game(
     client: MongoClient = Depends(get_dbm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    try:
-        db = client.backlogs
-        collection = getattr(db, user)
-        new_doc = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
-        # recalculate boxplot data, points for and against
-        return new_doc
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f'Error! {e}')
+    db = client.backlogs
+    collection = getattr(db, user)
+    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    return {
+        'doc': doc,
+        'modified_count': update_result.modified_count,
+    }
 
 
 @hysx_api.delete('/game/{doc_id}')
@@ -129,11 +128,10 @@ async def delete_game(
     db = client.backlogs
     collection = getattr(db, user)
     doc = collection.find_one_and_delete({'_id': doc_id})
-    # recalculate boxplot data, points for and against
     if doc:
         return doc
     else:
-        raise HTTPException(status_code=404, detail="No game found!")
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @hysx_api.get('/count-by-status')
@@ -249,9 +247,7 @@ def system_treemap(backlog: List[BacklogGame] = Depends(backlog)):
     )
 
     # convert to JSON for the web
-    figure_json = json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-    return figure_json
+    return json.loads(plotly.io.to_json(figure))
 
 
 @hysx_api.get('/bubbles')

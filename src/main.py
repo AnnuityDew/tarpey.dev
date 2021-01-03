@@ -3,6 +3,7 @@
 # import third party packages
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import ORJSONResponse
 
 # import custom local stuff
 from instance.config import GCP_FILE
@@ -38,6 +39,7 @@ def create_fastapi_app():
         description="Mike Tarpey's app sandbox.",
         docs_url=None,
         redoc_url=None,
+        default_response_class=ORJSONResponse,
     )
 
     api_app = FastAPI(
@@ -48,6 +50,7 @@ def create_fastapi_app():
             {"url": "https://dev.tarpey.dev/api", "description": "Staging environment."},
             {"url": "https://tarpey.dev/api", "description": "Production environment"},
         ],
+        default_response_class=ORJSONResponse,
     )
 
     # config stuff

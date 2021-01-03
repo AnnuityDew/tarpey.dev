@@ -51,15 +51,15 @@ mildredleague notes
 
 <form id="note-info">
     <section class="note_data">
-        <label for="_id"><span class="add-note">Note ID</span></label>
+        <label for="_id"><span class="admin-form">Note ID</span></label>
         <input name="_id" type="number" id="_id" value="{{ next_id }}" required><br>
-        <label for="season"><span class="add-note">Season</span></label>
+        <label for="season"><span class="admin-form">Season</span></label>
         <select name="season" id="season">
             {% for i in range(2013, 2022) %}
             <option value="{{ i }}">{{ i }}</option>
             {% endfor %}
         </select><br>
-        <label for="note"><span class="add-note">Note</span></label>
+        <label for="note"><span class="admin-form">Note</span></label>
         <textarea name="note" rows="7" id="note" required></textarea><br>
     </section>
 </form>
