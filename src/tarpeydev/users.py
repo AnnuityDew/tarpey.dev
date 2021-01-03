@@ -17,7 +17,7 @@ user_views = APIRouter(prefix="/users")
 templates = Jinja2Templates(directory='templates')
 
 
-@user_views.get('/register', response_class=HTMLResponse)
+@user_views.get('/register', response_class=HTMLResponse, tags=["simple_view"])
 def register(request: Request):
     return templates.TemplateResponse(
         'users/register.html',
@@ -48,7 +48,7 @@ def register_result(
         )
 
 
-@user_views.get('/login', response_class=HTMLResponse)
+@user_views.get('/login', response_class=HTMLResponse, tags=["simple_view"])
 def login(request: Request):
     return templates.TemplateResponse(
         'users/login.html',
@@ -98,7 +98,7 @@ def auth(
         )
 
 
-@user_views.get('/logout', response_class=HTMLResponse)
+@user_views.get('/logout', response_class=HTMLResponse, tags=["simple_view"])
 def logout(request: Request):
     response = RedirectResponse(request.url_for('homepage'))
     response.delete_cookie("Authorization")

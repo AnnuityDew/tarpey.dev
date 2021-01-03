@@ -12,11 +12,11 @@ from src.api.haveyouseenx import (
 
 
 # router and templates
-hysx_views = APIRouter(prefix="/haveyouseenx", tags=["testable_view"])
+hysx_views = APIRouter(prefix="/haveyouseenx")
 templates = Jinja2Templates(directory='templates')
 
 
-@hysx_views.get("/", response_class=HTMLResponse, name="haveyouseenx")
+@hysx_views.get("/", response_class=HTMLResponse, name="haveyouseenx", tags=["simple_view"])
 async def home(
     request: Request,
     stats=Depends(count_by_status),
@@ -34,7 +34,7 @@ async def home(
     )
 
 
-@hysx_views.get("/results", response_class=HTMLResponse)
+@hysx_views.get("/results", response_class=HTMLResponse, tags=["query_view"])
 async def search_results(
     request: Request,
     q: str,

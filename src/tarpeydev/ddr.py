@@ -10,7 +10,7 @@ import pandas
 
 
 # router and templates
-ddr_views = APIRouter(prefix="/ddr", tags=["testable_view"])
+ddr_views = APIRouter(prefix="/ddr")
 templates = Jinja2Templates(directory='templates')
 
 
@@ -27,7 +27,7 @@ class PS2DDR(str, Enum):
     X_US = "x_us"
 
 
-@ddr_views.get("/", response_class=HTMLResponse, name="ddr")
+@ddr_views.get("/", response_class=HTMLResponse, name="ddr", tags=["simple_view"])
 async def home(request: Request):
     return templates.TemplateResponse(
         'ddr/home.html',
@@ -35,7 +35,7 @@ async def home(request: Request):
     )
 
 
-@ddr_views.get("/{game}", response_class=HTMLResponse)
+@ddr_views.get("/{game}", response_class=HTMLResponse, tags=["enumerated_view"])
 async def game_info(request: Request, game: PS2DDR):
     game_data = which_save_file(game)
     game_df = game_data.byte_builder()

@@ -19,7 +19,7 @@ from src.api.users import (
 
 
 # router and templates
-ml_views = APIRouter(prefix="/mildredleague", tags=["testable_view"])
+ml_views = APIRouter(prefix="/mildredleague")
 templates = Jinja2Templates(directory='templates')
 
 
@@ -56,7 +56,7 @@ def note_admin(
     )
 
 
-@ml_views.get("/", response_class=HTMLResponse)
+@ml_views.get("/", response_class=HTMLResponse, tags=["simple_view"])
 def mildredleague(request: Request):
     return templates.TemplateResponse(
         'mildredleague/home.html',
@@ -64,7 +64,7 @@ def mildredleague(request: Request):
     )
 
 
-@ml_views.get("/all-time", response_class=HTMLResponse)
+@ml_views.get("/all-time", response_class=HTMLResponse, tags=["simple_view"])
 def all_time(
     request: Request,
 ):
@@ -77,7 +77,7 @@ def all_time(
     )
 
 
-@ml_views.get("/rules", response_class=HTMLResponse)
+@ml_views.get("/rules", response_class=HTMLResponse, tags=["simple_view"])
 def rules(request: Request):
     return templates.TemplateResponse(
         'mildredleague/rules.html',
@@ -87,7 +87,7 @@ def rules(request: Request):
     )
 
 
-@ml_views.get("/{season}", response_class=HTMLResponse)
+@ml_views.get("/{season}", response_class=HTMLResponse, tags=["enumerated_path_view"])
 def season_page(
     request: Request,
     season: MLSeason,

@@ -7,8 +7,8 @@ from fastapi.templating import Jinja2Templates
 
 
 # router and templates
-tc_views = APIRouter(prefix="/timecapsule", tags=["testable_view"])
-tcd_views = APIRouter(prefix="/timecapsuledeep", tags=["testable_view"])
+tc_views = APIRouter(prefix="/timecapsule")
+tcd_views = APIRouter(prefix="/timecapsuledeep")
 templates = Jinja2Templates(directory='templates')
 
 
@@ -69,7 +69,7 @@ class DeepTemplateID(str, Enum):
     STEPMANIA = "stepmania"
 
 
-@tc_views.get('/{template_id}')
+@tc_views.get('/{template_id}', tags=["enumerated_path_view"])
 def timecapsule(request: Request, template_id: TemplateID):
     template_url = f'timecapsule/{template_id}.html'
     return templates.TemplateResponse(
@@ -78,7 +78,7 @@ def timecapsule(request: Request, template_id: TemplateID):
     )
 
 
-@tcd_views.get('/{template_id}')
+@tcd_views.get('/{template_id}', tags=["enumerated_path_view"])
 def timecapsuledeep(request: Request, template_id: DeepTemplateID):
     template_url = f'timecapsuledeep/{template_id}.html'
     return templates.TemplateResponse(

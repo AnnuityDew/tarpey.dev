@@ -11,11 +11,11 @@ from src.api.index import Quote, random_quote
 
 
 # router and templates
-index_views = APIRouter(prefix="", tags=["testable_view"])
+index_views = APIRouter(prefix="")
 templates = Jinja2Templates(directory='templates')
 
 
-@index_views.get("/", response_class=HTMLResponse)
+@index_views.get("/", response_class=HTMLResponse, tags=["simple_view"])
 async def homepage(request: Request, quote: Quote = Depends(random_quote)):
     # generate color palette using Seaborn for the main site buttons
     return templates.TemplateResponse(
@@ -27,7 +27,7 @@ async def homepage(request: Request, quote: Quote = Depends(random_quote)):
     )
 
 
-@index_views.get("/colors", response_class=HTMLResponse)
+@index_views.get("/colors", response_class=HTMLResponse, tags=["simple_view"])
 def colors(request: Request):
     return templates.TemplateResponse(
         'index/colors.html',
@@ -37,7 +37,7 @@ def colors(request: Request):
     )
 
 
-@index_views.get("/links", response_class=HTMLResponse)
+@index_views.get("/links", response_class=HTMLResponse, tags=["simple_view"])
 def links(request: Request):
     return templates.TemplateResponse(
         'index/links.html',
@@ -47,7 +47,7 @@ def links(request: Request):
     )
 
 
-@index_views.get("/games", response_class=HTMLResponse)
+@index_views.get("/games", response_class=HTMLResponse, tags=["simple_view"])
 def games(request: Request):
     return templates.TemplateResponse(
         'index/games.html',
