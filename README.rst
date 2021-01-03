@@ -1,3 +1,6 @@
+Live at https://tarpey.dev/
+Dev version live at https://dev.tarpey.dev (unless I broke something)
+
 References:
 
 FastAPI — How to add basic and cookie authentication

@@ -11,11 +11,11 @@ import scipy
 
 
 # router and templates
-autobracket_views = APIRouter(prefix="/autobracket", tags=["testable_view"])
+autobracket_views = APIRouter(prefix="/autobracket")
 templates = Jinja2Templates(directory="templates")
 
 
-@autobracket_views.get("/generate", response_class=HTMLResponse)
+@autobracket_views.get("/generate", response_class=HTMLResponse, tags=["public_view"])
 async def generate(request: Request):
     return templates.TemplateResponse(
         'autobracket/generate.html',
