@@ -17,11 +17,6 @@ tr:hover {background-color: #353535;}
   width: 100%;
 }
 
-.admin-form {
-  display: inline-block;
-  width: 10em;
-}
-
 /* champ colors! */
 a.tarpey {
   color: #FFFFFF;
@@ -42,4 +37,8 @@ a.frank {
 a.sendzik {
   color: #FFFFFF;
   background-color: #00338D;
+}
+a.charles {
+  color: #FFFFFF;
+  background-color: #004C54;
 }

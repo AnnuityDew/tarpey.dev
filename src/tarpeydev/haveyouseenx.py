@@ -9,6 +9,10 @@ from fastapi.templating import Jinja2Templates
 from src.api.haveyouseenx import (
     count_by_status, playtime, search, system_treemap
 )
+from src.api.users import (
+    UserOut,
+    oauth2_scheme,
+)
 
 
 # router and templates
@@ -47,4 +51,15 @@ async def search_results(
             'search_term': request.query_params['q'],
             'results': results,
         }
+    )
+
+
+@hysx_views.get("/game-admin", response_class=HTMLResponse)
+def game_admin(
+    request: Request,
+    user: UserOut = Depends(oauth2_scheme),
+):
+    return templates.TemplateResponse(
+        'haveyouseenx/game-admin.html',
+        context={'request': request},
     )

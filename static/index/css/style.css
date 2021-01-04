@@ -145,6 +145,11 @@ form section {
   padding-bottom: 10px;
 }
 
+.admin-form {
+  display: inline-block;
+  width: 10em;
+}
+
 input {
   font-size: 100%;
   border-radius: 0px;

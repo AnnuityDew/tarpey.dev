@@ -345,7 +345,7 @@ async def add_team(
         # recalculate transforms
         transform_info = await transform_pipeline(client, run_all=True)
         return {
-            'insert_many_result': insert_many_result,
+            'inserted_ids': insert_many_result.inserted_ids,
             'transform_info': transform_info,
             'doc_list': doc_list,
         }
@@ -443,7 +443,7 @@ async def add_game(
         # recalculate transforms
         transform_info = await transform_pipeline(client, doc_list=doc_list)
         return {
-            'insert_many_result': insert_many_result,
+            'inserted_ids': insert_many_result.inserted_ids,
             'transform_info': transform_info,
             'doc_list': doc_list,
         }
@@ -567,7 +567,7 @@ def add_note(
     try:
         insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
         return {
-            'insert_many_result': insert_many_result,
+            'inserted_ids': insert_many_result.inserted_ids,
             'doc_list': doc_list,
         }
     except pymongo.errors.DuplicateKeyError:
@@ -821,8 +821,8 @@ async def transform_pipeline(client: MongoClient, doc_list=None, run_all=False):
     if doc_list:
         season_playoff_combos = list(set([(doc.dict()['season'], doc.dict()['playoff']) for doc in doc_list]))
     elif run_all:
-        all_seasons = [i for i in range(2013, 2021)]
-        all_playoffs = [0, 1, 2]
+        all_seasons = [member for name, member in MLSeason.__members__.items()]
+        all_playoffs = [member for name, member in MLPlayoff.__members__.items()]
         season_playoff_combos = list(product(all_seasons, all_playoffs))
     else:
         raise Exception("Something weird happened with the pipeline...")

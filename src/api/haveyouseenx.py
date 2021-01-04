@@ -1,5 +1,5 @@
 # import Python packages
-from datetime import date
+from datetime import datetime
 from enum import Enum
 import json
 from typing import List, Optional
@@ -56,10 +56,10 @@ class BacklogGame(BaseModel):
     game_hours: Optional[int]
     game_minutes: Optional[int]
     playtime_calc: Optional[PlaytimeCalc]
-    add_date: Optional[date]
-    start_date: Optional[date]
-    beat_date: Optional[date]
-    complete_date: Optional[date]
+    add_date: Optional[datetime]
+    start_date: Optional[datetime]
+    beat_date: Optional[datetime]
+    complete_date: Optional[datetime]
     game_notes: Optional[str]
 
 
@@ -78,11 +78,11 @@ async def add_game(
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.backlogs
-    collection = getattr(db, user)
+    collection = getattr(db, user.username.value)
     try:
         insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
         return {
-            'insert_many_result': insert_many_result,
+            'inserted_ids': insert_many_result.inserted_ids,
             'doc_list': doc_list,
         }
     except pymongo.errors.DuplicateKeyError:
@@ -111,7 +111,7 @@ async def edit_game(
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.backlogs
-    collection = getattr(db, user)
+    collection = getattr(db, user.username.value)
     update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
     return {
         'doc': doc,
@@ -126,7 +126,7 @@ async def delete_game(
     user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.backlogs
-    collection = getattr(db, user)
+    collection = getattr(db, user.username.value)
     doc = collection.find_one_and_delete({'_id': doc_id})
     if doc:
         return doc

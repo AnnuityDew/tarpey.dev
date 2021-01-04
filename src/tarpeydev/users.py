@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 # import custom local stuff
+from instance.config import ACCESS_TOKEN_EXPIRE_MINUTES
 from src.api.users import (
     login_for_access_token, create_user, UserOut, Token
 )
@@ -81,8 +82,8 @@ def auth(
         response.set_cookie(
             key='Authorization',
             value=token,
-            max_age=1800,
-            expires=1800,
+            max_age=ACCESS_TOKEN_EXPIRE_MINUTES*60,
+            expires=ACCESS_TOKEN_EXPIRE_MINUTES*60,
             secure=SET_SECURE,
             httponly=True,
             samesite='lax',
