@@ -4,21 +4,20 @@ from enum import Enum, IntEnum
 from itertools import permutations, product
 import json
 from typing import List, Dict
-from bson.errors import InvalidId
-from bson.objectid import ObjectId
+from odmantic import ObjectId
 
 # import third party packages
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Path, File, UploadFile
+from motor.motor_asyncio import AsyncIOMotorClient
 import pandas
 import plotly
 import plotly.express as px
-from pydantic import BaseModel, Field
-from pydantic.main import BaseConfig
 import pymongo
 from pymongo import MongoClient
+from odmantic import AIOEngine, Field, Model
 
 # import custom local stuff
-from src.api.db import get_dbm
+from src.api.db import get_odm
 from src.api.users import oauth2_scheme, UserOut
 
 
@@ -79,8 +78,7 @@ class MLPlayoff(IntEnum):
     LOSERS = 2
 
 
-class MLGame(BaseModel):
-    doc_id: int = Field(..., alias='_id')
+class MLGame(Model):
     away: str
     a_nick: NickName
     a_score: float
@@ -92,9 +90,11 @@ class MLGame(BaseModel):
     season: MLSeason
     playoff: MLPlayoff
 
+    class Config:
+        collection = 'games'
 
-class MLTeam(BaseModel):
-    doc_id: int = Field(..., alias='_id')
+
+class MLTeam(Model):
     division: str
     full_name: str
     nick_name: NickName
@@ -103,41 +103,20 @@ class MLTeam(BaseModel):
     active: bool
 
 
-class MLNote(BaseModel):
-    doc_id: int = Field(..., alias='_id')
+class MLNote(Model):
     season: MLSeason
     note: str
 
 
-class OID(str):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
-
-    @classmethod
-    def validate(cls, v):
-        try:
-            return ObjectId(str(v))
-        except InvalidId:
-            raise ValueError("Not a valid ObjectId")
-
-
-class MongoModel(BaseModel):
-    class Config(BaseConfig):
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-            ObjectId: lambda oid: str(oid),
-        }
-
-
-class MLTableTransform(MongoModel):
-    id: OID = Field(..., alias='_id')
+class MLTableTransform(Model):
+    season: MLSeason
+    playoff: MLPlayoff
     columns: List
     data: List
 
 
-class MLBoxplotTransform(MongoModel):
-    id: OID = Field(..., alias='_id')
+class MLBoxplotTransform(Model):
+    season: MLSeason
     for_data: Dict
     against_data: Dict
 
@@ -335,19 +314,17 @@ class MLTable(pandas.DataFrame):
 @ml_api.post('/team')
 async def add_team(
     doc_list: List[MLTeam],
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.teams
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     try:
-        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        result = await engine.save_all(doc_list)
         # recalculate transforms
         transform_info = await transform_pipeline(client, run_all=True)
         return {
-            'inserted_ids': insert_many_result.inserted_ids,
+            'result': result,
             'transform_info': transform_info,
-            'doc_list': doc_list,
         }
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
@@ -356,10 +333,9 @@ async def add_team(
 @ml_api.get('/team/{doc_id}', response_model=MLTeam)
 async def get_team(
     doc_id: int,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    db = client.mildredleague
-    collection = db.teams
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = list(collection.find({'_id': doc_id}))
     if doc:
         return doc[0]
@@ -370,11 +346,10 @@ async def get_team(
 @ml_api.put('/team')
 async def edit_team(
     doc: MLTeam,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.teams
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
     # recalculate transforms
     transform_info = await transform_pipeline(client, run_all=True)
@@ -388,11 +363,10 @@ async def edit_team(
 @ml_api.delete('/team/{doc_id}')
 async def delete_team(
     doc_id: int,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.teams
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = collection.find_one_and_delete({'_id': doc_id})
     if doc:
         # recalculate transforms
@@ -406,12 +380,11 @@ async def delete_team(
 
 
 # declaring type of the client just helps with autocompletion.
-@ml_api.get('/all/team/all')
-def get_all_teams(client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.teams
+@ml_api.get('/all/team/all', response_model=List[MLTeam])
+async def get_all_teams(client: AsyncIOMotorClient = Depends(get_odm)):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     # return full history of mildredleague teams
-    data = list(collection.find().sort("_id"))
+    data = [team async for team in engine.find(MLTeam)]
     if data:
         return data
     else:
@@ -419,9 +392,11 @@ def get_all_teams(client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.get('/{season}/team/all', response_model=List[MLTeam])
-def get_season_teams(season: MLSeason, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.teams
+def get_season_teams(
+    season: MLSeason,
+    client: AsyncIOMotorClient = Depends(get_odm)
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     # return all results if no search_term
     data = list(collection.find({"season": season}).sort("_id"))
     if not data:
@@ -433,19 +408,17 @@ def get_season_teams(season: MLSeason, client: MongoClient = Depends(get_dbm)):
 @ml_api.post('/game')
 async def add_game(
     doc_list: List[MLGame],
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.games
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     try:
-        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        result = await engine.save_all(doc_list)
         # recalculate transforms
         transform_info = await transform_pipeline(client, doc_list=doc_list)
         return {
-            'inserted_ids': insert_many_result.inserted_ids,
+            'result': result,
             'transform_info': transform_info,
-            'doc_list': doc_list,
         }
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
@@ -454,10 +427,9 @@ async def add_game(
 @ml_api.get('/game/{doc_id}', response_model=MLGame)
 async def get_game(
     doc_id: int,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    db = client.mildredleague
-    collection = db.games
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = list(collection.find({'_id': doc_id}))
     if doc:
         return doc[0]
@@ -468,11 +440,10 @@ async def get_game(
 @ml_api.put('/game')
 async def edit_game(
     doc: MLGame,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.games
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
     # recalculate transforms
     transform_info = await transform_pipeline(client, doc_list=[doc])
@@ -486,11 +457,10 @@ async def edit_game(
 @ml_api.delete('/game/{doc_id}')
 async def delete_game(
     doc_id: int,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.games
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = collection.find_one_and_delete({'_id': doc_id})
     # recalculate transforms
     if doc:
@@ -504,10 +474,9 @@ async def delete_game(
 
 
 @ml_api.get('/all/game/all', response_model=List[MLGame])
-def get_all_games(client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
-    data = list(collection.find().sort("_id"))
+async def get_all_games(client: AsyncIOMotorClient = Depends(get_odm)):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    data = [game async for game in engine.find(MLGame)]
     if data:
         return data
     else:
@@ -515,13 +484,12 @@ def get_all_games(client: MongoClient = Depends(get_dbm)):
 
 
 @ml_api.get('/all/game/{playoff}', response_model=List[MLGame])
-def get_all_playoff_games(
+async def get_all_playoff_games(
     playoff: MLPlayoff,
-    client: MongoClient = Depends(get_dbm)
+    client: AsyncIOMotorClient = Depends(get_odm)
 ):
-    db = client.mildredleague
-    collection = db.games
-    data = list(collection.find({"playoff": playoff}).sort("_id"))
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    data = [game async for game in engine.find(MLGame, MLGame.playoff == playoff)]
     if data:
         return data
     else:
@@ -529,9 +497,11 @@ def get_all_playoff_games(
 
 
 @ml_api.get('/{season}/game/all', response_model=List[MLGame])
-def get_season_games(season: MLSeason, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.games
+def get_season_games(
+    season: MLSeason,
+    client: AsyncIOMotorClient = Depends(get_odm),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     # return all results if no search_term
     data = list(collection.find({"season": season}).sort("_id"))
     if data:
@@ -544,10 +514,9 @@ def get_season_games(season: MLSeason, client: MongoClient = Depends(get_dbm)):
 def get_season_games_subset(
     season: MLSeason,
     playoff: MLPlayoff,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    db = client.mildredleague
-    collection = db.games
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     # return all results if no search_term
     data = list(collection.find({"season": season, "playoff": playoff}).sort("_id"))
     if not data:
@@ -557,27 +526,27 @@ def get_season_games_subset(
 
 
 @ml_api.post('/note')
-def add_note(
+async def add_note(
     doc_list: List[MLNote],
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.notes
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     try:
-        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        result = await engine.save_all(doc_list)
         return {
-            'inserted_ids': insert_many_result.inserted_ids,
-            'doc_list': doc_list,
+            'result': result,
         }
     except pymongo.errors.DuplicateKeyError:
         raise HTTPException(status_code=409, detail="Duplicate ID!")
 
 
 @ml_api.get('/note/{doc_id}', response_model=MLNote)
-def get_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.notes
+def get_note(
+    doc_id: int,
+    client: AsyncIOMotorClient = Depends(get_odm),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = list(collection.find({'_id': doc_id}))
     if doc:
         return doc[0]
@@ -588,11 +557,10 @@ def get_note(doc_id: int, client: MongoClient = Depends(get_dbm)):
 @ml_api.put('/note')
 def edit_note(
     doc: MLNote,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.notes
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
     return {
         'doc': doc,
@@ -603,11 +571,10 @@ def edit_note(
 @ml_api.delete('/note/{doc_id}')
 def delete_note(
     doc_id: int,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.mildredleague
-    collection = db.notes
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     doc = collection.find_one_and_delete({'_id': doc_id})
     if doc:
         return doc
@@ -616,9 +583,11 @@ def delete_note(
 
 
 @ml_api.get('/{season}/note/all', response_model=List[MLNote])
-async def get_season_notes(season: MLSeason, client: MongoClient = Depends(get_dbm)):
-    db = client.mildredleague
-    collection = db.notes
+async def get_season_notes(
+    season: MLSeason,
+    client: AsyncIOMotorClient = Depends(get_odm),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
     # return all results if no search_term
     doc_list = list(collection.find({"season": season}).sort("_id"))
     if doc_list:
@@ -630,7 +599,7 @@ async def get_season_notes(season: MLSeason, client: MongoClient = Depends(get_d
 @ml_api.get('/all/figure/ranking')
 async def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
     # convert to pandas dataframe
-    teams_df = pandas.DataFrame(teams_data)
+    teams_df = pandas.DataFrame([team.doc() for team in teams_data])
     # pivot by year for all teams
     annual_ranking_df = pandas.pivot(
         teams_df,
@@ -682,8 +651,8 @@ async def win_total_fig(
     teams_data: List[MLTeam] = Depends(get_all_teams)
 ):
     # convert to pandas DataFrame and normalize as record_df
-    games_df = MLTable(games_data)
-    teams_df = pandas.DataFrame(teams_data)
+    games_df = MLTable([game.doc() for game in games_data])
+    teams_df = pandas.DataFrame([team.doc() for team in teams_data])
     record_df = games_df.calc_records(teams_df, divisions=False)
     # group by nick_name (don't need division info for this figure)
     record_df = record_df.groupby(
@@ -716,23 +685,22 @@ async def matchup_heatmap_fig(
     teams_data: List[MLTeam] = Depends(get_all_teams),
 ):
     # convert to pandas DataFrame
-    games_df = MLTable(games_data)
-    # pull all-time file to filter active teams
-    teams_df = pandas.DataFrame(teams_data)
+    games_df = MLTable([game.doc() for game in games_data])
+    teams_df = pandas.DataFrame([team.doc() for team in teams_data])
     # convert to record_df
     matchup_df = games_df.calc_matchup_records(teams_df.copy()).reset_index()
 
     # inner joins are just to keep active teams
     active_matchup_df = matchup_df.merge(
         teams_df.loc[
-            teams_df.active == 'yes',
+            teams_df.active,
             ['nick_name']
         ].drop_duplicates(),
         on='nick_name',
         how='inner',
     ).merge(
         teams_df.loc[
-            teams_df.active == 'yes',
+            teams_df.active,
             ['nick_name']
         ].drop_duplicates(),
         left_on='loser',
@@ -779,14 +747,13 @@ async def matchup_heatmap_fig(
 @ml_api.get('/{season}/boxplot', response_model=MLBoxplotTransform)
 async def season_boxplot_fig(
     season: MLSeason,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
     '''Ideally something like this would go back to being cached, but
     we still need to figure that out wtih FastAPI!
 
     '''
-    db = client.mildredleague_transforms
-    collection = getattr(db, 'boxplot' + str(season.value))
+    engine = AIOEngine(motor_client=client, database='mildredleague_transforms')
     chart_data = list(collection.find())
     # if no chart data is found, rerun pipeline for all cached charts.
     if not chart_data:
@@ -799,10 +766,9 @@ async def season_boxplot_fig(
 async def season_table(
     season: MLSeason,
     playoff: MLPlayoff,
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    db = client.mildredleague_transforms
-    collection = getattr(db, 'table' + str(season.value) + 'playoff' + str(playoff.value))
+    engine = AIOEngine(motor_client=client, database='mildredleague_transforms')
     table_data = list(collection.find())
     if not table_data:
         await transform_pipeline(client, run_all=True)
@@ -810,7 +776,7 @@ async def season_table(
     return table_data[0]
 
 
-async def transform_pipeline(client: MongoClient, doc_list=None, run_all=False):
+async def transform_pipeline(client: AsyncIOMotorClient, doc_list=None, run_all=False):
     # set up data arrays
     season_games_data_array = []
     season_teams_data_array = []
@@ -860,7 +826,7 @@ async def season_boxplot_transform(
     season: MLSeason,
     season_games_data: List[MLGame],
     season_teams_data: List[MLTeam],
-    client: MongoClient,
+    client: AsyncIOMotorClient,
 ):
     # convert to DataFrame
     season_df = pandas.DataFrame(season_games_data)
@@ -969,7 +935,7 @@ async def season_table_transform(
     playoff: MLPlayoff,
     season_games_subset_data: List[MLGame],
     season_teams_data: List[MLTeam],
-    client: MongoClient,
+    client: AsyncIOMotorClient,
 ):
     # convert to pandas DataFrame and normalize
     games_df = MLTable(season_games_subset_data)
