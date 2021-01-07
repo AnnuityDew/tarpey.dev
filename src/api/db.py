@@ -1,13 +1,23 @@
 # import third party packages
+from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 
 # import custom local stuff
 from instance.config import MONGO_CONNECT
 
 
-# async mongo client
+# mongo client
 async def get_dbm():
     client = MongoClient(MONGO_CONNECT)
+    try:
+        yield client
+    finally:
+        client.close()
+
+
+# async mongo ODM engine
+async def get_odm():
+    client = AsyncIOMotorClient(MONGO_CONNECT)
     try:
         yield client
     finally:

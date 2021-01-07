@@ -18,9 +18,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='timecapsuledeep/css/style.css') }}">
     {% block style %}{% endblock %}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', path='/index/favicon/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='/index/favicon/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', path='/index/favicon/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="{{ url_for('static', path='/index/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="{{ url_for('static', path='/index/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="{{ url_for('static', path='/index/favicon/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ url_for('static', path='/index/favicon/site.webmanifest') }}">
     <link rel="mask-icon" href="{{ url_for('static', path='/index/favicon/safari-pinned-tab.svg') }}" color="#5bbad5">
     <link rel="shortcut icon" href="{{ url_for('static', path='/index/favicon/favicon.ico') }}">
@@ -28,56 +31,58 @@
 </head>
 
 <body class="bodytwo">
-    <header><h1>{% block header %}{% endblock %}</h1></header>
+    <header>
+        <h1>{% block header %}{% endblock %}</h1>
+    </header>
     <main>
-    <nav>
-        <table>
-            <tr>
-                <td>
-                    Navigation
-                </td>
-            </tr>
+        <nav>
+            <table>
+                <tr>
+                    <td>
+                        Navigation
+                    </td>
+                </tr>
 
-            <tr>
-                <td>
-                    <a href="{{ url_for('timecapsuledeep', template_id='otherhome') }}">Home</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('timecapsuledeep', template_id='otherhome') }}">Home</a>
+                    </td>
+                </tr>
 
-            <tr>
-                <td>
-                    <a href="{{ url_for('timecapsuledeep', template_id='ddr') }}">Dance Dance Revolution</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('timecapsuledeep', template_id='ddr') }}">Dance Dance Revolution</a>
+                    </td>
+                </tr>
 
-            <tr>
-                <td>
-                    <a href="{{ url_for('timecapsuledeep', template_id='stepmania') }}">StepMania</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('timecapsuledeep', template_id='stepmania') }}">StepMania</a>
+                    </td>
+                </tr>
 
-            <tr>
-                <td>
-                    <a href="{{ url_for('timecapsuledeep', template_id='reviewsfaqs') }}">Reviews & FAQs</a>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('timecapsuledeep', template_id='reviewsfaqs') }}">Reviews & FAQs</a>
+                    </td>
+                </tr>
 
-            <tr>
-                <td>
-                    <a href="{{ url_for('timecapsuledeep', template_id='schoolprojects') }}">School Projects</a>
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    <td>
+                        <a href="{{ url_for('timecapsuledeep', template_id='schoolprojects') }}">School Projects</a>
+                    </td>
+                </tr>
+            </table>
         </nav>
         <hr>
         {% block content %}{% endblock %}
     </main>
     <footer class="footertwo">
-    <hr>
+        <hr>
         <p>
             To contact me for absolutely <b>anything</b> about the site (improvements, glitches, broken
             links, add-ons, fan-mail, etc.)
-            please e-mail me at <a href=mailto:FFMMCLXIV@cox.net>FFMMCLXIV@cox.net</a>. Absolutely all, and
+            please e-mail me at an old email address that no longer exists. Absolutely all, and
             I
             mean <i>all</i> e-mails welcome (except for you spammers,of course. No offense, but I don't
             really like that stuff. (Heck,
@@ -93,4 +98,5 @@
         </p>
     </footer>
 </body>
+
 </html>

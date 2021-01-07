@@ -28,6 +28,7 @@ https://blog.ionelmc.ro/2014/05/25/python-packaging/
 
 Async fetch
 https://stackoverflow.com/questions/46241827/fetch-api-requesting-multiple-get-requests
+https://stackoverflow.com/questions/54685210/calling-sync-functions-from-async-function
 
 MongoDB with FastAPI
 https://github.com/tiangolo/fastapi/issues/1515

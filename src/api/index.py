@@ -4,6 +4,7 @@ from typing import List
 
 # import third party packages
 from fastapi import APIRouter, Depends
+from fastapi.exceptions import HTTPException
 from pydantic import BaseModel, Field
 import pymongo
 from pymongo import MongoClient
@@ -51,17 +52,19 @@ async def all_quotes(
 
 @index_api.post('/quote', dependencies=[Depends(oauth2_scheme)])
 async def add_quote(
-    quote: Quote,
+    doc_list: List[Quote],
     client: MongoClient = Depends(get_dbm),
 ):
     db = client.quotes
     collection = db.quotes
     try:
-        collection.insert_one(quote.dict(by_alias=True))
-        # recalculate boxplot data for points for and against
-        return "Success! Added quote " + str(quote.doc_id) + "."
+        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
+        return {
+            'inserted_ids': insert_many_result.inserted_ids,
+            'doc_list': doc_list,
+        }
     except pymongo.errors.DuplicateKeyError:
-        return "Quote " + str(quote.doc_id) + " already exists!"
+        raise HTTPException(status_code=409, detail="Duplicate ID!")
 
 
 @index_api.get('/quote/{doc_id}', response_model=Quote)
@@ -75,19 +78,21 @@ async def get_quote(
     if doc:
         return doc[0]
     else:
-        return "No document found!"
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @index_api.put('/quote', dependencies=[Depends(oauth2_scheme)])
 async def edit_quote(
-    quote: Quote,
+    doc: Quote,
     client: MongoClient = Depends(get_dbm),
 ):
     db = client.quotes
     collection = db.quotes
-    collection.replace_one({'_id': quote.doc_id}, quote.dict(by_alias=True))
-    # recalculate boxplot data, points for and against
-    return "Success! Edited quote " + str(quote.doc_id) + "."
+    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    return {
+        'doc': doc,
+        'modified_count': update_result.modified_count,
+    }
 
 
 @index_api.delete('/quote/{doc_id}', dependencies=[Depends(oauth2_scheme)])
@@ -98,8 +103,9 @@ async def delete_quote(
     db = client.quotes
     collection = db.quotes
     doc = collection.find_one_and_delete({'_id': doc_id})
-    # recalculate boxplot data, points for and against
     if doc:
-        return "Success! Deleted quote " + str(doc_id) + "."
+        return {
+            'doc': doc,
+        }
     else:
-        return "Something weird happened..."
+        raise HTTPException(status_code=404, detail="No data found!")

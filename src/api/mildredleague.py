@@ -8,7 +8,7 @@ from bson.errors import InvalidId
 from bson.objectid import ObjectId
 
 # import third party packages
-from fastapi import APIRouter, HTTPException, Depends, Path, File, UploadFile
+from fastapi import APIRouter, HTTPException, Depends
 import pandas
 import plotly
 import plotly.express as px
@@ -628,7 +628,7 @@ async def get_season_notes(season: MLSeason, client: MongoClient = Depends(get_d
 
 
 @ml_api.get('/all/figure/ranking')
-def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
+async def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
     # convert to pandas dataframe
     teams_df = pandas.DataFrame(teams_data)
     # pivot by year for all teams
@@ -676,7 +676,7 @@ def all_time_ranking_fig(teams_data: List[MLTeam] = Depends(get_all_teams)):
 
 
 @ml_api.get('/all/figure/wins/{playoff}')
-def win_total_fig(
+async def win_total_fig(
     playoff: MLPlayoff,
     games_data: List[MLGame] = Depends(get_all_playoff_games),
     teams_data: List[MLTeam] = Depends(get_all_teams)
@@ -711,7 +711,7 @@ def win_total_fig(
 
 
 @ml_api.get('/all/figure/heatmap')
-def matchup_heatmap_fig(
+async def matchup_heatmap_fig(
     games_data: List[MLGame] = Depends(get_all_games),
     teams_data: List[MLTeam] = Depends(get_all_teams),
 ):

@@ -1,9 +1,12 @@
 # import native Python packages
 
 # import third party packages
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # import custom local stuff
 from instance.config import GCP_FILE
@@ -41,6 +44,34 @@ def create_fastapi_app():
         redoc_url=None,
         default_response_class=ORJSONResponse,
     )
+
+    # templates
+    templates = Jinja2Templates(directory='templates')
+
+    # custom exception page to convert the 422 into a 404.
+    @view_app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc):
+        return templates.TemplateResponse(
+            'index/error.html',
+            context={
+                'request': request,
+                'exc': 'This page doesn\'t exist.',
+                'status_code': 404,
+            },
+            status_code=404,
+        )
+
+    # custom exception page to convert a starlette (not FastAPI) exception
+    @view_app.exception_handler(StarletteHTTPException)
+    async def http_exception_handler(request: Request, exc):
+        return templates.TemplateResponse(
+            'index/error.html',
+            context={
+                'request': request,
+                'exc': str(exc.detail),
+                'status_code': exc.status_code,
+            }
+        )
 
     api_app = FastAPI(
         title="tarpey.dev API",
