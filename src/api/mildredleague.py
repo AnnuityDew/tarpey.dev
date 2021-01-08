@@ -3,7 +3,7 @@ from datetime import datetime
 from enum import Enum, IntEnum
 from itertools import permutations, product
 import json
-from typing import List, Dict
+from typing import List, Dict, Optional
 from odmantic import ObjectId
 
 # import third party packages
@@ -90,8 +90,18 @@ class MLGame(Model):
     season: MLSeason
     playoff: MLPlayoff
 
-    class Config:
-        collection = 'games'
+
+class MLGamePatch(Model):
+    away: Optional[str]
+    a_nick: Optional[NickName]
+    a_score: Optional[float]
+    home: Optional[str]
+    h_nick: Optional[NickName]
+    h_score: Optional[float]
+    week_s: Optional[int]
+    week_e: Optional[int]
+    season: Optional[MLSeason]
+    playoff: Optional[MLPlayoff]
 
 
 class MLTeam(Model):
@@ -101,6 +111,15 @@ class MLTeam(Model):
     season: MLSeason
     playoff_rank: int
     active: bool
+
+
+class MLTeamPatch(Model):
+    division: Optional[str]
+    full_name: Optional[str]
+    nick_name: Optional[NickName]
+    season: Optional[MLSeason]
+    playoff_rank: Optional[int]
+    active: Optional[bool]
 
 
 class MLNote(Model):
@@ -311,80 +330,84 @@ class MLTable(pandas.DataFrame):
         return matchup_df
 
 
-@ml_api.post('/team')
-async def add_team(
+@ml_api.post('/team/')
+async def add_teams(
     doc_list: List[MLTeam],
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    try:
-        result = await engine.save_all(doc_list)
-        # recalculate transforms
-        transform_info = await transform_pipeline(client, run_all=True)
-        return {
-            'result': result,
-            'transform_info': transform_info,
-        }
-    except pymongo.errors.DuplicateKeyError:
-        raise HTTPException(status_code=409, detail="Duplicate ID!")
-
-
-@ml_api.get('/team/{doc_id}', response_model=MLTeam)
-async def get_team(
-    doc_id: int,
-    client: AsyncIOMotorClient = Depends(get_odm),
-):
-    engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = list(collection.find({'_id': doc_id}))
-    if doc:
-        return doc[0]
-    else:
-        raise HTTPException(status_code=404, detail="No data found!")
-
-
-@ml_api.put('/team')
-async def edit_team(
-    doc: MLTeam,
-    client: AsyncIOMotorClient = Depends(get_odm),
-    user: UserOut = Depends(oauth2_scheme),
-):
-    engine = AIOEngine(motor_client=client, database='mildredleague')
-    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    result = await engine.save_all(doc_list)
     # recalculate transforms
     transform_info = await transform_pipeline(client, run_all=True)
     return {
-        'doc': doc,
-        'modified_count': update_result.modified_count,
+        'result': result,
         'transform_info': transform_info,
     }
 
 
-@ml_api.delete('/team/{doc_id}')
-async def delete_team(
-    doc_id: int,
+@ml_api.get('/team/{oid}', response_model=MLTeam)
+async def get_team(
+    oid: ObjectId,
     client: AsyncIOMotorClient = Depends(get_odm),
-    user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = collection.find_one_and_delete({'_id': doc_id})
-    if doc:
-        # recalculate transforms
-        transform_info = await transform_pipeline(client, run_all=True)
-        return {
-            'doc': doc,
-            'transform_info': transform_info,
-        }
+    team = await engine.find_one(MLTeam, MLTeam.id == oid)
+    if team:
+        return team
     else:
         raise HTTPException(status_code=404, detail="No data found!")
 
 
-# declaring type of the client just helps with autocompletion.
+@ml_api.patch('/team/{oid}')
+async def edit_team(
+    oid: ObjectId,
+    patch: MLTeamPatch,
+    client: AsyncIOMotorClient = Depends(get_odm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    team = await engine.find_one(MLTeam, MLTeam.id == oid)
+    if team is None:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+    patch_dict = patch.dict(exclude_unset=True)
+    for attr, value in patch_dict.items():
+        setattr(team, attr, value)
+    result = await engine.save(team)
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, run_all=True)
+    return {
+        'result': result,
+        'transform_info': transform_info,
+    }
+
+
+@ml_api.delete('/team/{oid}')
+async def delete_team(
+    oid: int,
+    client: AsyncIOMotorClient = Depends(get_odm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    team = await engine.find_one(MLTeam, MLTeam.id == oid)
+    if team is None:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+    await engine.delete(team)
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, run_all=True)
+    return {
+        'team': team,
+        'transform_info': transform_info,
+    }
+
+
 @ml_api.get('/all/team/all', response_model=List[MLTeam])
 async def get_all_teams(client: AsyncIOMotorClient = Depends(get_odm)):
     engine = AIOEngine(motor_client=client, database='mildredleague')
     # return full history of mildredleague teams
-    data = [team async for team in engine.find(MLTeam)]
+    data = [team async for team in engine.find(MLTeam, sort=MLTeam.id)]
     if data:
         return data
     else:
@@ -392,91 +415,101 @@ async def get_all_teams(client: AsyncIOMotorClient = Depends(get_odm)):
 
 
 @ml_api.get('/{season}/team/all', response_model=List[MLTeam])
-def get_season_teams(
+async def get_season_teams(
     season: MLSeason,
     client: AsyncIOMotorClient = Depends(get_odm)
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
     # return all results if no search_term
-    data = list(collection.find({"season": season}).sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
+    data = [team async for team in engine.find(
+        MLTeam,
+        MLTeam.season == season,
+        sort=MLTeam.id
+        )
+    ]
+    if data:
         return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @ml_api.post('/game')
-async def add_game(
+async def add_games(
     doc_list: List[MLGame],
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    try:
-        result = await engine.save_all(doc_list)
-        # recalculate transforms
-        transform_info = await transform_pipeline(client, doc_list=doc_list)
-        return {
-            'result': result,
-            'transform_info': transform_info,
-        }
-    except pymongo.errors.DuplicateKeyError:
-        raise HTTPException(status_code=409, detail="Duplicate ID!")
-
-
-@ml_api.get('/game/{doc_id}', response_model=MLGame)
-async def get_game(
-    doc_id: int,
-    client: AsyncIOMotorClient = Depends(get_odm),
-):
-    engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = list(collection.find({'_id': doc_id}))
-    if doc:
-        return doc[0]
-    else:
-        raise HTTPException(status_code=404, detail="No data found!")
-
-
-@ml_api.put('/game')
-async def edit_game(
-    doc: MLGame,
-    client: AsyncIOMotorClient = Depends(get_odm),
-    user: UserOut = Depends(oauth2_scheme),
-):
-    engine = AIOEngine(motor_client=client, database='mildredleague')
-    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    result = await engine.save_all(doc_list)
     # recalculate transforms
-    transform_info = await transform_pipeline(client, doc_list=[doc])
+    transform_info = await transform_pipeline(client, doc_list=doc_list)
     return {
-        'doc': doc,
-        'modified_count': update_result.modified_count,
+        'result': result,
         'transform_info': transform_info,
     }
 
 
-@ml_api.delete('/game/{doc_id}')
-async def delete_game(
-    doc_id: int,
+@ml_api.get('/game/{oid}', response_model=MLGame)
+async def get_game(
+    oid: ObjectId,
+    client: AsyncIOMotorClient = Depends(get_odm),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    game = await engine.find_one(MLGame, MLGame.id == oid)
+    if game:
+        return game
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+
+@ml_api.patch('/game/{oid}')
+async def edit_game(
+    oid: ObjectId,
+    patch: MLGamePatch,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = collection.find_one_and_delete({'_id': doc_id})
-    # recalculate transforms
-    if doc:
-        transform_info = await transform_pipeline(client, doc_list=[doc])
-        return {
-            'doc': doc,
-            'transform_info': transform_info,
-        }
-    else:
+    game = await engine.find_one(MLGame, MLGame.id == oid)
+    if game is None:
         raise HTTPException(status_code=404, detail="No data found!")
+
+    patch_dict = patch.dict(exclude_unset=True)
+    for attr, value in patch_dict.items():
+        setattr(game, attr, value)
+    result = await engine.save(game)
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, doc_list=[game])
+    return {
+        'result': result,
+        'transform_info': transform_info,
+    }
+
+
+@ml_api.delete('/game/{oid}')
+async def delete_game(
+    oid: int,
+    client: AsyncIOMotorClient = Depends(get_odm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    engine = AIOEngine(motor_client=client, database='mildredleague')
+    game = await engine.find_one(MLGame, MLGame.id == oid)
+    if game is None:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+    await engine.delete(game)
+    # recalculate transforms
+    transform_info = await transform_pipeline(client, doc_list=[game])
+    return {
+        'game': game,
+        'transform_info': transform_info,
+    }
 
 
 @ml_api.get('/all/game/all', response_model=List[MLGame])
 async def get_all_games(client: AsyncIOMotorClient = Depends(get_odm)):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    data = [game async for game in engine.find(MLGame)]
+    data = [game async for game in engine.find(MLGame, sort=MLGame.id,)]
     if data:
         return data
     else:
@@ -489,7 +522,7 @@ async def get_all_playoff_games(
     client: AsyncIOMotorClient = Depends(get_odm)
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    data = [game async for game in engine.find(MLGame, MLGame.playoff == playoff)]
+    data = [game async for game in engine.find(MLGame, MLGame.playoff == playoff, sort=MLGame.id,)]
     if data:
         return data
     else:
@@ -497,13 +530,12 @@ async def get_all_playoff_games(
 
 
 @ml_api.get('/{season}/game/all', response_model=List[MLGame])
-def get_season_games(
+async def get_season_games(
     season: MLSeason,
     client: AsyncIOMotorClient = Depends(get_odm),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    # return all results if no search_term
-    data = list(collection.find({"season": season}).sort("_id"))
+    data = [game async for game in engine.find(MLGame, MLGame.season == season, sort=MLGame.id,)]
     if data:
         return data
     else:
@@ -511,18 +543,22 @@ def get_season_games(
 
 
 @ml_api.get('/{season}/game/{playoff}', response_model=List[MLGame])
-def get_season_games_subset(
+async def get_season_games_subset(
     season: MLSeason,
     playoff: MLPlayoff,
     client: AsyncIOMotorClient = Depends(get_odm),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    # return all results if no search_term
-    data = list(collection.find({"season": season, "playoff": playoff}).sort("_id"))
-    if not data:
-        return "No data found!"
-    else:
+    data = [game async for game in engine.find(
+        MLGame,
+        (MLGame.season == season) & (MLGame.playoff == playoff),
+        sort=MLGame.id,
+        )
+    ]
+    if data:
         return data
+    else:
+        raise HTTPException(status_code=404, detail="No data found!")
 
 
 @ml_api.post('/note')
@@ -541,13 +577,13 @@ async def add_note(
         raise HTTPException(status_code=409, detail="Duplicate ID!")
 
 
-@ml_api.get('/note/{doc_id}', response_model=MLNote)
+@ml_api.get('/note/{oid}', response_model=MLNote)
 def get_note(
-    doc_id: int,
+    oid: int,
     client: AsyncIOMotorClient = Depends(get_odm),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = list(collection.find({'_id': doc_id}))
+    doc = list(collection.find({'_id': oid}))
     if doc:
         return doc[0]
     else:
@@ -561,21 +597,21 @@ def edit_note(
     user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    update_result = collection.replace_one({'_id': doc.oid}, doc.dict(by_alias=True))
     return {
         'doc': doc,
         'modified_count': update_result.modified_count,
     }
 
 
-@ml_api.delete('/note/{doc_id}')
+@ml_api.delete('/note/{oid}')
 def delete_note(
-    doc_id: int,
+    oid: int,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
     engine = AIOEngine(motor_client=client, database='mildredleague')
-    doc = collection.find_one_and_delete({'_id': doc_id})
+    doc = collection.find_one_and_delete({'_id': oid})
     if doc:
         return doc
     else:
