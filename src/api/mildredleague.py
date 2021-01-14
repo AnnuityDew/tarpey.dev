@@ -1,20 +1,16 @@
 # import native Python packages
-from datetime import datetime
 from enum import Enum, IntEnum
 from itertools import permutations, product
 import json
 from typing import List, Dict, Optional
-from odmantic import ObjectId
 
 # import third party packages
-from fastapi import APIRouter, HTTPException, Depends, Path, File, UploadFile
+from fastapi import APIRouter, HTTPException, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 import pandas
 import plotly
 import plotly.express as px
-import pymongo
-from pymongo import MongoClient
-from odmantic import AIOEngine, Field, Model
+from odmantic import AIOEngine, Field, Model, ObjectId
 
 # import custom local stuff
 from src.api.db import get_odm
@@ -125,6 +121,11 @@ class MLTeamPatch(Model):
 class MLNote(Model):
     season: MLSeason
     note: str
+
+
+class MLNotePatch(Model):
+    season: Optional[MLSeason]
+    note: Optional[str]
 
 
 class MLTableTransform(Model):
@@ -390,7 +391,7 @@ async def edit_team(
 
 @ml_api.delete("/team/{oid}")
 async def delete_team(
-    oid: int,
+    oid: ObjectId,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
@@ -489,7 +490,7 @@ async def edit_game(
 
 @ml_api.delete("/game/{oid}")
 async def delete_game(
-    oid: int,
+    oid: ObjectId,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
@@ -609,9 +610,9 @@ async def get_note(
         raise HTTPException(status_code=404, detail="No data found!")
 
 
-@ml_api.patch("/note")
+@ml_api.patch("/note/{oid}")
 async def edit_note(
-    doc: MLNote,
+    oid: ObjectId,
     patch: MLNotePatch,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
@@ -633,7 +634,7 @@ async def edit_note(
 
 @ml_api.delete("/note/{oid}")
 async def delete_note(
-    oid: int,
+    oid: ObjectId,
     client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
@@ -643,8 +644,7 @@ async def delete_note(
         raise HTTPException(status_code=404, detail="No data found!")
 
     await engine.delete(note)
-    # recalculate transforms
-    transform_info = await transform_pipeline(client, run_all=True)
+
     return {
         "note": note,
     }
@@ -829,12 +829,25 @@ async def season_boxplot_fig(
     season: MLSeason,
     client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    engine = AIOEngine(motor_client=client, database="mildredleague_transforms")
-    chart_data = list(collection.find())
-    # if no chart data is found, rerun pipeline for all cached charts.
+    engine = AIOEngine(motor_client=client, database="mildredleague")
+    chart_data = [
+        chart
+        async for chart in engine.find(
+            MLBoxplotTransform,
+            MLBoxplotTransform.season == season,
+        )
+    ]
+    # if no chart data is found, rerun pipeline for all cached charts,
+    # then query again
     if not chart_data:
         await transform_pipeline(client, run_all=True)
-        chart_data = list(collection.find())
+        chart_data = [
+            chart
+            async for chart in engine.find(
+                MLBoxplotTransform,
+                MLBoxplotTransform.season == season,
+            )
+        ]
     return chart_data[0]
 
 
@@ -844,11 +857,25 @@ async def season_table(
     playoff: MLPlayoff,
     client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    engine = AIOEngine(motor_client=client, database="mildredleague_transforms")
-    table_data = list(collection.find())
+    engine = AIOEngine(motor_client=client, database="mildredleague")
+    table_data = [
+        table
+        async for table in engine.find(
+            MLTableTransform,
+            MLTableTransform.season == season,
+            MLTableTransform.playoff == playoff,
+        )
+    ]
     if not table_data:
         await transform_pipeline(client, run_all=True)
-        table_data = list(collection.find())
+        table_data = [
+            table
+            async for table in engine.find(
+                MLTableTransform,
+                MLTableTransform.season == season,
+                MLTableTransform.playoff == playoff,
+            )
+        ]
     return table_data[0]
 
 
@@ -872,10 +899,10 @@ async def transform_pipeline(client: AsyncIOMotorClient, doc_list=None, run_all=
         raise Exception("Something weird happened with the pipeline...")
 
     for combo in season_playoff_combos:
-        season_games_data_array.append(get_season_games(combo[0], client))
-        season_teams_data_array.append(get_season_teams(combo[0], client))
+        season_games_data_array.append(await get_season_games(combo[0], client))
+        season_teams_data_array.append(await get_season_teams(combo[0], client))
         season_games_subset_data_array.append(
-            get_season_games_subset(combo[0], combo[1], client)
+            await get_season_games_subset(combo[0], combo[1], client)
         )
 
     for i, dataset in enumerate(season_teams_data_array):
@@ -909,7 +936,7 @@ async def season_boxplot_transform(
     client: AsyncIOMotorClient,
 ):
     # convert to DataFrame
-    season_df = pandas.DataFrame(season_games_data)
+    season_df = pandas.DataFrame([game.doc() for game in season_games_data])
     # normalized score columns for two-week playoff games
     season_df["a_score_norm"] = season_df["a_score"] / (
         season_df["week_e"] - season_df["week_s"] + 1
@@ -949,7 +976,7 @@ async def season_boxplot_transform(
     score_df = pandas.concat([score_df_for, score_df_against])
     # let's sort by playoff rank instead
     # read season file, but we only need nick_name, season, and playoff_rank
-    ranking_df = pandas.DataFrame(season_teams_data)[["nick_name", "playoff_rank"]]
+    ranking_df = pandas.DataFrame([team.doc() for team in season_teams_data])[["nick_name", "playoff_rank"]]
     # merge this (filtered by season) into score_df so we can sort values
     score_df = score_df.merge(
         ranking_df,
@@ -986,34 +1013,40 @@ async def season_boxplot_transform(
     color_data = px.colors.qualitative.Light24
 
     # convert to json for writing to Mongo
-    chart_data = {
-        "for_data": {
+    new_chart_data = MLBoxplotTransform(
+        season=season,
+        for_data={
             "x_data": x_data_for,
             "y_data": y_data_for,
             "color_data": color_data,
         },
-        "against_data": {
+        against_data={
             "x_data": x_data_against,
             "y_data": y_data_against,
             "color_data": color_data,
         },
-    }
+    )
 
     # write data to MongoDB
-    db = client.mildredleague_transforms
-    collection = getattr(db, "boxplot" + str(season.value))
-    if list(collection.find().sort("_id")) == [chart_data]:
+    engine = AIOEngine(motor_client=client, database="mildredleague")
+    old_chart_data = [
+        chart
+        async for chart in engine.find(
+            MLBoxplotTransform,
+            MLBoxplotTransform.season == season,
+        )
+    ]
+    if old_chart_data == [new_chart_data]:
         message = (
-            "Collection is already synced! Collection: " + "boxplot" + str(season.value)
+            "Collection is already synced! Collection: " + str(new_chart_data.season)
         )
     else:
         # if boxplots need to be recalculated, just wipe the collection and reinsert
-        collection.delete_many({})
-        collection.insert_many([chart_data])
+        for chart in old_chart_data:
+            await engine.delete(chart)
+        await engine.save(new_chart_data)
         message = (
-            "Bulk delete and insert complete! Collection: "
-            + "boxplot"
-            + str(season.value)
+            "Bulk delete and insert complete! Collection: " + str(new_chart_data.season)
         )
 
     return message
@@ -1027,8 +1060,8 @@ async def season_table_transform(
     client: AsyncIOMotorClient,
 ):
     # convert to pandas DataFrame and normalize
-    games_df = MLTable(season_games_subset_data)
-    teams_df = pandas.DataFrame(season_teams_data).set_index("_id")
+    games_df = MLTable([game.doc() for game in season_games_subset_data])
+    teams_df = pandas.DataFrame([team.doc() for team in season_teams_data]).set_index("_id")
     if playoff > 0:
         if playoff == 2:
             # for loser's bracket, sort by games played ascending first,
@@ -1059,7 +1092,7 @@ async def season_table_transform(
             .set_index(["division", "nick_name"])
             .reset_index()
         )
-        table_data = json.loads(season_table.to_json(orient="split", index=False))
+        new_table_data = json.loads(season_table.to_json(orient="split", index=False))
     else:
         # to resolve tiebreakers, need records for the season
         season_records_df = games_df.calc_records(teams_df.copy())
@@ -1138,40 +1171,46 @@ async def season_table_transform(
             by="playoff_seed"
         )
 
-        table_data = json.loads(
+        new_table_data = json.loads(
             season_table.reset_index().to_json(orient="split", index=False)
         )
 
-    # write data to MongoDB
-    db = client.mildredleague_transforms
-    collection = getattr(
-        db, "table" + str(season.value) + "playoff" + str(playoff.value)
+    # set missing elements in table data for mongo
+    new_table_data = MLTableTransform(
+        season=season,
+        playoff=playoff,
+        columns=new_table_data['columns'],
+        data=new_table_data['data'],
     )
-    if list(collection.find().sort("_id")) == [table_data]:
+
+    # write data to MongoDB
+    engine = AIOEngine(motor_client=client, database="mildredleague")
+    old_table_data = [
+        table
+        async for table in engine.find(
+            MLTableTransform,
+            MLTableTransform.season == season,
+            MLTableTransform.playoff == playoff,
+        )
+    ]
+    if old_table_data == [new_table_data]:
         message = (
-            "Collection is already synced! Collection: "
-            + "table"
-            + str(season.value)
-            + "playoff"
-            + str(playoff.value)
+            "Collection is already synced! Collection: " + str(new_table_data.season) + str(new_table_data.playoff)
         )
     else:
-        # if boxplots need to be recalculated, just wipe the collection and reinsert
-        collection.delete_many({})
-        collection.insert_many([table_data])
+        # if tables need to be recalculated, just wipe the collection and reinsert
+        for table in old_table_data:
+            await engine.delete(table)
+        await engine.save(new_table_data)
         message = (
-            "Bulk delete and insert complete! Collection: "
-            + "table"
-            + str(season.value)
-            + "playoff"
-            + str(playoff.value)
+            "Bulk delete and insert complete! Collection: " + str(new_table_data.season) + str(new_table_data.playoff)
         )
 
     return message
 
 
 @ml_api.get("/{season}/sim")
-def seed_sim(
+async def seed_sim(
     season: MLSeason,
     games_data: List[MLGame] = Depends(get_season_games),
     winners_array=["t1", "t2", "t3", "t4", "t5", "t6", "t7"],

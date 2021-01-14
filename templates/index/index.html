@@ -15,7 +15,7 @@ casual Twitch streamer, small-time patron, and friend.">
 {% block content %}
 <h2 class="center">Thanks for visiting.</h2>
 <section id="random-quote" class="center">
-  <blockquote class="center">"{{ quote.get('quote_text') }}"</blockquote>
-  <i><cite class="center">-{{ quote.get('quote_origin') }}</cite></i>
+  <blockquote class="center">"{{ quote.quote_text }}"</blockquote>
+  <i><cite class="center">-{{ quote.quote_origin }}</cite></i>
 </section>
 {% endblock %}
