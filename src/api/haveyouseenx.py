@@ -6,16 +6,15 @@ from typing import List, Optional
 
 # import third party packages
 from fastapi import APIRouter, Depends, HTTPException
+from motor.motor_asyncio import AsyncIOMotorClient
 import numpy
 import pandas
 import plotly
 import plotly.express as px
-from pydantic import BaseModel, Field
-import pymongo
-from pymongo import MongoClient
+from odmantic import AIOEngine, Field, Model, ObjectId
 
 # import custom local stuff
-from src.api.db import get_dbm
+from src.api.db import get_odm
 from src.api.users import UserOut, oauth2_scheme
 
 
@@ -25,7 +24,7 @@ hysx_api = APIRouter(
 )
 
 
-class NowPlaying(str, Enum):
+class YesNo(str, Enum):
     YES = "Y"
     NO = "N"
 
@@ -45,13 +44,13 @@ class PlaytimeCalc(str, Enum):
     ESTIMATE = "Estimate"
 
 
-class BacklogGame(BaseModel):
-    doc_id: str = Field(..., alias='_id')
+class BacklogGame(Model):
     game_title: str
     sub_title: Optional[str]
     game_system: str
     genre: str
-    now_playing: NowPlaying
+    dlc: YesNo
+    now_playing: YesNo
     game_status: GameStatus
     game_hours: Optional[int]
     game_minutes: Optional[int]
@@ -63,113 +62,134 @@ class BacklogGame(BaseModel):
     game_notes: Optional[str]
 
 
-@hysx_api.get('/all-games')
-def backlog(client: MongoClient = Depends(get_dbm)):
-    db = client.backlogs
-    collection = db.annuitydew
-    results = list(collection.find().sort("_id"))
-    return results
+class BacklogGamePatch(Model):
+    game_title: Optional[str]
+    sub_title: Optional[str]
+    game_system: Optional[str]
+    genre: Optional[str]
+    dlc: Optional[YesNo]
+    now_playing: Optional[YesNo]
+    game_status: Optional[GameStatus]
+    game_hours: Optional[int]
+    game_minutes: Optional[int]
+    playtime_calc: Optional[PlaytimeCalc]
+    add_date: Optional[datetime]
+    start_date: Optional[datetime]
+    beat_date: Optional[datetime]
+    complete_date: Optional[datetime]
+    game_notes: Optional[str]
 
 
-@hysx_api.post('/game')
-async def add_game(
-    doc_list: List[BacklogGame],
-    client: MongoClient = Depends(get_dbm),
-    user: UserOut = Depends(oauth2_scheme),
-):
-    db = client.backlogs
-    collection = getattr(db, user.username.value)
-    try:
-        insert_many_result = collection.insert_many([doc.dict(by_alias=True) for doc in doc_list])
-        return {
-            'inserted_ids': insert_many_result.inserted_ids,
-            'doc_list': doc_list,
-        }
-    except pymongo.errors.DuplicateKeyError:
-        raise HTTPException(status_code=409, detail="Duplicate ID!")
-
-
-@hysx_api.get('/game/{doc_id}', response_model=BacklogGame)
-async def get_game(
-    doc_id: str,
-    client: MongoClient = Depends(get_dbm),
-    user: UserOut = Depends(oauth2_scheme),
-):
-    db = client.backlogs
-    collection = getattr(db, user.username.value)
-    doc = list(collection.find({'_id': doc_id}))
-    if doc:
-        return doc[0]
+@hysx_api.get('/annuitydew/game/all')
+async def get_all_games(client: AsyncIOMotorClient = Depends(get_odm)):
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    data = [game async for game in engine.find(BacklogGame, sort=BacklogGame.id)]
+    if data:
+        return data
     else:
         raise HTTPException(status_code=404, detail="No data found!")
 
 
-@hysx_api.put('/game')
-async def edit_game(
-    doc: BacklogGame,
-    client: MongoClient = Depends(get_dbm),
+@hysx_api.post('/annuitydew/game')
+async def add_games(
+    doc_list: List[BacklogGame],
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.backlogs
-    collection = getattr(db, user.username.value)
-    update_result = collection.replace_one({'_id': doc.doc_id}, doc.dict(by_alias=True))
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    result = await engine.save_all(doc_list)
     return {
-        'doc': doc,
-        'modified_count': update_result.modified_count,
+        "result": result,
     }
 
 
-@hysx_api.delete('/game/{doc_id}')
-async def delete_game(
-    doc_id: str,
-    client: MongoClient = Depends(get_dbm),
+@hysx_api.get('/annuitydew/game/{oid}', response_model=BacklogGame)
+async def get_game(
+    oid: ObjectId,
+    client: AsyncIOMotorClient = Depends(get_odm),
     user: UserOut = Depends(oauth2_scheme),
 ):
-    db = client.backlogs
-    collection = getattr(db, user.username.value)
-    doc = collection.find_one_and_delete({'_id': doc_id})
-    if doc:
-        return doc
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    game = await engine.find_one(BacklogGame, BacklogGame.id == oid)
+    if game:
+        return game
     else:
         raise HTTPException(status_code=404, detail="No data found!")
 
 
-@hysx_api.get('/count-by-status')
-def count_by_status(client: MongoClient = Depends(get_dbm)):
-    db = client.backlogs
-    collection = db.annuitydew
-    results = list(
-        collection.aggregate([{
-            '$group': {
-                '_id': '$game_status',
-                'count': {
-                    '$sum': 1
-                }
+@hysx_api.patch('/annuitydew/game/{oid}')
+async def edit_game(
+    oid: ObjectId,
+    patch: BacklogGamePatch,
+    client: AsyncIOMotorClient = Depends(get_odm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    game = await engine.find_one(BacklogGamePatch, BacklogGamePatch.id == oid)
+    if game is None:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+    patch_dict = patch.dict(exclude_unset=True)
+    for attr, value in patch_dict.items():
+        setattr(game, attr, value)
+    result = await engine.save(game)
+
+    return {
+        "result": result,
+    }
+
+
+@hysx_api.delete('/annuitydew/game/{oid}')
+async def delete_game(
+    oid: ObjectId,
+    client: AsyncIOMotorClient = Depends(get_odm),
+    user: UserOut = Depends(oauth2_scheme),
+):
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    game = await engine.find_one(BacklogGame, BacklogGame.id == oid)
+    if game is None:
+        raise HTTPException(status_code=404, detail="No data found!")
+
+    await engine.delete(game)
+
+    return {
+        "game": game,
+    }
+
+
+@hysx_api.get('/annuitydew/stats/counts')
+async def count_by_status(client: AsyncIOMotorClient = Depends(get_odm)):
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    collection = engine.get_collection(BacklogGame)
+    results = await collection.aggregate([{
+        '$group': {
+            '_id': '$game_status',
+            'count': {
+                '$sum': 1
             }
-        }])
-    )
+        }
+    }]).to_list(length=None)
+
     stats = {result.get('_id'): result.get('count') for result in results}
     sorted_stats = dict(sorted(stats.items(), key=lambda item: item[1], reverse=True))
     return sorted_stats
 
 
-@hysx_api.get('/playtime')
-def playtime(client: MongoClient = Depends(get_dbm)):
-    db = client.backlogs
-    collection = db.annuitydew
-    results = list(
-        collection.aggregate([{
-            '$group': {
-                '_id': None,
-                'total_hours': {
-                    '$sum': '$game_hours'
-                },
-                'total_minutes': {
-                    '$sum': '$game_minutes'
-                }
+@hysx_api.get('/annuitydew/stats/playtime')
+async def playtime(client: AsyncIOMotorClient = Depends(get_odm)):
+    engine = AIOEngine(motor_client=client, database="backlogs")
+    collection = engine.get_collection(BacklogGame)
+    results = await collection.aggregate([{
+        '$group': {
+            '_id': None,
+            'total_hours': {
+                '$sum': '$game_hours'
+            },
+            'total_minutes': {
+                '$sum': '$game_minutes'
             }
-        }])
-    )
+        }
+    }]).to_list(length=None)
     # move chunks of 60 minutes into the hours count
     leftover_minutes = results[0].get('total_minutes') % 60
     hours_to_move = (results[0].get('total_minutes') - leftover_minutes) / 60
@@ -179,27 +199,24 @@ def playtime(client: MongoClient = Depends(get_dbm)):
     return results[0]
 
 
-@hysx_api.get('/search', response_model=List[BacklogGame])
-def search(client: MongoClient = Depends(get_dbm), q: str = None):
-    db = client.backlogs
-    collection = db.annuitydew
+@hysx_api.get('/annuitydew/search', response_model=List[BacklogGame])
+async def search(client: AsyncIOMotorClient = Depends(get_odm), q: str = None):
+    engine = AIOEngine(motor_client=client, database="backlogs")
     # change to plain q for OR results. f"\"{q}\"" is an AND search.
     if q == '':
-        results = list(collection.find().sort("_id"))
+        results = await engine.find(BacklogGame, sort=BacklogGame.id)
     else:
-        results = list(collection.find(
-            {
-                '$text': {
-                    '$search': f"\"{q}\""
-                }
-            }
-        ).sort("_id"))
+        results = await engine.find(
+            BacklogGame,
+            { '$text': { '$search': f"\"{q}\"" }},
+            sort=BacklogGame.id,
+        )
 
     return results
 
 
-@hysx_api.get('/treemap')
-def system_treemap(backlog: List[BacklogGame] = Depends(backlog)):
+@hysx_api.get('/annuitydew/treemap')
+async def system_treemap(backlog: List[BacklogGame] = Depends(get_all_games)):
     # convert to pandas dataframe
     backlog = pandas.DataFrame(backlog)
     # read backlog and create a count column
@@ -250,8 +267,8 @@ def system_treemap(backlog: List[BacklogGame] = Depends(backlog)):
     return json.loads(plotly.io.to_json(figure))
 
 
-@hysx_api.get('/bubbles')
-def system_bubbles(backlog: List[BacklogGame] = Depends(backlog)):
+@hysx_api.get('/annuitydew/bubbles')
+async def system_bubbles(backlog: List[BacklogGame] = Depends(get_all_games)):
     # convert to pandas dataframe
     backlog = pandas.DataFrame(backlog)
     # read backlog and create a count column
@@ -329,8 +346,11 @@ def system_bubbles(backlog: List[BacklogGame] = Depends(backlog)):
     }
 
 
-@hysx_api.get('/timeline')
-def timeline(backlog: List[BacklogGame] = Depends(backlog), stats=Depends(count_by_status)):
+@hysx_api.get('/annuitydew/timeline')
+async def timeline(
+    backlog: List[BacklogGame] = Depends(get_all_games),
+    stats=Depends(count_by_status)
+):
     # convert to pandas dataframe
     backlog = pandas.DataFrame(backlog)
     # drop unused columns, move dates to x axis to create timeline

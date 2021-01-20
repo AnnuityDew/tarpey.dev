@@ -39,6 +39,12 @@ def get_dbm_no_close():
     return client
 
 
+# motor client WITHOUT CLOSE
+def get_odm_no_close():
+    client = AsyncIOMotorClient(MONGO_CONNECT)
+    return client
+
+
 async def auto_increment_mongo(database, collection):
     """Retrieve the next _id for a given Mongo collection."""
     client = get_dbm()
