@@ -204,12 +204,15 @@ async def search(client: AsyncIOMotorClient = Depends(get_odm), q: str = None):
     engine = AIOEngine(motor_client=client, database="backlogs")
     # change to plain q for OR results. f"\"{q}\"" is an AND search.
     if q == '':
-        results = await engine.find(BacklogGame, sort=BacklogGame.id)
+        results = await engine.find(
+            BacklogGame,
+            sort=(BacklogGame.dlc, BacklogGame.id),
+        )
     else:
         results = await engine.find(
             BacklogGame,
             { '$text': { '$search': f"\"{q}\"" }},
-            sort=BacklogGame.id,
+            sort=(BacklogGame.dlc, BacklogGame.id),
         )
 
     return results
@@ -218,7 +221,7 @@ async def search(client: AsyncIOMotorClient = Depends(get_odm), q: str = None):
 @hysx_api.get('/annuitydew/treemap')
 async def system_treemap(backlog: List[BacklogGame] = Depends(get_all_games)):
     # convert to pandas dataframe
-    backlog = pandas.DataFrame(backlog)
+    backlog = pandas.DataFrame([game.doc() for game in backlog])
     # read backlog and create a count column
     backlog['count'] = 1
     # column to serve as the root of the backlog
@@ -270,7 +273,7 @@ async def system_treemap(backlog: List[BacklogGame] = Depends(get_all_games)):
 @hysx_api.get('/annuitydew/bubbles')
 async def system_bubbles(backlog: List[BacklogGame] = Depends(get_all_games)):
     # convert to pandas dataframe
-    backlog = pandas.DataFrame(backlog)
+    backlog = pandas.DataFrame([game.doc() for game in backlog])
     # read backlog and create a count column
     backlog['count_dist'] = 1
     # complete gametime calc
@@ -352,25 +355,22 @@ async def timeline(
     stats=Depends(count_by_status)
 ):
     # convert to pandas dataframe
-    backlog = pandas.DataFrame(backlog)
+    backlog = pandas.DataFrame([game.doc() for game in backlog])
     # drop unused columns, move dates to x axis to create timeline
     # sort for most recent event at the top
-    backlog = backlog.drop(
-        columns=[
-            'game_hours',
-            'game_minutes',
-            'game_notes',
-            'game_status',
-            'game_system',
-            'genre',
-            'now_playing',
-            'playtime_calc',
-            ]
-        ).melt(
-            id_vars=['_id', 'game_title', 'sub_title'],
-            var_name='event_name',
-            value_name='event_date',
-        )
+    backlog = backlog[[
+        '_id',
+        'game_title',
+        'sub_title',
+        'add_date',
+        'start_date',
+        'beat_date',
+        'complete_date',
+    ]].melt(
+        id_vars=['_id', 'game_title', 'sub_title'],
+        var_name='event_name',
+        value_name='event_date',
+    )
 
     # fill empty cells with the backlog's birth date
     backlog['event_date'] = (

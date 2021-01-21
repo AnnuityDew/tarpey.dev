@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
   
-{% block title %} - mildredleague {{ season.value }}{% endblock %}
+{% block title %} - mildred league {{ season.value }}{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/mildredleague/css/mildredleague.css') }}">
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block header %}
-mildredleague {{ season.value }}
+mildred league {{ season.value }}
 {% endblock %}
 
 {% block content %}
@@ -68,22 +68,6 @@ mildredleague {{ season.value }}
 </p>
 
 <script>
-  const oldFetchData = async () => {
-    let rawBoxplotData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/boxplot");
-    let boxplotData = await rawBoxplotData.json();
-    let rawTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/0");
-    let tableData = await rawTableData.json();
-    let rawPlayoffTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/1");
-    let playoffTableData = await rawPlayoffTableData.json();
-    let rawLosersTableData = await fetch("/api/mildredleague/" + String({{ season.value }}) + "/table/2");
-    let losersTableData = await rawLosersTableData.json();
-
-    // make sure all data is returned at the same time
-    // https://medium.com/@gianpaul.r/fetching-from-multiple-api-endpoints-at-once-ffb1b54600f9
-    var data = Promise.all([boxplotData, tableData, playoffTableData, losersTableData]);
-    return data;
-  }
-
   const fetchData = async () => {
     let [boxplotData, tableData, playoffTableData, losersTableData] = await Promise.all([
       fetch("/api/mildredleague/" + String({{ season.value }}) + "/boxplot").then(data => data.json()),
