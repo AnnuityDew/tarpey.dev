@@ -11,7 +11,7 @@ import numpy
 import pandas
 import plotly
 import plotly.express as px
-from odmantic import AIOEngine, Field, Model, ObjectId
+from odmantic import AIOEngine, Field, Model, ObjectId, query
 
 # import custom local stuff
 from src.api.db import get_odm
@@ -200,10 +200,35 @@ async def playtime(client: AsyncIOMotorClient = Depends(get_odm)):
 
 
 @hysx_api.get('/annuitydew/search', response_model=List[BacklogGame])
-async def search(client: AsyncIOMotorClient = Depends(get_odm), q: str = None):
+async def search(
+    client: AsyncIOMotorClient = Depends(get_odm),
+    dlc: YesNo = None,
+    now_playing: YesNo = None,
+    game_status: GameStatus = None,
+    q: str = None,
+):
     engine = AIOEngine(motor_client=client, database="backlogs")
+    initial_args = {
+        'dlc': dlc,
+        'now_playing': now_playing,
+        'game_status': game_status,
+    }
+    final_args = { k:v for k, v in initial_args.items() if v is not None }
+    if final_args:
+        query_expression_list = [
+            (getattr(BacklogGame, key)) == value for key, value in final_args.items()
+        ]
+        combined_query_expression = query.and_(*query_expression_list)
+    else:
+        combined_query_expression = False
     # change to plain q for OR results. f"\"{q}\"" is an AND search.
-    if q == '':
+    if combined_query_expression:
+        results = await engine.find(
+            BacklogGame,
+            combined_query_expression,
+            sort=(BacklogGame.dlc, BacklogGame.id),
+        )        
+    elif q == '' or q is None:
         results = await engine.find(
             BacklogGame,
             sort=(BacklogGame.dlc, BacklogGame.id),
