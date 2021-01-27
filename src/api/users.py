@@ -1,21 +1,21 @@
 # import native Python packages
+import asyncio
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
-from fastapi.security.oauth2 import OAuth2PasswordBearer
 
 # import third party packages
-import jwt
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
+from motor.motor_asyncio import AsyncIOMotorClient
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, validator
 import pymongo
 from pymongo import MongoClient
 
 # import custom local stuff
-from src.api.db import get_dbm, get_dbm_no_close
+from src.db.atlas import get_odm
 from instance.config import (
     SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 )
@@ -127,13 +127,13 @@ class UserDB(UserBase):
 @users_api.post("/", response_model=UserOut)
 async def create_user(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
     db = client.users
     collection = db.users
 
     try:
-        collection.insert_one({
+        await collection.insert_one({
             "_id": form_data.username,
             "hashed_password": get_password_hash(form_data.password)
         })
@@ -149,9 +149,9 @@ async def create_user(
 @users_api.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
-    user = authenticate_user(
+    user = await authenticate_user(
         form_data.username,
         form_data.password,
         client,
@@ -181,53 +181,52 @@ async def read_self(current_user: UserOut = Depends(oauth2_scheme)):
 
 @users_api.delete("/me")
 async def delete_self(
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
     current_user: UserOut = Depends(oauth2_scheme),
 ):
     db = client.users
     collection = db.users
-    doc = collection.find_one_and_delete({'_id': current_user.username})
-    if doc:
-        return "Success! Deleted user " + str(current_user.username) + "."
+    doc = await collection.find_one_and_delete({'_id': current_user.username})
+    if doc is None:
+        raise HTTPException(status_code=404, detail="No data found!")
     else:
-        return "Something weird happened..."
+        return {'_id': current_user.username}
 
 
 @users_api.patch("/password", response_model=UserOut)
 async def change_password(
     updated_user: UserIn,
     current_user: UserOut = Depends(oauth2_scheme),
-    client: MongoClient = Depends(get_dbm),
+    client: AsyncIOMotorClient = Depends(get_odm),
 ):
     db = client.users
     collection = db.users
-    collection.update_one(
+    await collection.update_one(
         {"_id": current_user.username},
-        {'$set': {"hashed_password": get_password_hash(updated_user.password)}},
+        {'$set': {"hashed_password": await get_password_hash(updated_user.password)}},
     )
 
     return updated_user
 
 
-def verify_password(plain_password, hashed_password):
+async def verify_password(plain_password, hashed_password):
     return password_context.verify(plain_password, hashed_password)
 
 
-def get_password_hash(password):
+async def get_password_hash(password):
     return password_context.hash(password)
 
 
-def authenticate_user(username: str, password: str, client: MongoClient):
-    user = get_user(username, client)
+async def authenticate_user(username: str, password: str, client: AsyncIOMotorClient):
+    user = await get_user_and_hash(username, client)
     if not user:
         return None
-    if not verify_password(password, user.hashed_password):
+    if not await verify_password(password, user.hashed_password):
         return None
     return user
 
 
-@oauth2_scheme.user_loader
-def get_user(username: str, client: MongoClient = None):
+async def get_user_and_hash(username: str, client: AsyncIOMotorClient):
     # this is where rubber meets the road between tiangolo's tutorial
     # and the fastapi_login docs. the mongo client is passed through
     # when FastAPI calls it. for fastapi_login's decorator, which only
@@ -237,18 +236,21 @@ def get_user(username: str, client: MongoClient = None):
     # these two more separate, but it doesn't seem necessary since
     # the password gets chopped off by the UserOut model in the /me
     # endpoint.
-    return_user_only = False
-    if client is None:
-        return_user_only = True
-        client = get_dbm_no_close()
     db = client.users
     collection = db.users
-    user_dict = collection.find_one({"_id": username})
-    client.close()
+    user_dict = await collection.find_one({"_id": username})
+
     # if calling through FastAPI login, just return username
     # otherwise, return hashed password so it can be verified
     if user_dict:
-        if return_user_only:
-            return UserOut(**user_dict)
-        else:
-            return UserDB(**user_dict)
+        return UserDB(**user_dict)
+
+
+@oauth2_scheme.user_loader
+async def get_user(username: str):
+    client = await get_odm()
+    db = client.users
+    collection = db.users
+    user_dict = await collection.find_one({"_id": username})
+    if user_dict:
+        return UserOut(**user_dict)

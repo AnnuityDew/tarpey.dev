@@ -15,7 +15,7 @@ import requests
 
 # import custom local stuff
 from instance.config import FANTASY_DATA_KEY_FREE
-from src.api.db import get_odm
+from src.db.atlas import get_odm
 from src.api.users import oauth2_scheme, UserOut
 
 

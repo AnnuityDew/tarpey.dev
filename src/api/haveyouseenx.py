@@ -14,7 +14,7 @@ import plotly.express as px
 from odmantic import AIOEngine, Field, Model, ObjectId, query
 
 # import custom local stuff
-from src.api.db import get_odm
+from src.db.atlas import get_odm
 from src.api.users import UserOut, oauth2_scheme
 
 

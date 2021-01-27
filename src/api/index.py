@@ -8,7 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from odmantic import AIOEngine, Field, Model, ObjectId
 
 # import custom local stuff
-from src.api.db import get_odm
+from src.db.atlas import get_odm
 from src.api.users import oauth2_scheme
 
 
