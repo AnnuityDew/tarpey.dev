@@ -336,7 +336,7 @@ class MLTable(pandas.DataFrame):
         return matchup_df
 
 
-@ml_api.post("/team/")
+@ml_api.post("/team")
 async def add_teams(
     doc_list: List[MLTeam],
     client: AsyncIOMotorClient = Depends(get_odm),
