@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block description %}
+<meta name="description" content="Mike Tarpey's March Madness bracket generator.
+This is the 2021 version...currently under construction!">
+{% endblock %}
+
+{% block title %} - autobracket{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/autobracket/css/autobracket.css') }}">
+{% endblock %}
+
+{% block java %}
+<script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+{% endblock %}
+
+{% block header %}autobracket output{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div id="root"></div>
+</div>
+<script src="{{ url_for('static', path='/autobracket/js/app-2021.js') }}" type="text/babel"></script>
+{% endblock %}

@@ -4,7 +4,6 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-import seaborn
 
 # import custom local stuff
 from src.api.index import Quote, random_quote

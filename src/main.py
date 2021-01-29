@@ -20,9 +20,11 @@ from src.tarpeydev import (
     users,
 )
 from src.api.index import index_api
+from src.api.autobracket import ab_api
 from src.api.haveyouseenx import hysx_api
 from src.api.mildredleague import ml_api
 from src.api.users import users_api
+from src.db.startup import motor_startup, motor_shutdown
 
 # GCP debugger
 try:
@@ -39,7 +41,7 @@ def create_fastapi_app():
     # create the root and API FastAPI apps
     view_app = FastAPI(
         title="tarpey.dev",
-        description="Mike Tarpey's app sandbox.",
+        description="Mike Tarpey's app playground.",
         docs_url=None,
         redoc_url=None,
         default_response_class=ORJSONResponse,
@@ -47,6 +49,11 @@ def create_fastapi_app():
 
     # templates
     templates = Jinja2Templates(directory='templates')
+
+    # startup and shutdown connection to DB
+    # see https://motor.readthedocs.io/en/stable/tutorial-asyncio.html
+    view_app.add_event_handler('startup', motor_startup)
+    view_app.add_event_handler('shutdown', motor_shutdown)
 
     # custom exception page to convert the 422 into a 404.
     @view_app.exception_handler(RequestValidationError)
@@ -99,6 +106,7 @@ def create_fastapi_app():
 
     # include subrouters of the FastAPI app
     api_app.include_router(index_api)
+    api_app.include_router(ab_api)
     api_app.include_router(hysx_api)
     api_app.include_router(ml_api)
     api_app.include_router(users_api)

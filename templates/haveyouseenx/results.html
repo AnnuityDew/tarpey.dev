@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-  
-{% block title %} - haveyouseenx{% endblock %}
+
+{% block title %} - have you played x?{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/haveyouseenx/css/haveyouseenx.css') }}">
@@ -9,74 +9,60 @@
 {% block java %}
 {% endblock %}
 
-{% block header %}haveyouseenx search results{% endblock %}
+{% block header %}search results{% endblock %}
 {% block content %}
 <p>
   {% if search_term == '' %}
-    You didn't search for a game, so here's the full table.
+  You didn't search for a game, so here's the full table.
   {% else %}
-    The game you searched for is called {{ search_term }}. Matches are shown below.
+  The game you searched for is called {{ search_term }}. Matches are shown below.
   {% endif %}
 </p>
 
-<div style="overflow-x:auto;"><table>
-  {% if results %}
-    <thead>
-      {% for field, value in results[0].items() %}
-      <th class="hysx_header">{{ field }}</th>
-      {% endfor %}
-    </thead>
-    <tbody>
-      {% for result in results %}
-      <tr class="hysx_row">
-        <td class="_id">
-          {{ result.get('_id') }}
-        </td>
-        <td class="game_title">
-          {{ result.get('game_title') }}
-        </td>
-        <td class="sub_title">
-          {{ result.get('sub_title') }}
-        </td>
-        <td class="game_system">
-          {{ result.get('game_system') }}
-        </td>
-        <td class="genre">
-          {{ result.get('genre') }}
-        </td>
-        <td class="now_playing">
-          {{ result.get('now_playing') }}
-        </td>
-        <td class="game_status">
-          {{ result.get('game_status') }}
-        </td>
-        <td class="game_hours">
-          {{ result.get('game_hours') }}
-        </td>
-        <td class="game_minutes">
-          {{ result.get('game_minutes') }}
-        </td>
-        <td class="playtime_calc">
-          {{ result.get('playtime_calc') }}
-        </td>
-        <td class="add_date">
-          {{ result.get('add_date') }}
-        </td>
-        <td class="start_date">
-          {{ result.get('start_date') }}
-        </td>
-        <td class="beat_date">
-          {{ result.get('beat_date') }}
-        </td>
-        <td class="complete_date">
-          {{ result.get('complete_date') }}
-        </td>
-        <td class="game_notes">
-          {{ result.get('game_notes') }}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  {% endif %}
-  </table></div>
+<div style="overflow-x:auto;">
+  <table id="search-results">
+  </table>
+</div>
+
+<script>
+  const fetchData = async () => {
+    let searchTerm = "{{ search_term }}";
+    let searchData = await Promise.all([
+      fetch("/api/haveyouseenx/annuitydew/search?q=" + searchTerm).then(data => data.json()),
+    ]);
+
+    return searchData;
+  }
+
+  var searchTable = async (data, table) => {
+    let thead = table.createTHead();
+    let row = thead.insertRow();
+
+    // headers
+    for (const header in data[0]) {
+      let th = document.createElement("th");
+      let text = document.createTextNode(header);
+      th.appendChild(text);
+      row.appendChild(th);
+    }
+
+    // data
+    for (let game of data) {
+      let row = table.insertRow();
+      for (const [key, value] of Object.entries(game)) {
+        let cell = row.insertCell();
+        let text = document.createTextNode(value);
+        cell.appendChild(text);
+      }
+    }
+  }
+
+  async function renderCharts() {
+    const data = await fetchData();
+    var table = document.querySelector("#search-results");
+    searchTable(data[0], table);
+  }
+
+  renderCharts();
+</script>
 {% endblock %}

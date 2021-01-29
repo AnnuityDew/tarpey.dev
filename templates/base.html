@@ -11,7 +11,7 @@
     gtag('config', 'G-2C1GEE8FJ3');
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pleasejs/0.4.2/Please.min.js" integrity="sha512-XTYPyRh2VppCJQXdjcQrCXVpleLCiMB2PSztUvaeQJvT1mhNxkAKMWH7F2hE1C+yxngS4kchaMM+wkv8HVQ4Ww==" crossorigin="anonymous"></script>
-  <title>mike tarpey{% block title %}{% endblock %}</title>
+  <title>tarpey's apps{% block title %}{% endblock %}</title>
   {% block description %}{% endblock %}
   <meta name="author" content="Mike Tarpey">
   <meta name="msapplication-TileColor" content="#2d89ef">
@@ -34,9 +34,9 @@
       Hello{% if request.state.active_user %},
       {{ request.state.active_user }}{% endif %}!
       <a class="small-nav-link index" href="{{ url_for('homepage') }}">home</a>
-      <a class="small-nav-link mildredleague" href="{{ url_for('mildredleague') }}">mildredleague</a>
-      <a class="small-nav-link haveyouseenx" href="{{ url_for('haveyouseenx') }}">haveyouseenx</a>
-      <a class="small-nav-link timecapsule" href="{{ url_for('timecapsule', template_id='enter') }}">timecapsule</a>
+      <a class="small-nav-link mildredleague" href="{{ url_for('mildredleague') }}">mildred league</a>
+      <a class="small-nav-link haveyouseenx" href="{{ url_for('haveyouseenx') }}">have you played x?</a>
+      <a class="small-nav-link timecapsule" href="{{ url_for('timecapsule', template_id='enter') }}">time capsule</a>
       <a class="small-nav-link ddr" href="{{ url_for('ddr') }}">DDR</a>
       <a class="small-nav-link autobracket" href="{{ url_for('generate') }}">autobracket</a>
       <a class="small-nav-link links" href="{{ url_for('links') }}">links</a>

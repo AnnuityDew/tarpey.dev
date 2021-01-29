@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
   
-{% block title %} - haveyouseenx{% endblock %}
+{% block description %}
+<meta name="description" content="Mike Tarpey's backlog of video games.
+Created in response to the frequent question, 'have you played x?'
+Partially inspired by backloggery.com.">
+{% endblock %}
+
+{% block title %} - have you played x?{% endblock %}
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/haveyouseenx/css/haveyouseenx.css') }}">
@@ -11,7 +17,7 @@
 <script src="{{ url_for('static', path='/index/js/tarpeydevlayout.js') }}"></script>
 {% endblock %}
 
-{% block header %}haveyouseenx{% endblock %}
+{% block header %}have you played x?{% endblock %}
 
 {% block content %}
 <p>
@@ -24,7 +30,7 @@
 </form>
 
 <p>
-<b>Stats by Category</b>
+<b>View Games by Category</b>
 {% for category, count in stats.items() %}
   <ul>
     <li>{{ category }}: {{ count }}</a></li>
@@ -47,13 +53,13 @@
 
 <script>
   const fetchData = async () => {
-    let [timelineData, treemapData, bubblesData] = await Promise.all([
-      fetch("/api/haveyouseenx/timeline").then(data => data.json()),
-      fetch("/api/haveyouseenx/treemap").then(data => data.json()),
-      fetch("/api/haveyouseenx/bubbles").then(data => data.json()),
+    let [timelineData] = await Promise.all([
+      fetch("/api/haveyouseenx/annuitydew/timeline").then(data => data.json()),
+      // fetch("/api/haveyouseenx/annuitydew/treemap").then(data => data.json()),
+      // fetch("/api/haveyouseenx/annuitydew/bubbles").then(data => data.json()),
     ]);
 
-    return [timelineData, treemapData, bubblesData];
+    return [timelineData];
   }
 
   var timelineChart = async (chartData) => {
@@ -133,8 +139,8 @@
   async function renderCharts () {
     const data = await fetchData();
     timelineChart(data[0]);
-    treemapChart(data[1]);
-    bubblesChart(data[2]);
+    // treemapChart(data[1]);
+    // bubblesChart(data[1]);
   }
 
   renderCharts();
