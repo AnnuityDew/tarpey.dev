@@ -41,7 +41,7 @@ def create_fastapi_app():
     # create the root and API FastAPI apps
     view_app = FastAPI(
         title="tarpey.dev",
-        description="Mike Tarpey's app sandbox.",
+        description="Mike Tarpey's app playground.",
         docs_url=None,
         redoc_url=None,
         default_response_class=ORJSONResponse,
